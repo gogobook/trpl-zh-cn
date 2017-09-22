@@ -64,7 +64,7 @@ fn main() {
 
 没有 `Deref` trait 的话，编译器只能解引用 `&` 引用，而 `my_favorite_song` 并不是（它是一个 `Mp3` 结构体）。通过 `Deref` trait，编译器知道实现了 `Deref` trait 的类型有一个返回引用的 `deref` 方法（在这个例子中，是 `&self.audio` 因为列表 15-7 中的 `deref` 的定义）。所以为了得到一个 `*` 可以解引用的 `&` 引用，编译器将 `*my_favorite_song` 展开为如下：
 
-```rust,ignore
+```rust
 *(my_favorite_song.deref())
 ```
 
@@ -78,7 +78,7 @@ Rust 倾向于偏爱明确而不是隐晦，不过一个情况下这并不成立
 
 使用列表 15-7 中的 `Mp3` 结构体，如下是一个获取 `u8` slice 并压缩 mp3 音频数据的函数签名：
 
-```rust,ignore
+```rust
 fn compress_mp3(audio: &[u8]) -> Vec<u8> {
     // the actual implementation would go here
 }
@@ -86,7 +86,7 @@ fn compress_mp3(audio: &[u8]) -> Vec<u8> {
 
 如果 Rust 没有解引用强制多态，为了使用 `my_favorite_song` 中的音频数据调用此函数，必须写成：
 
-```rust,ignore
+```rust
 compress_mp3(my_favorite_song.audio.as_slice())
 ```
 
@@ -94,7 +94,7 @@ compress_mp3(my_favorite_song.audio.as_slice())
 
 然而，因为解引用强制多态和 `Mp3` 的 `Deref` trait 实现，我们可以使用如下代码使用 `my_favorite_song` 中的数据调用这个函数：
 
-```rust,ignore
+```rust
 let result = compress_mp3(&my_favorite_song);
 ```
 

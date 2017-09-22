@@ -1,19 +1,19 @@
-## `mod` 和文件系统
+## `mod` 和文件系統
 
 > [ch07-01-mod-and-the-filesystem.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch07-01-mod-and-the-filesystem.md)
 > <br>
 > commit c6a9e77a1b1ed367e0a6d5dcd222589ad392a8ac
 
-我们将通过使用 Cargo 创建一个新项目来开始我们的模块之旅，不过不再创建一个二进制 crate，而是创建一个库 crate：一个其他人可以作为依赖导入的项目。第二章猜猜看游戏中作为依赖使用的 `rand` 就是这样的 crate。
+我們將通過使用 Cargo 創建一個新項目來開始我們的模塊之旅，不過不再創建一個二進制 crate，而是創建一個庫 crate：一個其他人可以作為依賴導入的項目。第二章猜猜看遊戲中作為依賴使用的 `rand` 就是這樣的 crate。
 
-我们将创建一个提供一些通用网络功能的项目的骨架结构；我们将专注于模块和函数的组织，而不担心函数体中的具体代码。这个项目叫做 `communicator`。Cargo 默认会创建一个库 crate 除非指定其他项目类型，所以如果不像一直以来那样加入 `--bin` 参数则项目将会是一个库：
+我們將創建一個提供一些通用網絡功能的項目的骨架結構；我們將專注於模塊和函數的組織，而不擔心函數體中的具體代碼。這個項目叫做 `communicator`。Cargo 默認會創建一個庫 crate 除非指定其他項目類型，所以如果不像一直以來那樣加入 `--bin` 參數則項目將會是一個庫：
 
 ```text
 $ cargo new communicator
 $ cd communicator
 ```
 
-注意 Cargo 生成了 *src/lib.rs* 而不是 *src/main.rs*。在 *src/lib.rs* 中我们会找到这些：
+注意 Cargo 生成了 *src/lib.rs* 而不是 *src/main.rs*。在 *src/lib.rs* 中我們會找到這些：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -26,15 +26,15 @@ mod tests {
 }
 ```
 
-Cargo 创建了一个空的测试来帮助我们开始库项目，不像使用 `--bin` 参数那样创建一个 “Hello, world!” 二进制项目。在本章之后的 “使用 `super` 访问父模块” 部分会介绍 `#[]` 和 `mod tests` 语法，目前只需确保他们位于 *src/lib.rs* 底部即可。
+Cargo 創建了一個空的測試來幫助我們開始庫項目，不像使用 `--bin` 參數那樣創建一個 「Hello, world!」 二進制項目。在本章之後的 「使用 `super` 訪問父模塊」 部分會介紹 `#[]` 和 `mod tests` 語法，目前只需確保他們位於 *src/lib.rs* 底部即可。
 
-因为没有 *src/main.rs* 文件，所以没有可供 Cargo 的 `cargo run` 执行的东西。因此，我们将使用 `cargo build` 命令只是编译库 crate 的代码。
+因為沒有 *src/main.rs* 文件，所以沒有可供 Cargo 的 `cargo run` 執行的東西。因此，我們將使用 `cargo build` 命令只是編譯庫 crate 的代碼。
 
-我们将学习根据编写代码的意图来选择不同的织库项目代码组织来适应多种场景。
+我們將學習根據編寫代碼的意圖來選擇不同的織庫項目代碼組織來適應多種場景。
 
-### 模块定义
+### 模塊定義
 
-对于 `communicator` 网络库，首先要定义一个叫做 `network` 的模块，它包含一个叫做 `connect` 的函数定义。Rust 中所有模块的定义以关键字 `mod` 开始。在 *src/lib.rs* 文件的开头在测试代码的上面增加这些代码：
+對於 `communicator` 網絡庫，首先要定義一個叫做 `network` 的模塊，它包含一個叫做 `connect` 的函數定義。Rust 中所有模塊的定義以關鍵字 `mod` 開始。在 *src/lib.rs* 文件的開頭在測試代碼的上面增加這些代碼：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -45,9 +45,9 @@ mod network {
 }
 ```
 
-`mod` 关键字的后面是模块的名字，`network`，接着是位于大括号中的代码块。代码块中的一切都位于 `network` 命名空间中。在这个例子中，只有一个函数，`connect`。如果想要在 `network` 模块外面的代码中调用这个函数，需要指定模块名并使用命名空间语法 `::`，像这样：`network::connect()`，而不是只是 `connect()`。
+`mod` 關鍵字的後面是模塊的名字，`network`，接著是位於大括號中的代碼塊。代碼塊中的一切都位於 `network` 命名空間中。在這個例子中，只有一個函數，`connect`。如果想要在 `network` 模塊外面的代碼中調用這個函數，需要指定模塊名並使用命名空間語法 `::`，像這樣：`network::connect()`，而不是只是 `connect()`。
 
-也可以在 *src/lib.rs* 文件中同时存在多个模块。例如，再拥有一个 `client` 模块，它也有一个叫做 `connect` 的函数，如列表 7-1 中所示那样增加这个模块：
+也可以在 *src/lib.rs* 文件中同時存在多個模塊。例如，再擁有一個 `client` 模塊，它也有一個叫做 `connect` 的函數，如列表 7-1 中所示那樣增加這個模塊：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -63,11 +63,11 @@ mod client {
 }
 ```
 
-<span class="caption">列表 7-1：`network` 模块和 `client` 一同定义于 *src/lib.rs*</span>
+<span class="caption">列表 7-1：`network` 模塊和 `client` 一同定義於 *src/lib.rs*</span>
 
-现在我们有了 `network::connect` 函数和 `client::connect` 函数。他们可能有着完全不同的功能，同时他们也不会彼此冲突，因为他们位于不同的模块。
+現在我們有了 `network::connect` 函數和 `client::connect` 函數。他們可能有著完全不同的功能，同時他們也不會彼此衝突，因為他們位於不同的模塊。
 
-在这个例子中，因为我们构建的是一个库，作为库入口点的文件是 *src/lib.rs*。然而，对于创建模块来说，*src/lib.rs* 并没有什么特殊意义。也可以在二进制 crate 的 *src/main.rs* 中创建模块，正如在库 crate 的 *src/lib.rs* 创建模块一样。事实上，也可以将模块放入其他模块中。这有助于随着模块的增长，将相关的功能组织在一起并又保持各自独立。如何选择组织代码依赖于如何考虑代码不同部分之间的关系。例如，对于库的用户来说，`client` 模块和它的函数 `connect` 可能放在 `network` 命名空间里显得更有道理，如列表 7-2 所示：
+在這個例子中，因為我們構建的是一個庫，作為庫入口點的文件是 *src/lib.rs*。然而，對於創建模塊來說，*src/lib.rs* 並沒有什麼特殊意義。也可以在二進制 crate 的 *src/main.rs* 中創建模塊，正如在庫 crate 的 *src/lib.rs* 創建模塊一樣。事實上，也可以將模塊放入其他模塊中。這有助於隨著模塊的增長，將相關的功能組織在一起並又保持各自獨立。如何選擇組織代碼依賴於如何考慮代碼不同部分之間的關係。例如，對於庫的用戶來說，`client` 模塊和它的函數 `connect` 可能放在 `network` 命名空間裡顯得更有道理，如列表 7-2 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -83,11 +83,11 @@ mod network {
 }
 ```
 
-<span class="caption">列表 7-2：将 `client` 模块移动到 `network` 模块中</span>
+<span class="caption">列表 7-2：將 `client` 模塊移動到 `network` 模塊中</span>
 
-在 *src/lib.rs* 文件中，将现有的 `mod network` 和 `mod client` 的定义替换为列表 7-2 中的定义，这里将 `client` 模块作为 `network` 的一个内部模块。现在我们有了 `network::connect` 和 `network::client::connect` 函数：同样的，这两个 `connect` 函数也不相冲突，因为他们在不同的命名空间中。
+在 *src/lib.rs* 文件中，將現有的 `mod network` 和 `mod client` 的定義替換為列表 7-2 中的定義，這裡將 `client` 模塊作為 `network` 的一個內部模塊。現在我們有了 `network::connect` 和 `network::client::connect` 函數：同樣的，這兩個 `connect` 函數也不相衝突，因為他們在不同的命名空間中。
 
-这样，模块之间形成了一个层次结构。*src/lib.rs* 的内容位于最顶层，而其子模块位于较低的层次。如下是列表 7-1 中的例子以层次的方式考虑的结构：
+這樣，模塊之間形成了一個層次結構。*src/lib.rs* 的內容位於最頂層，而其子模塊位於較低的層次。如下是列表 7-1 中的例子以層次的方式考慮的結構：
 
 ```text
 communicator
@@ -95,7 +95,7 @@ communicator
  └── client
 ```
 
-而这是列表 7-2 中例子的的层次结构：
+而這是列表 7-2 中例子的的層次結構：
 
 ```text
 communicator
@@ -103,11 +103,11 @@ communicator
      └── client
 ```
 
-可以看到列表 7-2 中，`client` 是 `network` 的子模块，而不是它的同级模块。更为复杂的项目可以有很多的模块，所以他们需要符合逻辑地组合在一起以便记录他们。在项目中 “符合逻辑” 的意义全凭你的理解和库的用户对你项目领域的认识。利用我们这里讲到的技术来创建同级模块和嵌套的模块，总有一个会是你会喜欢的结构。
+可以看到列表 7-2 中，`client` 是 `network` 的子模塊，而不是它的同級模塊。更為複雜的項目可以有很多的模塊，所以他們需要符合邏輯地組合在一起以便記錄他們。在項目中 「符合邏輯」 的意義全憑你的理解和庫的用戶對你項目領域的認識。利用我們這裡講到的技術來創建同級模塊和嵌套的模塊，總有一個會是你會喜歡的結構。
 
-### 将模块移动到其他文件
+### 將模塊移動到其他文件
 
-位于层级结构中的模块，非常类似计算机领域的另一个我们非常熟悉的结构：文件系统！我们可以利用 Rust 的模块系统连同多个文件一起分解 Rust 项目，这样就不会是所有的内容都落到 *src/lib.rs* 或 *src/main.rs* 中了。为了举例，我们将从列表 7-3 中的代码开始：
+位於層級結構中的模塊，非常類似計算機領域的另一個我們非常熟悉的結構：文件系統！我們可以利用 Rust 的模塊系統連同多個文件一起分解 Rust 項目，這樣就不會是所有的內容都落到 *src/lib.rs* 或 *src/main.rs* 中了。為了舉例，我們將從列表 7-3 中的代碼開始：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -128,9 +128,9 @@ mod network {
 }
 ```
 
-<span class="caption">列表 7-3：三个模块，`client`、`network` 和 `network::server`，他们都定义于 *src/lib.rs*</span>
+<span class="caption">列表 7-3：三個模塊，`client`、`network` 和 `network::server`，他們都定義於 *src/lib.rs*</span>
 
-*src/lib.rs* 文件有如下层次结构：
+*src/lib.rs* 文件有如下層次結構：
 
 ```text
 communicator
@@ -139,13 +139,13 @@ communicator
      └── server
 ```
 
-如果这些模块有很多函数，而这些函数又很长，将难以在文件中寻找我们需要的代码。因为这些函数被嵌套进一个或多个模块中，同时函数中的代码也会开始变长。这就有充分的理由将`client`、`network` 和 `server`每一个模块从 *src/lib.rs* 抽出并放入他们自己的文件中。
+如果這些模塊有很多函數，而這些函數又很長，將難以在文件中尋找我們需要的代碼。因為這些函數被嵌套進一個或多個模塊中，同時函數中的代碼也會開始變長。這就有充分的理由將`client`、`network` 和 `server`每一個模塊從 *src/lib.rs* 抽出並放入他們自己的文件中。
 
-首先，将 `client` 模块的代码替换为只有 `client` 模块声明，这样 *src/lib.rs* 看起来应该像这样：
+首先，將 `client` 模塊的代碼替換為只有 `client` 模塊聲明，這樣 *src/lib.rs* 看起來應該像這樣：
 
 <span class="filename">文件名: src/lib.rs</span>
 
-```rust,ignore
+```rust
 mod client;
 
 mod network {
@@ -159,15 +159,15 @@ mod network {
 }
 ```
 
-这里我们仍然 **声明** 了 `client` 模块，不过将代码块替换为了分号，这告诉了 Rust 在 `client` 模块的作用域中寻找另一个定义代码的位置。换句话说，`mod client;` 行意味着：
+這裡我們仍然 **聲明** 了 `client` 模塊，不過將代碼塊替換為了分號，這告訴了 Rust 在 `client` 模塊的作用域中尋找另一個定義代碼的位置。換句話說，`mod client;` 行意味著：
 
-```rust,ignore
+```rust
 mod client {
     // contents of client.rs
 }
 ```
 
-那么现在需要创建对应模块名的外部文件。在 *src/* 目录创建一个 *client.rs* 文件，接着打开它并输入如下内容，它是上一步被去掉的 `client` 模块中的 `connect` 函数：
+那麼現在需要創建對應模塊名的外部文件。在 *src/* 目錄創建一個 *client.rs* 文件，接著打開它並輸入如下內容，它是上一步被去掉的 `client` 模塊中的 `connect` 函數：
 
 <span class="filename">Filename: src/client.rs</span>
 
@@ -176,11 +176,11 @@ fn connect() {
 }
 ```
 
-注意这个文件中并不需要一个 `mod` 声明；因为已经在 *src/lib.rs* 中已经使用 `mod` 声明了 `client` 模块。这个文件仅仅提供 `client` 模块的 **内容**。如果在这里加上一个 `mod client`，那么就等于给 `client` 模块增加了一个叫做 `client` 的子模块了！
+注意這個文件中並不需要一個 `mod` 聲明；因為已經在 *src/lib.rs* 中已經使用 `mod` 聲明了 `client` 模塊。這個文件僅僅提供 `client` 模塊的 **內容**。如果在這裡加上一個 `mod client`，那麼就等於給 `client` 模塊增加了一個叫做 `client` 的子模塊了！
 
-Rust 默认只知道 *src/lib.rs* 中的内容。如果想要对项目加入更多文件，我们需要在 *src/lib.rs* 中告诉 Rust 去寻找其他文件；这就是为什么 `mod client` 需要被定义在 *src/lib.rs* 而不能在 *src/client.rs* 的原因。
+Rust 默認只知道 *src/lib.rs* 中的內容。如果想要對項目加入更多文件，我們需要在 *src/lib.rs* 中告訴 Rust 去尋找其他文件；這就是為什麼 `mod client` 需要被定義在 *src/lib.rs* 而不能在 *src/client.rs* 的原因。
 
-现在，一切应该能成功编译，虽然会有一些警告。记住使用 `cargo build` 而不是 `cargo run` 因为这是一个库 crate 而不是二进制 crate：
+現在，一切應該能成功編譯，雖然會有一些警告。記住使用 `cargo build` 而不是 `cargo run` 因為這是一個庫 crate 而不是二進制 crate：
 
 ```text
 $ cargo build
@@ -205,19 +205,19 @@ warning: function is never used: `connect`, #[warn(dead_code)] on by default
   |         ^
 ```
 
-这些警告提醒我们有从未被使用的函数。目前不用担心这些警告；在本章后面的 “使用 `pub` 控制可见性” 部分会解决他们。好消息是，他们仅仅是警告；我们的项目能够被成功编译。
+這些警告提醒我們有從未被使用的函數。目前不用擔心這些警告；在本章後面的 「使用 `pub` 控制可見性」 部分會解決他們。好消息是，他們僅僅是警告；我們的項目能夠被成功編譯。
 
-下面使用相同的模式将 `network` 模块提取到自己的文件中。删除 *src/lib.rs* 中 `network` 模块的内容并在声明后加上一个分号，像这样：
+下面使用相同的模式將 `network` 模塊提取到自己的文件中。刪除 *src/lib.rs* 中 `network` 模塊的內容並在聲明後加上一個分號，像這樣：
 
 <span class="filename">Filename: src/lib.rs</span>
 
-```rust,ignore
+```rust
 mod client;
 
 mod network;
 ```
 
-接着新建 *src/network.rs* 文件并输入如下内容：
+接著新建 *src/network.rs* 文件並輸入如下內容：
 
 <span class="filename">Filename: src/network.rs</span>
 
@@ -231,20 +231,20 @@ mod server {
 }
 ```
 
-注意这个模块文件中我们也使用了一个 `mod` 声明；这是因为我们希望 `server` 成为 `network` 的一个子模块。
+注意這個模塊文件中我們也使用了一個 `mod` 聲明；這是因為我們希望 `server` 成為 `network` 的一個子模塊。
 
-现在再次运行 `cargo build`。成功！不过我们还需要再提取出另一个模块：`server`。因为这是一个子模块——也就是模块中的模块——目前的将模块提取到对应名字的文件中的策略就不管用了。如果我们仍这么尝试则会出现错误。对 *src/network.rs* 的第一个修改是用 `mod server;` 替换 `server` 模块的内容：
+現在再次運行 `cargo build`。成功！不過我們還需要再提取出另一個模塊：`server`。因為這是一個子模塊——也就是模塊中的模塊——目前的將模塊提取到對應名字的文件中的策略就不管用了。如果我們仍這麼嘗試則會出現錯誤。對 *src/network.rs* 的第一個修改是用 `mod server;` 替換 `server` 模塊的內容：
 
 <span class="filename">Filename: src/network.rs</span>
 
-```rust,ignore
+```rust
 fn connect() {
 }
 
 mod server;
 ```
 
-接着创建 *src/server.rs* 文件并输入需要提取的 `server` 模块的内容：
+接著創建 *src/server.rs* 文件並輸入需要提取的 `server` 模塊的內容：
 
 <span class="filename">Filename: src/server.rs</span>
 
@@ -253,7 +253,7 @@ fn connect() {
 }
 ```
 
-当尝试运行 `cargo build` 时，会出现如列表 7-4 中所示的错误：
+當嘗試運行 `cargo build` 時，會出現如列表 7-4 中所示的錯誤：
 
 ```text
 $ cargo build
@@ -276,24 +276,24 @@ note: ... or maybe `use` the module `server` instead of possibly redeclaring it
   |     ^^^^^^
 ```
 
-<span class="caption">列表 7-4：尝试将 `server` 子模块提取到 *src/server.rs* 时出现的错误</span>
+<span class="caption">列表 7-4：嘗試將 `server` 子模塊提取到 *src/server.rs* 時出現的錯誤</span>
 
-这个错误说明 “不能在这个位置新声明一个模块” 并指出 *src/network.rs* 中的 `mod server;` 这一行。看来 *src/network.rs* 与 *src/lib.rs* 在某些方面是不同的；继续阅读以理解这是为什么。
+這個錯誤說明 「不能在這個位置新聲明一個模塊」 並指出 *src/network.rs* 中的 `mod server;` 這一行。看來 *src/network.rs* 與 *src/lib.rs* 在某些方面是不同的；繼續閱讀以理解這是為什麼。
 
-列表 7-4 中间的 note 事实上是非常有帮助的，因为它指出了一些我们还未讲到的操作：
+列表 7-4 中間的 note 事實上是非常有幫助的，因為它指出了一些我們還未講到的操作：
 
 ```text
 note: maybe move this module `network` to its own directory via
 `network/mod.rs`
 ```
 
-我们可以按照记录所建议的去操作，而不是继续使用之前的与模块同名文件的模式：
+我們可以按照記錄所建議的去操作，而不是繼續使用之前的與模塊同名文件的模式：
 
-1. 新建一个叫做 *network* 的 **目录**，这是父模块的名字
-2. 将 *src/network.rs* 移动到新建的 *network* 目录中并重命名，现在它是 *src/network/mod.rs*
-3. 将子模块文件 *src/server.rs* 移动到 *network* 目录中
+1. 新建一個叫做 *network* 的 **目錄**，這是父模塊的名字
+2. 將 *src/network.rs* 移動到新建的 *network* 目錄中並重命名，現在它是 *src/network/mod.rs*
+3. 將子模塊文件 *src/server.rs* 移動到 *network* 目錄中
 
-如下是执行这些步骤的命令：
+如下是執行這些步驟的命令：
 
 ```text
 $ mkdir src/network
@@ -301,7 +301,7 @@ $ mv src/network.rs src/network/mod.rs
 $ mv src/server.rs src/network
 ```
 
-现在如果运行 `cargo build` 的话将顺利编译（虽然仍有警告）。现在模块的布局看起来仍然与列表 7-3 中所有代码都在 *src/lib.rs* 中时完全一样：
+現在如果運行 `cargo build` 的話將順利編譯（雖然仍有警告）。現在模塊的佈局看起來仍然與列表 7-3 中所有代碼都在 *src/lib.rs* 中時完全一樣：
 
 ```text
 communicator
@@ -310,7 +310,7 @@ communicator
      └── server
 ```
 
-对应的文件布局现在看起来像这样：
+對應的文件佈局現在看起來像這樣：
 
 ```text
 ├── src
@@ -321,7 +321,7 @@ communicator
 │       └── server.rs
 ```
 
-那么，当我们想要提取 `network::server` 模块时，为什么也必须将 *src/network.rs* 文件改名成 *src/network/mod.rs* 文件呢，还有为什么要将`network::server`的代码放入 *network* 目录的 *src/network/server.rs* 文件中，而不能将 `network::server` 模块提取到 *src/server.rs* 中呢？原因是如果 *server.rs* 文件在 *src* 目录中那么 Rust 就不能知道 `server` 应当是 `network` 的子模块。为了阐明这里 Rust 的行为，让我们考虑一下有着如下层级的另一个例子，它的所有定义都位于 *src/lib.rs* 中：
+那麼，當我們想要提取 `network::server` 模塊時，為什麼也必須將 *src/network.rs* 文件改名成 *src/network/mod.rs* 文件呢，還有為什麼要將`network::server`的代碼放入 *network* 目錄的 *src/network/server.rs* 文件中，而不能將 `network::server` 模塊提取到 *src/server.rs* 中呢？原因是如果 *server.rs* 文件在 *src* 目錄中那麼 Rust 就不能知道 `server` 應當是 `network` 的子模塊。為了闡明這裡 Rust 的行為，讓我們考慮一下有著如下層級的另一個例子，它的所有定義都位於 *src/lib.rs* 中：
 
 ```text
 communicator
@@ -330,18 +330,18 @@ communicator
      └── client
 ```
 
-在这个例子中，仍然有这三个模块，`client`、`network` 和 `network::client`。如果按照与上面最开始将模块提取到文件中相同的步骤来操作，对于 `client` 模块会创建 *src/client.rs*。对于 `network` 模块，会创建 *src/network.rs*。但是接下来不能将 `network::client` 模块提取到 *src/client.rs* 文件中，因为它已经存在了，对应顶层的 `client` 模块！如果将 `client` 和 `network::client` 的代码都放入 *src/client.rs* 文件，Rust 将无从可知这些代码是属于 `client` 还是 `network::client` 的。
+在這個例子中，仍然有這三個模塊，`client`、`network` 和 `network::client`。如果按照與上面最開始將模塊提取到文件中相同的步驟來操作，對於 `client` 模塊會創建 *src/client.rs*。對於 `network` 模塊，會創建 *src/network.rs*。但是接下來不能將 `network::client` 模塊提取到 *src/client.rs* 文件中，因為它已經存在了，對應頂層的 `client` 模塊！如果將 `client` 和 `network::client` 的代碼都放入 *src/client.rs* 文件，Rust 將無從可知這些代碼是屬於 `client` 還是 `network::client` 的。
 
-因此，一旦想要将 `network` 模块的子模块 `network::client` 提取到一个文件中，需要为 `network` 模块新建一个目录替代 *src/network.rs* 文件。接着 `network` 模块的代码将进入 *src/network/mod.rs* 文件，而子模块 `network::client` 将拥有其自己的文件 *src/network/client.rs*。现在顶层的 *src/client.rs* 中的代码毫无疑问的都属于 `client` 模块。
+因此，一旦想要將 `network` 模塊的子模塊 `network::client` 提取到一個文件中，需要為 `network` 模塊新建一個目錄替代 *src/network.rs* 文件。接著 `network` 模塊的代碼將進入 *src/network/mod.rs* 文件，而子模塊 `network::client` 將擁有其自己的文件 *src/network/client.rs*。現在頂層的 *src/client.rs* 中的代碼毫無疑問的都屬於 `client` 模塊。
 
-### 模块文件系统的规则
+### 模塊文件系統的規則
 
-与文件系统相关的模块规则总结如下：
+與文件系統相關的模塊規則總結如下：
 
-* 如果一个叫做 `foo` 的模块没有子模块，应该将 `foo` 的声明放入叫做 *foo.rs* 的文件中。
-* 如果一个叫做 `foo` 的模块有子模块，应该将 `foo` 的声明放入叫做 *foo/mod.rs* 的文件中。
+* 如果一個叫做 `foo` 的模塊沒有子模塊，應該將 `foo` 的聲明放入叫做 *foo.rs* 的文件中。
+* 如果一個叫做 `foo` 的模塊有子模塊，應該將 `foo` 的聲明放入叫做 *foo/mod.rs* 的文件中。
 
-这些规则适用于递归（嵌套），所以如果 `foo` 模块有一个子模块 `bar` 而 `bar` 没有子模块，则 *src* 目录中应该有如下文件：
+這些規則適用於遞歸（嵌套），所以如果 `foo` 模塊有一個子模塊 `bar` 而 `bar` 沒有子模塊，則 *src* 目錄中應該有如下文件：
 
 ```text
 ├── foo
@@ -349,6 +349,6 @@ communicator
 │   └── mod.rs (contains the declarations in `foo`, including `mod bar`)
 ```
 
-模块自身则应该使用 `mod` 关键字定义于父模块的文件中。
+模塊自身則應該使用 `mod` 關鍵字定義於父模塊的文件中。
 
-接下来，我们讨论一下 `pub` 关键字，并除掉那些警告！
+接下來，我們討論一下 `pub` 關鍵字，併除掉那些警告！

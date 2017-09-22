@@ -1,18 +1,18 @@
-## 引用循环和内存泄漏是安全的
+## 引用循環和內存洩漏是安全的
 
 > [ch15-06-reference-cycles.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch15-06-reference-cycles.md)
 > <br>
 > commit 9430a3d28a2121a938d704ce48b15d21062f880e
 
-我们讨论过 Rust 做出的一些保证，例如永远也不会遇到一个空值，而且数据竞争也会在编译时被阻止。Rust 的内存安全保证也使其更难以制造从不被清理的内存，这被称为**内存泄露**。然而 Rust 并不是**不可能**出现内存泄漏，避免内存泄露**并**不是 Rust 的保证之一。换句话说，内存泄露是安全的。
+我們討論過 Rust 做出的一些保證，例如永遠也不會遇到一個空值，而且數據競爭也會在編譯時被阻止。Rust 的內存安全保證也使其更難以製造從不被清理的內存，這被稱為**內存洩露**。然而 Rust 並不是**不可能**出現內存洩漏，避免內存洩露**並**不是 Rust 的保證之一。換句話說，內存洩露是安全的。
 
-在使用`Rc<T>`和`RefCell<T>`时，有可能创建循环引用，这时各个项相互引用并形成环。这是不好的因为每一项的引用计数将永远也到不了 0，其值也永远也不会被丢弃。让我们看看这是如何发生的以及如何避免它。
+在使用`Rc<T>`和`RefCell<T>`時，有可能創建循環引用，這時各個項相互引用並形成環。這是不好的因為每一項的引用計數將永遠也到不了 0，其值也永遠也不會被丟棄。讓我們看看這是如何發生的以及如何避免它。
 
-在列表 15-16 中，我们将使用列表 15-5 中`List`定义的另一个变体。我们将回到储存`i32`值作为`Cons`成员的第一个元素。现在`Cons`成员的第二个元素是`RefCell<Rc<List>>`：这时就不能修改`i32`值了，但是能够修改`Cons`成员指向的那个`List`。还需要增加一个`tail`方法来方便我们在拥有一个`Cons`成员时访问第二个项：
+在列表 15-16 中，我們將使用列表 15-5 中`List`定義的另一個變體。我們將回到儲存`i32`值作為`Cons`成員的第一個元素。現在`Cons`成員的第二個元素是`RefCell<Rc<List>>`：這時就不能修改`i32`值了，但是能夠修改`Cons`成員指向的那個`List`。還需要增加一個`tail`方法來方便我們在擁有一個`Cons`成員時訪問第二個項：
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore
+```rust
 #[derive(Debug)]
 enum List {
     Cons(i32, RefCell<Rc<List>>),
@@ -32,7 +32,7 @@ impl List {
 <span class="caption">Listing 15-16: A cons list definition that holds a
 `RefCell` so that we can modify what a `Cons` variant is referring to</span>
 
-接下来，在列表 15-17 中，我们将在变量`a`中创建一个`List`值，其内部是一个`5, Nil`的列表。接着在变量`b`创建一个值 10 和指向`a`中列表的`List`值。最后修改`a`指向`b`而不是`Nil`，这会创建一个循环：
+接下來，在列表 15-17 中，我們將在變量`a`中創建一個`List`值，其內部是一個`5, Nil`的列表。接著在變量`b`創建一個值 10 和指向`a`中列表的`List`值。最後修改`a`指向`b`而不是`Nil`，這會創建一個循環：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -85,28 +85,28 @@ fn main() {
 <span class="caption">Listing 15-17: Creating a reference cycle of two `List`
 values pointing to each other</span>
 
-使用`tail`方法来获取`a`中`RefCell`的引用，并将其放入变量`link`中。接着对`RefCell`使用`borrow_mut`方法将其中的值从存放`Nil`值的`Rc`改为`b`中的`Rc`。这创建了一个看起来像图 15-18 所示的引用循环：
+使用`tail`方法來獲取`a`中`RefCell`的引用，並將其放入變量`link`中。接著對`RefCell`使用`borrow_mut`方法將其中的值從存放`Nil`值的`Rc`改為`b`中的`Rc`。這創建了一個看起來像圖 15-18 所示的引用循環：
 
 <img alt="Reference cycle of lists" src="img/trpl15-04.svg" class="center" style="width: 50%;" />
 
 <span class="caption">Figure 15-18: A reference cycle of lists `a` and `b`
 pointing to each other</span>
 
-如果你注释掉最后的`println!`，Rust 会尝试打印出`a`指向`b`指向`a`这样的循环直到栈溢出。
+如果你註釋掉最後的`println!`，Rust 會嘗試打印出`a`指向`b`指向`a`這樣的循環直到棧溢出。
 
-观察最后一个`println!`之前的打印结果，就会发现在将`a`改变为指向`b`之后`a`和`b`的引用计数都是 2。在`main`的结尾，Rust 首先会尝试丢弃`b`，这会使`Rc`的引用计数减一，但是这个计数是 1 而不是 0，所以`Rc`在堆上的内存不会被丢弃。它只是会永远的停留在 1 上。这个特定例子中，程序立马就结束了，所以并不是一个问题，不过如果是一个更加复杂的程序，它在这个循环中分配了很多内存并占有很长时间，这就是个问题了。这个程序会使用多于它所需要的内存，并有可能压垮系统并造成没有内存可供使用。
+觀察最後一個`println!`之前的打印結果，就會發現在將`a`改變為指向`b`之後`a`和`b`的引用計數都是 2。在`main`的結尾，Rust 首先會嘗試丟棄`b`，這會使`Rc`的引用計數減一，但是這個計數是 1 而不是 0，所以`Rc`在堆上的內存不會被丟棄。它只是會永遠的停留在 1 上。這個特定例子中，程序立馬就結束了，所以並不是一個問題，不過如果是一個更加複雜的程序，它在這個循環中分配了很多內存並佔有很長時間，這就是個問題了。這個程序會使用多於它所需要的內存，並有可能壓垮系統並造成沒有內存可供使用。
 
-现在，如你所见，在 Rust 中创建引用循环是困难和繁琐的。但并不是不可能：避免引用循环这种形式的内存泄漏并不是 Rust 的保证之一。如果你有包含`Rc<T>`的`RefCell<T>`值或类似的嵌套结合了内部可变性和引用计数的类型，请务必小心确保你没有形成一个引用循环。在列表 15-14 的例子中，可能解决方式就是不要编写像这样可能造成引用循环的代码，因为我们希望`Cons`成员拥有他们指向的列表。
+現在，如你所見，在 Rust 中創建引用循環是困難和繁瑣的。但並不是不可能：避免引用循環這種形式的內存洩漏並不是 Rust 的保證之一。如果你有包含`Rc<T>`的`RefCell<T>`值或類似的嵌套結合了內部可變性和引用計數的類型，請務必小心確保你沒有形成一個引用循環。在列表 15-14 的例子中，可能解決方式就是不要編寫像這樣可能造成引用循環的代碼，因為我們希望`Cons`成員擁有他們指向的列表。
 
-举例来说，对于像图这样的数据结构，为了创建父节点指向子节点的边和以相反方向从子节点指向父节点的边，有时需要创建这样的引用循环。如果一个方向拥有所有权而另一个方向没有，对于模拟这种数据关系的一种不会创建引用循环和内存泄露的方式是使用`Weak<T>`。接下来让我们探索一下！
+舉例來說，對於像圖這樣的數據結構，為了創建父節點指向子節點的邊和以相反方向從子節點指向父節點的邊，有時需要創建這樣的引用循環。如果一個方向擁有所有權而另一個方向沒有，對於模擬這種數據關係的一種不會創建引用循環和內存洩露的方式是使用`Weak<T>`。接下來讓我們探索一下！
 
-### 避免引用循环：将`Rc<T>`变为`Weak<T>`
+### 避免引用循環：將`Rc<T>`變為`Weak<T>`
 
-Rust 标准库中提供了`Weak<T>`，一个用于存在引用循环但只有一个方向有所有权的智能指针。我们已经展示过如何克隆`Rc<T>`来增加引用的`strong_count`；`Weak<T>`是一种引用`Rc<T>`但不增加`strong_count`的方式：相反它增加`Rc`引用的`weak_count`。当`Rc`离开作用域，其内部值会在`strong_count`为 0 的时候被丢弃，即便`weak_count`不为 0 。为了能够从`Weak<T>`中获取值，首先需要使用`upgrade`方法将其升级为`Option<Rc<T>>`。升级`Weak<T>`的结果在`Rc`还未被丢弃时是`Some`，而在`Rc`被丢弃时是`None`。因为`upgrade`返回一个`Option`，我们知道 Rust 会确保`Some`和`None`的情况都被处理并不会尝试使用一个无效的指针。
+Rust 標準庫中提供了`Weak<T>`，一個用於存在引用循環但只有一個方向有所有權的智能指針。我們已經展示過如何克隆`Rc<T>`來增加引用的`strong_count`；`Weak<T>`是一種引用`Rc<T>`但不增加`strong_count`的方式：相反它增加`Rc`引用的`weak_count`。當`Rc`離開作用域，其內部值會在`strong_count`為 0 的時候被丟棄，即便`weak_count`不為 0 。為了能夠從`Weak<T>`中獲取值，首先需要使用`upgrade`方法將其升級為`Option<Rc<T>>`。升級`Weak<T>`的結果在`Rc`還未被丟棄時是`Some`，而在`Rc`被丟棄時是`None`。因為`upgrade`返回一個`Option`，我們知道 Rust 會確保`Some`和`None`的情況都被處理並不會嘗試使用一個無效的指針。
 
-不同于列表 15-17 中每个项只知道它的下一项，假如我们需要一个树，它的项知道它的子项**和**父项。
+不同於列表 15-17 中每個項只知道它的下一項，假如我們需要一個樹，它的項知道它的子項**和**父項。
 
-让我们从一个叫做`Node`的存放拥有所有权的`i32`值和其子`Node`值的引用的结构体开始：
+讓我們從一個叫做`Node`的存放擁有所有權的`i32`值和其子`Node`值的引用的結構體開始：
 
 ```rust
 use std::rc::Rc;
@@ -119,12 +119,12 @@ struct Node {
 }
 ```
 
-我们希望能够`Node`拥有其子节点，同时也希望变量可以拥有每个节点以便可以直接访问他们。这就是为什么`Vec`中的项是`Rc<Node>`值。我们也希望能够修改其他节点的子节点，这就是为什么`children`中`Vec`被放进了`RefCell`的原因。在列表 15-19 中创建了一个叫做`leaf`的带有值 3 并没有子节点的`Node`实例，和另一个带有值 5 和以`leaf`作为子节点的实例`branch`：
+我們希望能夠`Node`擁有其子節點，同時也希望變量可以擁有每個節點以便可以直接訪問他們。這就是為什麼`Vec`中的項是`Rc<Node>`值。我們也希望能夠修改其他節點的子節點，這就是為什麼`children`中`Vec`被放進了`RefCell`的原因。在列表 15-19 中創建了一個叫做`leaf`的帶有值 3 並沒有子節點的`Node`實例，和另一個帶有值 5 和以`leaf`作為子節點的實例`branch`：
 
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore
+```rust
 fn main() {
     let leaf = Rc::new(Node {
         value: 3,
@@ -142,11 +142,11 @@ fn main() {
 where `branch` has `leaf` as one of its children but `leaf` has no reference to
 `branch`</span>
 
-`leaf`中的`Node`现在有两个所有者：`leaf`和`branch`，因为我们克隆了`leaf`中的`Rc`并储存在了`branch`中。`branch`中的`Node`知道它与`leaf`相关联因为`branch`在`branch.children`中有`leaf`的引用。然而，`leaf`并不知道它与`branch`相关联，而我们希望`leaf`知道`branch`是其父节点。
+`leaf`中的`Node`現在有兩個所有者：`leaf`和`branch`，因為我們克隆了`leaf`中的`Rc`並儲存在了`branch`中。`branch`中的`Node`知道它與`leaf`相關聯因為`branch`在`branch.children`中有`leaf`的引用。然而，`leaf`並不知道它與`branch`相關聯，而我們希望`leaf`知道`branch`是其父節點。
 
-为了做到这一点，需要在`Node`结构体定义中增加一个`parent`字段，不过`parent`的类型应该是什么呢？我们知道它不能包含`Rc<T>`，因为这样`leaf.parent`将会指向`branch`而`branch.children`会包含`leaf`的指针，这会形成引用循环。`leaf`和`branch`不会被丢弃因为他们总是引用对方且引用计数永远也不会是零。
+為了做到這一點，需要在`Node`結構體定義中增加一個`parent`字段，不過`parent`的類型應該是什麼呢？我們知道它不能包含`Rc<T>`，因為這樣`leaf.parent`將會指向`branch`而`branch.children`會包含`leaf`的指針，這會形成引用循環。`leaf`和`branch`不會被丟棄因為他們總是引用對方且引用計數永遠也不會是零。
 
-所以在`parent`的类型中是使用`Weak<T>`而不是`Rc`，具体来说是`RefCell<Weak<Node>>`：
+所以在`parent`的類型中是使用`Weak<T>`而不是`Rc`，具體來說是`RefCell<Weak<Node>>`：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -162,11 +162,11 @@ struct Node {
 }
 ```
 
-这样，一个节点就能够在拥有父节点时指向它，而并不拥有其父节点。一个父节点哪怕在拥有指向它的子节点也会被丢弃，只要是其自身也没有一个父节点就行。现在将`main`函数更新为如列表 15-20 所示：
+這樣，一個節點就能夠在擁有父節點時指向它，而並不擁有其父節點。一個父節點哪怕在擁有指向它的子節點也會被丟棄，只要是其自身也沒有一個父節點就行。現在將`main`函數更新為如列表 15-20 所示：
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore
+```rust
 fn main() {
     let leaf = Rc::new(Node {
         value: 3,
@@ -191,15 +191,15 @@ fn main() {
 <span class="caption">Listing 15-20: A `leaf` node and a `branch` node where
 `leaf` has a `Weak` reference to its parent, `branch`</span>
 
-创建`leaf`节点是类似的；因为它作为开始并没有父节点，这里创建了一个新的`Weak`引用实例。当尝试通过`upgrade`方法获取`leaf`父节点的引用时，会得到一个`None`值，如第一个`println!`输出所示：
+創建`leaf`節點是類似的；因為它作為開始並沒有父節點，這裡創建了一個新的`Weak`引用實例。當嘗試通過`upgrade`方法獲取`leaf`父節點的引用時，會得到一個`None`值，如第一個`println!`輸出所示：
 
 ```=
 leaf parent = None
 ```
 
-类似的，`branch`也有一个新的`Weak`引用，因为也没有父节点。`leaf`仍然作为`branch`的一个子节点。一旦在`branch`中有了一个新的`Node`实例，就可以修改`leaf`将一个`branch`的`Weak`引用作为其父节点。这里使用了`leaf`中`parent`字段里的`RefCell`的`borrow_mut`方法，接着使用了`Rc::downgrade`函数来从`branch`中的`Rc`值创建了一个指向`branch`的`Weak`引用。
+類似的，`branch`也有一個新的`Weak`引用，因為也沒有父節點。`leaf`仍然作為`branch`的一個子節點。一旦在`branch`中有了一個新的`Node`實例，就可以修改`leaf`將一個`branch`的`Weak`引用作為其父節點。這裡使用了`leaf`中`parent`字段裡的`RefCell`的`borrow_mut`方法，接著使用了`Rc::downgrade`函數來從`branch`中的`Rc`值創建了一個指向`branch`的`Weak`引用。
 
-当再次打印出`leaf`的父节点时，这一次将会得到存放了`branch`的`Some`值。另外需要注意到这里并没有打印出类似列表 15-14 中那样最终导致栈溢出的循环：`Weak`引用仅仅打印出`(Weak)`：
+當再次打印出`leaf`的父節點時，這一次將會得到存放了`branch`的`Some`值。另外需要注意到這裡並沒有打印出類似列表 15-14 中那樣最終導致棧溢出的循環：`Weak`引用僅僅打印出`(Weak)`：
 
 ```
 leaf parent = Some(Node { value: 5, parent: RefCell { value: (Weak) },
@@ -207,11 +207,11 @@ children: RefCell { value: [Node { value: 3, parent: RefCell { value: (Weak) },
 children: RefCell { value: [] } }] } })
 ```
 
-没有无限的输出（或直到栈溢出）的事实表明这里并没有引用循环。另一种证明的方式时观察调用`Rc::strong_count`和`Rc::weak_count`的值。在列表 15-21 中，创建了一个新的内部作用域并将`branch`的创建放入其中，这样可以观察`branch`被创建时和离开作用域被丢弃时发生了什么：
+沒有無限的輸出（或直到棧溢出）的事實表明這裡並沒有引用循環。另一種證明的方式時觀察調用`Rc::strong_count`和`Rc::weak_count`的值。在列表 15-21 中，創建了一個新的內部作用域並將`branch`的創建放入其中，這樣可以觀察`branch`被創建時和離開作用域被丟棄時發生了什麼：
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore
+```rust
 fn main() {
     let leaf = Rc::new(Node {
         value: 3,
@@ -258,22 +258,22 @@ fn main() {
 <span class="caption">Listing 15-21: Creating `branch` in an inner scope and
 examining strong and weak reference counts of `leaf` and `branch`</span>
 
-创建`leaf`之后，强引用计数是 1 （用于`leaf`自身）而弱引用计数是 0。在内部作用域中，在创建`branch`和关联`leaf`和`branch`之后，`branch`的强引用计数为 1（用于`branch`自身）而弱引用计数为 1（因为`leaf.parent`通过一个`Weak<T>`指向`branch`）。`leaf`的强引用计数为 2，因为`branch`现在有一个`leaf`克隆的`Rc`储存在`branch.children`中。`leaf`的弱引用计数仍然为 0。
+創建`leaf`之後，強引用計數是 1 （用於`leaf`自身）而弱引用計數是 0。在內部作用域中，在創建`branch`和關聯`leaf`和`branch`之後，`branch`的強引用計數為 1（用於`branch`自身）而弱引用計數為 1（因為`leaf.parent`通過一個`Weak<T>`指向`branch`）。`leaf`的強引用計數為 2，因為`branch`現在有一個`leaf`克隆的`Rc`儲存在`branch.children`中。`leaf`的弱引用計數仍然為 0。
 
-当内部作用域结束，`branch`离开作用域，其强引用计数减少为 0，所以其`Node`被丢弃。来自`leaf.parent`的弱引用计数 1 与`Node`是否被丢弃无关，所以并没有产生内存泄露！
+當內部作用域結束，`branch`離開作用域，其強引用計數減少為 0，所以其`Node`被丟棄。來自`leaf.parent`的弱引用計數 1 與`Node`是否被丟棄無關，所以並沒有產生內存洩露！
 
-如果在内部作用域结束后尝试访问`leaf`的父节点，会像`leaf`拥有父节点之前一样得到`None`值。在程序的末尾，`leaf`的强引用计数为 1 而弱引用计数为 0，因为现在`leaf`又是唯一指向其自己的值了。
+如果在內部作用域結束後嘗試訪問`leaf`的父節點，會像`leaf`擁有父節點之前一樣得到`None`值。在程序的末尾，`leaf`的強引用計數為 1 而弱引用計數為 0，因為現在`leaf`又是唯一指向其自己的值了。
 
-所有这些管理计数和值是否应该被丢弃的逻辑都通过`Rc`和`Weak`和他们的`Drop` trait 实现来控制。通过在定义中指定从子节点到父节点的关系为一个`Weak<T>`引用，就能够拥有父节点和子节点之间的双向引用而不会造成引用循环和内存泄露。
+所有這些管理計數和值是否應該被丟棄的邏輯都通過`Rc`和`Weak`和他們的`Drop` trait 實現來控制。通過在定義中指定從子節點到父節點的關係為一個`Weak<T>`引用，就能夠擁有父節點和子節點之間的雙向引用而不會造成引用循環和內存洩露。
 
-## 总结
+## 總結
 
-现在我们学习了如何选择不同类型的智能指针来选择不同的保证并与 Rust 的常规引用向取舍。`Box<T>`有一个已知的大小并指向分配在堆上的数据。`Rc<T>`记录了堆上数据的引用数量这样就可以拥有多个所有者。`RefCell<T>`和其内部可变性使其可以用于需要不可变类型，但希望在运行时而不是编译时检查借用规则的场景。
+現在我們學習了如何選擇不同類型的智能指針來選擇不同的保證並與 Rust 的常規引用向取捨。`Box<T>`有一個已知的大小並指向分配在堆上的數據。`Rc<T>`記錄了堆上數據的引用數量這樣就可以擁有多個所有者。`RefCell<T>`和其內部可變性使其可以用於需要不可變類型，但希望在運行時而不是編譯時檢查借用規則的場景。
 
-我们还介绍了提供了很多智能指针功能的 trait `Deref`和`Drop`。同时探索了形成引用循环和造成内存泄漏的可能性，以及如何使用`Weak<T>`避免引用循环。
+我們還介紹了提供了很多智能指針功能的 trait `Deref`和`Drop`。同時探索了形成引用循環和造成內存洩漏的可能性，以及如何使用`Weak<T>`避免引用循環。
 
-如果本章内容引起了你的兴趣并希望现在就实现你自己的智能指针的话，请阅读 [The Nomicon] 来获取更多有用的信息。
+如果本章內容引起了你的興趣並希望現在就實現你自己的智能指針的話，請閱讀 [The Nomicon] 來獲取更多有用的信息。
 
 [The Nomicon]: https://doc.rust-lang.org/stable/nomicon/
 
-接下来，让我们谈谈 Rust 的并发。我们还会学习到一些新的对并发有帮助的智能指针。
+接下來，讓我們談談 Rust 的並發。我們還會學習到一些新的對並發有幫助的智能指針。

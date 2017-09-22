@@ -5,13 +5,13 @@
         "readme": "PREFACE.md"
     },
 
-    "title": "Rust 程序设计语言 简体中文版",
+    "title": "Rust 程序設計語言 正體中文版",
 
-    "description": "Rust 程序设计语言 简体中文版",
+    "description": "Rust 程序設計語言 正體中文版",
 
-    "author": "Steve Klabnik 和 Carol Nichols，以及来自 Rust 社区的贡献，KaiserY 译",
+    "author": "Steve Klabnik 和 Carol Nichols，以及來自 Rust 社區的貢獻，KaiserY 譯",
 
-    "language": "zh-hans",
+    "language": "zh-hant",
 
     "styles": {
         "pdf": "styles/pdf.css"

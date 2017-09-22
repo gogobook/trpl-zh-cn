@@ -1,14 +1,14 @@
-## 创建线程池并储存线程
+## 創建線程池並儲存線程
 
 > [ch20-04-storing-threads.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch20-04-storing-threads.md)
 > <br>
 > commit d06a6a181fd61704cbf7feb55bc61d518c6469f9
 
-之前的警告是因为在 `new` 和 `execute` 中没有对参数做任何操作。让我们用期望的实际行为实现他们。
+之前的警告是因為在 `new` 和 `execute` 中沒有對參數做任何操作。讓我們用期望的實際行為實現他們。
 
-### 验证池中的线程数
+### 驗證池中的線程數
 
-以考虑 `new` 作为开始。之前提到使用无符号类型作为 `size` 参数的类型，因为为负的线程数没有意义。然而，零个线程同样没有意义，不过零是一个完全有效的 `u32` 值。让我们在返回 `ThreadPool` 之前检查 `size`  是否大于零，并使用 `assert!` 宏在得到零时 panic，如列表 20-13 所示：
+以考慮 `new` 作為開始。之前提到使用無符號類型作為 `size` 參數的類型，因為為負的線程數沒有意義。然而，零個線程同樣沒有意義，不過零是一個完全有效的 `u32` 值。讓我們在返回 `ThreadPool` 之前檢查 `size`  是否大於零，並使用 `assert!` 巨集在得到零時 panic，如列表 20-13 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -32,21 +32,21 @@ impl ThreadPool {
 }
 ```
 
-<span class="caption">列表 20-13：实现 `ThreadPool::new` 在 `size` 为零时 panic</span>
+<span class="caption">列表 20-13：實現 `ThreadPool::new` 在 `size` 為零時 panic</span>
 
-趁着这个机会我们用文档注释为 `ThreadPool` 增加了一些文档。注意这里遵循了良好的文档实践并增加了一个部分提示函数会 panic 的情况，正如第十四章所讨论的。尝试运行 `cargo doc --open` 并点击 `ThreadPool` 结构体来查看生成的 `new` 的文档看起来如何！
+趁著這個機會我們用文檔註釋為 `ThreadPool` 增加了一些文檔。注意這裡遵循了良好的文檔實踐並增加了一個部分提示函數會 panic 的情況，正如第十四章所討論的。嘗試運行 `cargo doc --open` 並點擊 `ThreadPool` 結構體來查看生成的 `new` 的文檔看起來如何！
 
-相比像这里使用 `assert!` 宏，也可以让 `new` 像之前 I/O 项目中列表 12-9 中 `Config::new` 那样返回一个 `Result`，不过在这里我们选择创建一个没有任何线程的线程池应该是要给不可恢复的错误。如果你想做的更好，尝试编写一个采用如下签名的 `new` 版本来感受一下两者的区别：
+相比像這裡使用 `assert!` 巨集，也可以讓 `new` 像之前 I/O 項目中列表 12-9 中 `Config::new` 那樣返回一個 `Result`，不過在這裡我們選擇創建一個沒有任何線程的線程池應該是要給不可恢復的錯誤。如果你想做的更好，嘗試編寫一個採用如下籤名的 `new` 版本來感受一下兩者的區別：
 
 ```rust
 fn new(size: u32) -> Result<ThreadPool, PoolCreationError> {
 ```
 
-### 在线程池中储存线程
+### 在線程池中儲存線程
 
-现在有了一个有效的线程池线程数，就可以实际创建这些线程并在返回之前将他们储存在 `ThreadPool` 结构体中。
+現在有了一個有效的線程池線程數，就可以實際創建這些線程並在返回之前將他們儲存在 `ThreadPool` 結構體中。
 
-这引出了另一个问题：如何“储存”一个线程？让我们再看看 `thread::spawn` 的签名：
+這引出了另一個問題：如何「儲存」一個線程？讓我們再看看 `thread::spawn` 的簽名：
 
 ```rust
 pub fn spawn<F, T>(f: F) -> JoinHandle<T>
@@ -55,14 +55,14 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
         T: Send + 'static
 ```
 
-`spawn` 返回 `JoinHandle<T>`，其中 `T` 是闭包返回的类型。尝试使用 `JoinHandle` 来看看会发生什么。在我们的情况中，传递给线程池的闭包会处理连接并不返回任何值，所以 `T` 将会是单元类型 `()`。
+`spawn` 返回 `JoinHandle<T>`，其中 `T` 是閉包返回的類型。嘗試使用 `JoinHandle` 來看看會發生什麼。在我們的情況中，傳遞給線程池的閉包會處理連接並不返回任何值，所以 `T` 將會是單元類型 `()`。
 
-这还不能编译，不过考虑一下列表 20-14 所示的代码。我们改变了 `ThreadPool` 的定义来存放一个 `thread::JoinHandle<()>` 的 vector 实例，使用 `size` 容量来初始化，并设置一个 `for` 循环了来运行创建线程的代码，并返回包含这些线程的 `ThreadPool` 实例：
+這還不能編譯，不過考慮一下列表 20-14 所示的代碼。我們改變了 `ThreadPool` 的定義來存放一個 `thread::JoinHandle<()>` 的 vector 實例，使用 `size` 容量來初始化，並設置一個 `for` 循環了來運行創建線程的代碼，並返回包含這些線程的 `ThreadPool` 實例：
 
 
 <span class="filename">文件名: src/lib.rs</span>
 
-```rust,ignore
+```rust
 use std::thread;
 
 pub struct ThreadPool {
@@ -89,13 +89,13 @@ impl ThreadPool {
 }
 ```
 
-<span class="caption">列表 20-14：为 `ThreadPool` 创建一个 vector 来存放线程</span>
+<span class="caption">列表 20-14：為 `ThreadPool` 創建一個 vector 來存放線程</span>
 
-这里将 `std::thread` 引入库 crate 的作用域，因为使用了 `thread::JoinHandle` 作为 `ThreadPool` 中 vector 元素的类型。
+這裡將 `std::thread` 引入庫 crate 的作用域，因為使用了 `thread::JoinHandle` 作為 `ThreadPool` 中 vector 元素的類型。
 
-在得到了有效的数量之后，就可以新建一个存放 `size` 个元素的 vector。本书还未使用过 `with_capacity`；它与 `Vec::new` 做了同样的工作，不过有一个重要的区别：它为 vector 预先分配空间。因为已经知道了 vector 中需要 `size` 个元素，预先进行分配比仅仅 `Vec::new` 要稍微有效率一些，因为 `Vec::new` 随着插入元素而重新改变大小。因为一开始就用所需的确定大小来创建 vector，为其增减元素时不会改变底层 vector 的大小。
+在得到了有效的數量之後，就可以新建一個存放 `size` 個元素的 vector。本書還未使用過 `with_capacity`；它與 `Vec::new` 做了同樣的工作，不過有一個重要的區別：它為 vector 預先分配空間。因為已經知道了 vector 中需要 `size` 個元素，預先進行分配比僅僅 `Vec::new` 要稍微有效率一些，因為 `Vec::new` 隨著插入元素而重新改變大小。因為一開始就用所需的確定大小來創建 vector，為其增減元素時不會改變底層 vector 的大小。
 
-如果代码能够工作就应是如此效果，不过他们还不能工作！如果检查他们，会得到一个错误：
+如果代碼能夠工作就應是如此效果，不過他們還不能工作！如果檢查他們，會得到一個錯誤：
 
 ```
 $ cargo check
@@ -109,28 +109,28 @@ error[E0308]: mismatched types
 error: aborting due to previous error
 ```
 
-`size` 是 `u32`，不过 `Vec::with_capacity` 需要一个 `usize`。这里有两个选择：可以改变函数签名，或者可以将 `u32` 转换为 `usize`。如果你还记得定义 `new` 时，并没有仔细考虑有意义的数值类型，只是随便选了一个。现在来进行一些思考吧。考虑到 `size` 是 vector 的长度，`usize` 就很有道理了。甚至他们的名字都很类似！改变 `new` 的签名，这会使列表 20-14 的代码能够编译：
+`size` 是 `u32`，不過 `Vec::with_capacity` 需要一個 `usize`。這裡有兩個選擇：可以改變函數簽名，或者可以將 `u32` 轉換為 `usize`。如果你還記得定義 `new` 時，並沒有仔細考慮有意義的數值類型，只是隨便選了一個。現在來進行一些思考吧。考慮到 `size` 是 vector 的長度，`usize` 就很有道理了。甚至他們的名字都很類似！改變 `new` 的簽名，這會使列表 20-14 的代碼能夠編譯：
 
 ```rust
 fn new(size: usize) -> ThreadPool {
 ```
 
-如果再次运行 `cargo check`，会得到一些警告，不过应该能成功编译。
+如果再次運行 `cargo check`，會得到一些警告，不過應該能成功編譯。
 
-列表 20-14 的 `for` 循环中留下了一个关于创建线程的注释。如何实际创建线程呢？这是一个难题。这些线程应该做什么呢？这里并不知道他们需要做什么，因为 `execute` 方法获取闭包并传递给了线程池。
+列表 20-14 的 `for` 循環中留下了一個關於創建線程的註釋。如何實際創建線程呢？這是一個難題。這些線程應該做什麼呢？這裡並不知道他們需要做什麼，因為 `execute` 方法獲取閉包並傳遞給了線程池。
 
-让我们稍微重构一下：不再储存一个 `JoinHandle<()>` 实例的 vector，将创建一下新的结构体来代表 *worker* 的概念。worker 会接收 `execute` 方法，并会处理实际的闭包调用。另外储存固定 `size` 数量的还不知道将要执行什么闭包的 `Worker` 实例，也可以为每一个 worker 设置一个 `id`，这样就可以在日志和调试中区别线程池中的不同 worker。
+讓我們稍微重構一下：不再儲存一個 `JoinHandle<()>` 實例的 vector，將創建一下新的結構體來代表 *worker* 的概念。worker 會接收 `execute` 方法，並會處理實際的閉包調用。另外儲存固定 `size` 數量的還不知道將要執行什麼閉包的 `Worker` 實例，也可以為每一個 worker 設置一個 `id`，這樣就可以在日誌和調試中區別線程池中的不同 worker。
 
-让我们做出如下修改：
+讓我們做出如下修改：
 
-1. 定义 `Worker` 结构体存放 `id` 和 `JoinHandle<()>`
-2. 修改 `ThreadPool` 存放一个 `Worker` 实例的 vector
-3. 定义 `Worker::new` 函数，它获取一个 `id` 数字并返回一个带有 `id` 和用空闭包分配的线程的 `Worker` 实例，之后会修复这些
-4. 在 `ThreadPool::new` 中，使用 `for` 循环来计数生成 `id`，使用这个 `id` 新建 `Worker`，并储存进 vector 中
+1. 定義 `Worker` 結構體存放 `id` 和 `JoinHandle<()>`
+2. 修改 `ThreadPool` 存放一個 `Worker` 實例的 vector
+3. 定義 `Worker::new` 函數，它獲取一個 `id` 數字並返回一個帶有 `id` 和用空閉包分配的線程的 `Worker` 實例，之後會修復這些
+4. 在 `ThreadPool::new` 中，使用 `for` 循環來計數生成 `id`，使用這個 `id` 新建 `Worker`，並儲存進 vector 中
 
-如果你渴望挑战，在查看列表 20-15 中的代码之前尝试自己实现这些修改。
+如果你渴望挑戰，在查看列表 20-15 中的代碼之前嘗試自己實現這些修改。
 
-准备好了吗？列表 20-15 就是一个做出了这些修改的例子：
+準備好了嗎？列表 20-15 就是一個做出了這些修改的例子：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -176,10 +176,10 @@ impl Worker {
 }
 ```
 
-<span class="caption">列表 20-15：修改 `ThreadPool` 存放 `Worker` 实例而不是直接存放线程</span>
+<span class="caption">列表 20-15：修改 `ThreadPool` 存放 `Worker` 實例而不是直接存放線程</span>
 
-这里选择将 `ThreadPool` 中字段名从 `threads` 改为 `workers`，因为我们改变了存放内容为 `Worker` 而不是 `JoinHandle<()>`。使用 `for` 循环中的计数作为 `Worker::new` 的参数，并将每一个新建的 `Worker` 储存在叫做 `workers` 的 vector 中。
+這裡選擇將 `ThreadPool` 中字段名從 `threads` 改為 `workers`，因為我們改變了存放內容為 `Worker` 而不是 `JoinHandle<()>`。使用 `for` 循環中的計數作為 `Worker::new` 的參數，並將每一個新建的 `Worker` 儲存在叫做 `workers` 的 vector 中。
 
-`Worker` 结构体和其 `new` 函数是私有的，因为外部代码（比如 *src/bin/main.rs* 中的 server）并不需要 `ThreadPool` 中使用 `Worker` 结构体的实现细节。`Worker::new` 函数使用 `id` 参数并储存了使用一个空闭包创建的 `JoinHandle<()>`。
+`Worker` 結構體和其 `new` 函數是私有的，因為外部代碼（比如 *src/bin/main.rs* 中的 server）並不需要 `ThreadPool` 中使用 `Worker` 結構體的實現細節。`Worker::new` 函數使用 `id` 參數並儲存了使用一個空閉包創建的 `JoinHandle<()>`。
 
-这段代码能够编译并用指定给 `ThreadPool::new` 的参数创建储存了一系列的 `Worker` 实例，不过**仍然**没有处理 `execute` 中得到的闭包。让我们聊聊接下来怎么做。
+這段代碼能夠編譯並用指定給 `ThreadPool::new` 的參數創建儲存了一系列的 `Worker` 實例，不過**仍然**沒有處理 `execute` 中得到的閉包。讓我們聊聊接下來怎麼做。

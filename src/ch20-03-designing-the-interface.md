@@ -1,16 +1,16 @@
-## 设计线程池接口
+## 設計線程池接口
 
 > [ch20-03-designing-the-interface.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch20-03-designing-the-interface.md)
 > <br>
 > commit d06a6a181fd61704cbf7feb55bc61d518c6469f9
 
-让我们讨论一下线程池看起来怎样。库作者们经常会发现，当尝试设计一些代码时，首先编写客户端接口确实有助于指导代码设计。以期望的调用方式来构建 API 代码的结构，接着在这个结构之内实现功能，而不是先实现功能再设计公有 API。
+讓我們討論一下線程池看起來怎樣。庫作者們經常會發現，當嘗試設計一些代碼時，首先編寫客戶端接口確實有助於指導代碼設計。以期望的調用方式來構建 API 代碼的結構，接著在這個結構之內實現功能，而不是先實現功能再設計公有 API。
 
-类似于第十二章项目中使用的测试驱动开发。这里将要使用编译器驱动开发（Compiler Driven Development）。我们将编写调用所期望的函数的代码，接着依靠编译器告诉我们接下来需要修改什么。编译器错误信息会指导我们的实现。
+類似於第十二章項目中使用的測試驅動開發。這裡將要使用編譯器驅動開發（Compiler Driven Development）。我們將編寫調用所期望的函數的代碼，接著依靠編譯器告訴我們接下來需要修改什麼。編譯器錯誤信息會指導我們的實現。
 
-### 如果使用 `thread::spawn` 的代码结构
+### 如果使用 `thread::spawn` 的代碼結構
 
-首先，让我们探索一下为每一个连接都创建一个线程看起来如何。这并不是最终方案，因为正如之前讲到的它会潜在的分配无限的线程，不过这是一个开始。列表 20-11 展示了 `main` 的改变，它在 `for` 循环中为每一个流分配了一个新线程进行处理：
+首先，讓我們探索一下為每一個連接都創建一個線程看起來如何。這並不是最終方案，因為正如之前講到的它會潛在的分配無限的線程，不過這是一個開始。列表 20-11 展示了 `main` 的改變，它在 `for` 循環中為每一個流分配了一個新線程進行處理：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -34,13 +34,13 @@ fn main() {
 # fn handle_connection(mut stream: TcpStream) {}
 ```
 
-<span class="caption">列表 20-11：为每一个流新建一个线程</span>
+<span class="caption">列表 20-11：為每一個流新建一個線程</span>
 
-正如第十六章讲到的，`thread::spawn` 会创建一个新线程并运行闭包中的代码。如果运行这段代码并在两个浏览器标签页中加载 `/sleep` 和 `/`，确实会发现 `/` 请求并没有等待 `/sleep` 结束。不过正如之前提到的，这最终会使系统崩溃因为我们无限制的创建新线程。
+正如第十六章講到的，`thread::spawn` 會創建一個新線程並運行閉包中的代碼。如果運行這段代碼並在兩個瀏覽器標籤頁中加載 `/sleep` 和 `/`，確實會發現 `/` 請求並沒有等待 `/sleep` 結束。不過正如之前提到的，這最終會使系統崩潰因為我們無限制的創建新線程。
 
-### 为 `ThreadPool` 创建一个类似的接口
+### 為 `ThreadPool` 創建一個類似的接口
 
-我们期望线程池以类似且熟悉的方式工作，以便从线程切换到线程池并不会对运行于线程池中的代码做出较大的修改。列表 20-12 展示我们希望用来替换 `thread::spawn` 的 `ThreadPool` 结构体的假想接口：
+我們期望線程池以類似且熟悉的方式工作，以便從線程切換到線程池並不會對運行於線程池中的代碼做出較大的修改。列表 20-12 展示我們希望用來替換 `thread::spawn` 的 `ThreadPool` 結構體的假想接口：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -71,13 +71,13 @@ fn main() {
 # fn handle_connection(mut stream: TcpStream) {}
 ```
 
-<span class="caption">列表 20-12：如何使用我们将要实现的 `ThreadPool`</span>
+<span class="caption">列表 20-12：如何使用我們將要實現的 `ThreadPool`</span>
 
-这里使用 `ThreadPool::new` 来创建一个新的线程池，它有一个可配置的线程数的参数，在这里是四。这样在 `for` 循环中，`pool.execute` 将会以类似 `thread::spawn` 的方式工作。
+這裡使用 `ThreadPool::new` 來創建一個新的線程池，它有一個可配置的線程數的參數，在這裡是四。這樣在 `for` 循環中，`pool.execute` 將會以類似 `thread::spawn` 的方式工作。
 
-### 采用编译器驱动开发来驱动 API 的编译
+### 採用編譯器驅動開發來驅動 API 的編譯
 
-继续并对列表 20-12 中的 *src/main.rs* 做出修改，并利用编译器错误来驱动开发。下面是我们得到的第一个错误：
+繼續並對列表 20-12 中的 *src/main.rs* 做出修改，並利用編譯器錯誤來驅動開發。下面是我們得到的第一個錯誤：
 
 ```
 $ cargo check
@@ -92,9 +92,9 @@ error[E0433]: failed to resolve. Use of undeclared type or module `ThreadPool`
 error: aborting due to previous error
 ```
 
-好的，我们需要一个 `ThreadPool`。将 `hello` crate 从二进制 crate 转换为库 crate 来存放 `ThreadPool` 实现，因为线程池实现与我们的 web server 的特定工作相独立。一旦写完了线程池库，就可以在任何工作中使用这个功能，而不仅仅是处理网络请求。
+好的，我們需要一個 `ThreadPool`。將 `hello` crate 從二進制 crate 轉換為庫 crate 來存放 `ThreadPool` 實現，因為線程池實現與我們的 web server 的特定工作相獨立。一旦寫完了線程池庫，就可以在任何工作中使用這個功能，而不僅僅是處理網絡請求。
 
-创建 *src/lib.rs* 文件，它包含了目前可用的最简单的 `ThreadPool` 定义：
+創建 *src/lib.rs* 文件，它包含了目前可用的最簡單的 `ThreadPool` 定義：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -102,16 +102,16 @@ error: aborting due to previous error
 pub struct ThreadPool;
 ```
 
-接着创建一个新目录，*src/bin*，并将二进制 crate 根文件从 *src/main.rs* 移动到 *src/bin/main.rs*。这使得库 crate 成为 *hello* 目录的主要 crate；不过仍然可以使用 `cargo run` 运行 *src/bin/main.rs* 二进制文件。移动了 *main.rs* 文件之后，修改文件开头加入如下代码来引入库 crate 并将 `ThreadPool` 引入作用域：
+接著創建一個新目錄，*src/bin*，並將二進制 crate 根文件從 *src/main.rs* 移動到 *src/bin/main.rs*。這使得庫 crate 成為 *hello* 目錄的主要 crate；不過仍然可以使用 `cargo run` 運行 *src/bin/main.rs* 二進制文件。移動了 *main.rs* 文件之後，修改文件開頭加入如下代碼來引入庫 crate 並將 `ThreadPool` 引入作用域：
 
 <span class="filename">文件名: src/bin/main.rs</span>
 
-```rust,ignore
+```rust
 extern crate hello;
 use hello::ThreadPool;
 ```
 
-再次尝试运行来得到下一个需要解决的错误：
+再次嘗試運行來得到下一個需要解決的錯誤：
 
 ```
 $ cargo check
@@ -125,9 +125,9 @@ current scope
    |
 ```
 
-好的，下一步是为 `ThreadPool` 创建一个叫做 `new` 的关联函数。我们还知道 `new` 需要有一个参数可以接受 `4`，而且 `new` 应该返回 `ThreadPool` 实例。让我们实现拥有此特征的最小化 `new` 函数：
+好的，下一步是為 `ThreadPool` 創建一個叫做 `new` 的關聯函數。我們還知道 `new` 需要有一個參數可以接受 `4`，而且 `new` 應該返回 `ThreadPool` 實例。讓我們實現擁有此特徵的最小化 `new` 函數：
 
-<span class="filename">文件夹: src/lib.rs</span>
+<span class="filename">文件夾: src/lib.rs</span>
 
 ```rust
 pub struct ThreadPool;
@@ -139,9 +139,9 @@ impl ThreadPool {
 }
 ```
 
-这里的 `size` 参数是 `u32` 类型，因为我们知道为负的线程数没有意义。`u32` 是一个很好的默认值。一旦真正实现了 `new`，我们将考虑实现需要选择什么类型，目前我们仅仅处理编译器错误。
+這裡的 `size` 參數是 `u32` 類型，因為我們知道為負的線程數沒有意義。`u32` 是一個很好的默認值。一旦真正實現了 `new`，我們將考慮實現需要選擇什麼類型，目前我們僅僅處理編譯器錯誤。
 
-再次编译检查这段代码：
+再次編譯檢查這段代碼：
 
 ```
 $ cargo check
@@ -160,7 +160,7 @@ current scope
    |              ^^^^^^^
 ```
 
-好的，一个警告和一个错误。暂时先忽略警告，错误是因为并没有 `ThreadPool` 上的 `execute` 方法。让我们来定义一个，它应该能接受一个闭包。如果你还记得第十三章，闭包作为参数时可以使用三个不同的 trait：`Fn`、`FnMut` 和 `FnOnce`。那么应该用哪一种闭包呢？好吧，最终需要实现的类似于 `thread::spawn`；`thread::spawn` 的签名在其参数中使用了何种 bound 呢？查看文档会发现：
+好的，一個警告和一個錯誤。暫時先忽略警告，錯誤是因為並沒有 `ThreadPool` 上的 `execute` 方法。讓我們來定義一個，它應該能接受一個閉包。如果你還記得第十三章，閉包作為參數時可以使用三個不同的 trait：`Fn`、`FnMut` 和 `FnOnce`。那麼應該用哪一種閉包呢？好吧，最終需要實現的類似於 `thread::spawn`；`thread::spawn` 的簽名在其參數中使用了何種 bound 呢？查看文檔會發現：
 
 ```rust
 pub fn spawn<F, T>(f: F) -> JoinHandle<T>
@@ -169,9 +169,9 @@ pub fn spawn<F, T>(f: F) -> JoinHandle<T>
         T: Send + 'static
 ```
 
-`F` 是这里我们关心的参数；`T` 与返回值有关所以我们并不关心。考虑到 `spawn` 使用 `FnOnce` 作为 `F` 的 trait bound，这可能也是我们需要的，因为最终会将传递给 `execute` 的参数传给 `spawn`。因为处理请求的线程只会执行闭包一次，这也进一步确认了 `FnOnce` 是我们需要的 trait。
+`F` 是這裡我們關心的參數；`T` 與返回值有關所以我們並不關心。考慮到 `spawn` 使用 `FnOnce` 作為 `F` 的 trait bound，這可能也是我們需要的，因為最終會將傳遞給 `execute` 的參數傳給 `spawn`。因為處理請求的線程只會執行閉包一次，這也進一步確認了 `FnOnce` 是我們需要的 trait。
 
-`F` 还有 trait bound `Send` 和生命周期绑定 `'static`，这对我们的情况也是有意义的：需要 `Send` 来将闭包从一个线程转移到另一个线程，而 `'static` 是因为并不知道线程会执行多久。让我们编写一个使用这些 bound 的泛型参数 `F` 的 `ThreadPool` 的 `execute` 方法：
+`F` 還有 trait bound `Send` 和生命週期綁定 `'static`，這對我們的情況也是有意義的：需要 `Send` 來將閉包從一個線程轉移到另一個線程，而 `'static` 是因為並不知道線程會執行多久。讓我們編寫一個使用這些 bound 的泛型參數 `F` 的 `ThreadPool` 的 `execute` 方法：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -189,9 +189,9 @@ impl ThreadPool {
 }
 ```
 
-`FnOnce` trait 仍然需要之后的 `()`，因为这里的 `FnOnce` 代表一个没有参数也没有返回值的闭包。正如函数的定义，返回值类型可以从签名中省略，不过即便没有参数也需要括号。
+`FnOnce` trait 仍然需要之後的 `()`，因為這裡的 `FnOnce` 代表一個沒有參數也沒有返回值的閉包。正如函數的定義，返回值類型可以從簽名中省略，不過即便沒有參數也需要括號。
 
-因为我们仍在努力使接口能够编译，这里增加了 `execute` 方法的最小化实现，它没有做任何工作。再次进行检查：
+因為我們仍在努力使接口能夠編譯，這裡增加了 `execute` 方法的最小化實現，它沒有做任何工作。再次進行檢查：
 
 ```
 $ cargo check
@@ -209,6 +209,6 @@ warning: unused variable: `f`, #[warn(unused_variables)] on by default
   |                              ^
 ```
 
-现在就只有警告了！能够编译了！注意如果尝试 `cargo run` 运行程序并在浏览器中发起请求，仍会在浏览器中出现在本章开始时那样的错误。这个库实际上还没有调用传递给 `execute` 的闭包！
+現在就只有警告了！能夠編譯了！注意如果嘗試 `cargo run` 運行程序並在瀏覽器中發起請求，仍會在瀏覽器中出現在本章開始時那樣的錯誤。這個庫實際上還沒有調用傳遞給 `execute` 的閉包！
 
-> 一个你可能听说过的关于像 Haskell 和 Rust 这样有严格编译器的语言的说法是“如果代码能够编译，它就能工作”。这是一个提醒大家的好时机，这只是一个说法和一种有时存在的感觉，实际上并不是完全正确的。我们的项目可以编译，不过它绝对没有做任何工作！如果构建一个真实且功能完整的项目，则需花费大量的时间来开始编写单元测试来检查代码能否编译**并且**拥有期望的行为。
+> 一個你可能聽說過的關於像 Haskell 和 Rust 這樣有嚴格編譯器的語言的說法是「如果代碼能夠編譯，它就能工作」。這是一個提醒大家的好時機，這只是一個說法和一種有時存在的感覺，實際上並不是完全正確的。我們的項目可以編譯，不過它絕對沒有做任何工作！如果構建一個真實且功能完整的項目，則需花費大量的時間來開始編寫單元測試來檢查代碼能否編譯**並且**擁有期望的行為。

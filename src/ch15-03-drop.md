@@ -1,16 +1,16 @@
-## `Drop` Trait 运行清理代码
+## `Drop` Trait 運行清理代碼
 
 > [ch15-03-drop.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch15-03-drop.md)
 > <br>
 > commit 3f2a1bd8dbb19cc48b210fc4fb35c305c8d81b56
 
-对于智能指针模式来说另一个重要的 trait 是`Drop`。`Drop`运行我们在值要离开作用域时执行一些代码。智能指针在被丢弃时会执行一些重要的清理工作，比如释放内存或减少引用计数。更一般的来讲，数据类型可以管理多于内存的资源，比如文件或网络连接，而使用`Drop`在代码处理完他们之后释放这些资源。我们在智能指针上下文中讨论`Drop`是因为其功能几乎总是用于实现智能指针。
+對於智能指針模式來說另一個重要的 trait 是`Drop`。`Drop`運行我們在值要離開作用域時執行一些代碼。智能指針在被丟棄時會執行一些重要的清理工作，比如釋放內存或減少引用計數。更一般的來講，數據類型可以管理多於內存的資源，比如文件或網絡連接，而使用`Drop`在代碼處理完他們之後釋放這些資源。我們在智能指針上下文中討論`Drop`是因為其功能幾乎總是用於實現智能指針。
 
-在其他一些语言中，我们不得不记住在每次使用完智能指针实例后调用清理内存或资源的代码。如果忘记的话，运行代码的系统可能会因为负荷过重而崩溃。在 Rust 中，可以指定一些代码应该在值离开作用域时被执行，而编译器会自动插入这些代码。这意味着无需记住在所有处理完这些类型实例后调用清理代码，而仍然不会泄露资源！
+在其他一些語言中，我們不得不記住在每次使用完智能指針實例後調用清理內存或資源的代碼。如果忘記的話，運行代碼的系統可能會因為負荷過重而崩潰。在 Rust 中，可以指定一些代碼應該在值離開作用域時被執行，而編譯器會自動插入這些代碼。這意味著無需記住在所有處理完這些類型實例後調用清理代碼，而仍然不會洩露資源！
 
-指定在值离开作用域时应该执行的代码的方式是实现`Drop` trait。`Drop` trait 要求我们实现一个叫做`drop`的方法，它获取一个`self`的可变引用。
+指定在值離開作用域時應該執行的代碼的方式是實現`Drop` trait。`Drop` trait 要求我們實現一個叫做`drop`的方法，它獲取一個`self`的可變引用。
 
-列表 15-8 展示了并没有实际功能的结构体`CustomSmartPointer`，不过我们会在创建实例之后打印出`CustomSmartPointer created.`，而在实例离开作用域时打印出`Dropping CustomSmartPointer!`，这样就能看出每一段代码是何时被执行的。实际的项目中，我们应该在`drop`中清理任何智能指针运行所需要的资源，而不是这个例子中的`println!`语句：
+列表 15-8 展示了並沒有實際功能的結構體`CustomSmartPointer`，不過我們會在創建實例之後打印出`CustomSmartPointer created.`，而在實例離開作用域時打印出`Dropping CustomSmartPointer!`，這樣就能看出每一段代碼是何時被執行的。實際的項目中，我們應該在`drop`中清理任何智能指針運行所需要的資源，而不是這個例子中的`println!`語句：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -36,9 +36,9 @@ fn main() {
 implements the `Drop` trait, where we could put code that would clean up after
 the `CustomSmartPointer`.</span>
 
-`Drop` trait 位于 prelude 中，所以无需导入它。`drop`方法的实现调用了`println!`；这里是你需要放入实际关闭套接字代码的地方。在`main`函数中，我们创建一个`CustomSmartPointer`的新实例并打印出`CustomSmartPointer created.`以便在运行时知道代码运行到此处。在`main`的结尾，`CustomSmartPointer`的实例会离开作用域。注意我们没有显式调用`drop`方法：
+`Drop` trait 位於 prelude 中，所以無需導入它。`drop`方法的實現調用了`println!`；這裡是你需要放入實際關閉套接字代碼的地方。在`main`函數中，我們創建一個`CustomSmartPointer`的新實例並打印出`CustomSmartPointer created.`以便在運行時知道代碼運行到此處。在`main`的結尾，`CustomSmartPointer`的實例會離開作用域。注意我們沒有顯式調用`drop`方法：
 
-当运行这个程序，我们会看到：
+當運行這個程序，我們會看到：
 
 ```
 CustomSmartPointer created.
@@ -46,13 +46,13 @@ Wait for it...
 Dropping CustomSmartPointer!
 ```
 
-被打印到屏幕上，它展示了 Rust 在实例离开作用域时自动调用了`drop`。
+被打印到屏幕上，它展示了 Rust 在實例離開作用域時自動調用了`drop`。
 
-可以使用`std::mem::drop`函数来在值离开作用域之前丢弃它。这通常是不必要的；整个`Drop` trait 的要点在于它自动的帮我们处理清理工作。在第十六章讲到并发时我们会看到一个需要在离开作用域之前丢弃值的例子。现在知道这是可能的即可，`std::mem::drop`位于 prelude 中所以可以如列表 15-9 所示直接调用`drop`：
+可以使用`std::mem::drop`函數來在值離開作用域之前丟棄它。這通常是不必要的；整個`Drop` trait 的要點在於它自動的幫我們處理清理工作。在第十六章講到並發時我們會看到一個需要在離開作用域之前丟棄值的例子。現在知道這是可能的即可，`std::mem::drop`位於 prelude 中所以可以如列表 15-9 所示直接調用`drop`：
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore
+```rust
 fn main() {
     let c = CustomSmartPointer { data: String::from("some data") };
     println!("CustomSmartPointer created.");
@@ -64,7 +64,7 @@ fn main() {
 <span class="caption">Listing 15-9: Calling `std::mem::drop` to explicitly drop
 a value before it goes out of scope</span>
 
-运行这段代码会打印出如下内容，因为`Dropping CustomSmartPointer!`在`CustomSmartPointer created.`和`Wait for it...`之间被打印出来，表明析构代码被执行了：
+運行這段代碼會打印出如下內容，因為`Dropping CustomSmartPointer!`在`CustomSmartPointer created.`和`Wait for it...`之間被打印出來，表明析構代碼被執行了：
 
 ```
 CustomSmartPointer created.
@@ -72,7 +72,7 @@ Dropping CustomSmartPointer!
 Wait for it...
 ```
 
-注意不允许直接调用我们定义的`drop`方法：如果将列表 15-9 中的`drop(c)`替换为`c.drop()`，会得到一个编译错误表明`explicit destructor calls not allowed`。不允许直接调用`Drop::drop`的原因是 Rust 在值离开作用域时会自动插入`Drop::drop`，这样就会丢弃值两次。丢弃一个值两次可能会造成错误或破坏内存，所以 Rust 就不允许这么做。相应的可以调用`std::mem::drop`，它的定义是：
+注意不允許直接調用我們定義的`drop`方法：如果將列表 15-9 中的`drop(c)`替換為`c.drop()`，會得到一個編譯錯誤表明`explicit destructor calls not allowed`。不允許直接調用`Drop::drop`的原因是 Rust 在值離開作用域時會自動插入`Drop::drop`，這樣就會丟棄值兩次。丟棄一個值兩次可能會造成錯誤或破壞內存，所以 Rust 就不允許這麼做。相應的可以調用`std::mem::drop`，它的定義是：
 
 ```rust
 pub mod std {
@@ -82,8 +82,8 @@ pub mod std {
 }
 ```
 
-这个函数对于`T`是泛型的，所以可以传递任何值。这个函数的函数体并没有任何实际内容，所以它也不会利用其参数。这个空函数的作用在于`drop`获取其参数的所有权，它意味着在这个函数结尾`x`离开作用域时`x`会被丢弃。
+這個函數對於`T`是泛型的，所以可以傳遞任何值。這個函數的函數體並沒有任何實際內容，所以它也不會利用其參數。這個空函數的作用在於`drop`獲取其參數的所有權，它意味著在這個函數結尾`x`離開作用域時`x`會被丟棄。
 
-使用`Drop` trait 实现指定的代码在很多方面都使得清理值变得方便和安全：比如可以使用它来创建我们自己的内存分配器！通过`Drop` trait 和 Rust 所有权系统，就无需担心之后清理代码，因为 Rust 会自动考虑这些问题。如果代码在值仍被使用时就清理它会出现编译错误，因为所有权系统确保了引用总是有效的，这也就保证了`drop`只会在值不再被使用时被调用一次。
+使用`Drop` trait 實現指定的代碼在很多方面都使得清理值變得方便和安全：比如可以使用它來創建我們自己的內存分配器！通過`Drop` trait 和 Rust 所有權系統，就無需擔心之後清理代碼，因為 Rust 會自動考慮這些問題。如果代碼在值仍被使用時就清理它會出現編譯錯誤，因為所有權系統確保了引用總是有效的，這也就保證了`drop`只會在值不再被使用時被調用一次。
 
-现在我们学习了`Box<T>`和一些智能指针的特性，让我们聊聊一些其他标准库中定义的拥有各种实用功能的智能指针。
+現在我們學習了`Box<T>`和一些智能指針的特性，讓我們聊聊一些其他標準庫中定義的擁有各種實用功能的智能指針。

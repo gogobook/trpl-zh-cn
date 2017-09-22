@@ -1,12 +1,12 @@
-## 引用与借用
+## 引用與借用
 
 > [ch04-02-references-and-borrowing.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch04-02-references-and-borrowing.md)
 > <br>
 > commit d06a6a181fd61704cbf7feb55bc61d518c6469f9
 
-在上一部分的结尾处的使用元组的代码是有问题的，我们需要将 `String` 返回给调用者函数这样就可以在调用 `calculate_length` 后仍然可以使用 `String` 了，因为 `String` 先被移动到了 `calculate_length`。
+在上一部分的結尾處的使用元組的代碼是有問題的，我們需要將 `String` 返回給調用者函數這樣就可以在調用 `calculate_length` 後仍然可以使用 `String` 了，因為 `String` 先被移動到了 `calculate_length`。
 
-下面是如何定义并使用一个（新的）`calculate_length` 函数，它以一个对象的 **引用** 作为参数而不是获取值的所有权：
+下面是如何定義並使用一個（新的）`calculate_length` 函數，它以一個對象的 **引用** 作為參數而不是獲取值的所有權：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -24,15 +24,15 @@ fn calculate_length(s: &String) -> usize {
 }
 ```
 
-首先，注意变量声明和函数返回值中的所有元组代码都消失了。其次，注意我们传递 `&s1` 给 `calculate_length`，同时在函数定义中，我们获取 `&String` 而不是 `String`。
+首先，注意變量聲明和函數返回值中的所有元組代碼都消失了。其次，注意我們傳遞 `&s1` 給 `calculate_length`，同時在函數定義中，我們獲取 `&String` 而不是 `String`。
 
-这些 & 符号就是 **引用**，他们允许你使用值但不获取它的所有权。图 4-8 展示了一个图解。
+這些 & 符號就是 **引用**，他們允許你使用值但不獲取它的所有權。圖 4-8 展示了一個圖解。
 
 <img alt="&String s pointing at String s1" src="img/trpl04-05.svg" class="center" />
 
-<span class="caption">图 4-8：`&String s` 指向 `String s1`</span>
+<span class="caption">圖 4-8：`&String s` 指向 `String s1`</span>
 
-仔细看看这个函数调用：
+仔細看看這個函數調用：
 
 ```rust
 # fn calculate_length(s: &String) -> usize {
@@ -43,9 +43,9 @@ let s1 = String::from("hello");
 let len = calculate_length(&s1);
 ```
 
-`&s1` 语法允许我们创建一个 **参考** 值 `s1` 的引用，但是并不拥有它。因为并不拥有这个值，当引用离开作用域它指向的值也不会被丢弃。
+`&s1` 語法允許我們創建一個 **參考** 值 `s1` 的引用，但是並不擁有它。因為並不擁有這個值，當引用離開作用域它指向的值也不會被丟棄。
 
-同理，函数签名使用了 `&` 来表明参数 `s` 的类型是一个引用。让我们增加一些解释性的注解：
+同理，函數簽名使用了 `&` 來表明參數 `s` 的類型是一個引用。讓我們增加一些解釋性的註解：
 
 ```rust
 fn calculate_length(s: &String) -> usize { // s is a reference to a String
@@ -54,15 +54,15 @@ fn calculate_length(s: &String) -> usize { // s is a reference to a String
   // it refers to, nothing happens.
 ```
 
-变量 `s` 有效的作用域与函数参数的作用域一样，不过当引用离开作用域后并不丢弃它指向的数据因为我们没有所有权。函数使用引用而不是实际值作为参数意味着无需返回值来交还所有权，因为就不曾拥有所有权。
+變量 `s` 有效的作用域與函數參數的作用域一樣，不過當引用離開作用域後並不丟棄它指向的數據因為我們沒有所有權。函數使用引用而不是實際值作為參數意味著無需返回值來交還所有權，因為就不曾擁有所有權。
 
-我们将获取引用作为函数参数称为 **借用**（*borrowing*）。正如现实生活中，如果一个人拥有某样东西，你可以从他那里借来。当你使用完毕，必须还回去。
+我們將獲取引用作為函數參數稱為 **借用**（*borrowing*）。正如現實生活中，如果一個人擁有某樣東西，你可以從他那裡借來。當你使用完畢，必須還回去。
 
-如果我们尝试修改借用的变量呢？尝试列表 4-9 中的代码。剧透：这行不通！
+如果我們嘗試修改借用的變量呢？嘗試列表 4-9 中的代碼。劇透：這行不通！
 
 <span class="filename">文件名: src/main.rs</span>
 
-```rust,ignore
+```rust
 fn main() {
     let s = String::from("hello");
 
@@ -74,9 +74,9 @@ fn change(some_string: &String) {
 }
 ```
 
-<span class="caption">列表 4-9：尝试修改借用的值</span>
+<span class="caption">列表 4-9：嘗試修改借用的值</span>
 
-这里是错误：
+這裡是錯誤：
 
 ```text
 error: cannot borrow immutable borrowed content `*some_string` as mutable
@@ -86,11 +86,11 @@ error: cannot borrow immutable borrowed content `*some_string` as mutable
   |     ^^^^^^^^^^^
 ```
 
-正如变量默认是不可变的，引用也一样。不允许修改引用的值。
+正如變量默認是不可變的，引用也一樣。不允許修改引用的值。
 
-### 可变引用
+### 可變引用
 
-可以通过一个小调整来修复在列表 4-9 代码中的错误，在列表 4-9 的代码中：
+可以通過一個小調整來修復在列表 4-9 代碼中的錯誤，在列表 4-9 的代碼中：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -106,20 +106,20 @@ fn change(some_string: &mut String) {
 }
 ```
 
-首先，必须将 `s` 改为 `mut`。然后必须创建一个可变引用 `&mut s` 和接受一个可变引用 `some_string: &mut String`。
+首先，必須將 `s` 改為 `mut`。然後必須創建一個可變引用 `&mut s` 和接受一個可變引用 `some_string: &mut String`。
 
-不过可变引用有一个很大的限制：在特定作用域中的特定数据有且只有一个可变引用。这些代码会失败：
+不過可變引用有一個很大的限制：在特定作用域中的特定數據有且只有一個可變引用。這些代碼會失敗：
 
 <span class="filename">文件名: src/main.rs</span>
 
-```rust,ignore
+```rust
 let mut s = String::from("hello");
 
 let r1 = &mut s;
 let r2 = &mut s;
 ```
 
-错误如下：
+錯誤如下：
 
 ```text
 error[E0499]: cannot borrow `s` as mutable more than once at a time
@@ -133,17 +133,17 @@ error[E0499]: cannot borrow `s` as mutable more than once at a time
   | - first borrow ends here
 ```
 
-这个限制允许可变性，不过是以一种受限制的方式。新 Rustacean 们经常与此作斗争，因为大部分语言任何时候变量都是可变的。这个限制的好处是 Rust 可以在编译时就避免数据竞争。
+這個限制允許可變性，不過是以一種受限制的方式。新 Rustacean 們經常與此作鬥爭，因為大部分語言任何時候變量都是可變的。這個限制的好處是 Rust 可以在編譯時就避免數據競爭。
 
-**数据竞争**（*data race*）是一种特定类型的竞争状态，它可由这三个行为造成：
+**數據競爭**（*data race*）是一種特定類型的競爭狀態，它可由這三個行為造成：
 
-1. 两个或更多指针同时访问同一数据。
-2. 至少有一个这样的指针被用来写入数据。
-3. 不存在同步数据访问的机制。
+1. 兩個或更多指針同時訪問同一數據。
+2. 至少有一個這樣的指針被用來寫入數據。
+3. 不存在同步數據訪問的機制。
 
-数据竞争会导致未定义行为，难以在运行时追踪，并且难以诊断和修复；Rust 避免了这种情况的发生，因为它直接拒绝编译存在数据竞争的代码！
+數據競爭會導致未定義行為，難以在運行時追蹤，並且難以診斷和修復；Rust 避免了這種情況的發生，因為它直接拒絕編譯存在數據競爭的代碼！
 
-一如既往，可以使用大括号来创建一个新的作用域来允许拥有多个可变引用，只是不能 **同时** 拥有：
+一如既往，可以使用大括號來創建一個新的作用域來允許擁有多個可變引用，只是不能 **同時** 擁有：
 
 ```rust
 let mut s = String::from("hello");
@@ -156,9 +156,9 @@ let mut s = String::from("hello");
 let r2 = &mut s;
 ```
 
-当结合可变和不可变引用时有一个类似的规则存在。这些代码会导致一个错误：
+當結合可變和不可變引用時有一個類似的規則存在。這些代碼會導致一個錯誤：
 
-```rust,ignore
+```rust
 let mut s = String::from("hello");
 
 let r1 = &s; // no problem
@@ -166,7 +166,7 @@ let r2 = &s; // no problem
 let r3 = &mut s; // BIG PROBLEM
 ```
 
-错误如下：
+錯誤如下：
 
 ```text
 error[E0502]: cannot borrow `s` as mutable because it is also borrowed as
@@ -182,19 +182,19 @@ immutable
   | - immutable borrow ends here
 ```
 
-哇哦！我们 **也** 不能在拥有不可变引用的同时拥有可变引用。不可变引用的用户可不希望在它的眼皮底下值突然就被改变了！然而，多个不可变引用是没有问题的因为没有哪个只能读取数据的人有能力影响其他人读取到的数据。
+哇哦！我們 **也** 不能在擁有不可變引用的同時擁有可變引用。不可變引用的用戶可不希望在它的眼皮底下值突然就被改變了！然而，多個不可變引用是沒有問題的因為沒有哪個只能讀取數據的人有能力影響其他人讀取到的數據。
 
-即使这些错误有时是使人沮丧的。记住这是 Rust 编译器在提早指出一个潜在的 bug（在编译时而不是运行时）并明确告诉你问题在哪，而不是任由你去追踪为何有时数据并不是你想象中的那样。
+即使這些錯誤有時是使人沮喪的。記住這是 Rust 編譯器在提早指出一個潛在的 bug（在編譯時而不是運行時）並明確告訴你問題在哪，而不是任由你去追蹤為何有時數據並不是你想像中的那樣。
 
-### 悬垂引用
+### 懸垂引用
 
-在存在指针的语言中，容易通过释放内存时保留指向它的指针而错误地生成一个 **悬垂指针**（*dangling pointer*），所谓悬垂指针是其指向的内存可能已经被分配给其它持有者。相比之下，在 Rust 中编译器确保引用永远也不会变成悬垂状态：当我们拥有一些数据的引用，编译器确保数据不会在其引用之前离开作用域。
+在存在指針的語言中，容易通過釋放內存時保留指向它的指針而錯誤地生成一個 **懸垂指針**（*dangling pointer*），所謂懸垂指針是其指向的內存可能已經被分配給其它持有者。相比之下，在 Rust 中編譯器確保引用永遠也不會變成懸垂狀態：當我們擁有一些數據的引用，編譯器確保數據不會在其引用之前離開作用域。
 
-让我们尝试创建一个悬垂引用：
+讓我們嘗試創建一個懸垂引用：
 
 <span class="filename">Filename: src/main.rs</span>
 
-```rust,ignore
+```rust
 fn main() {
     let reference_to_nothing = dangle();
 }
@@ -206,7 +206,7 @@ fn dangle() -> &String {
 }
 ```
 
-这里是错误：
+這裡是錯誤：
 
 ```text
 error[E0106]: missing lifetime specifier
@@ -222,16 +222,16 @@ error[E0106]: missing lifetime specifier
 error: aborting due to previous error
 ```
 
-错误信息引用了一个我们还未涉及到的功能：**生命周期**（*lifetimes*）。第十章会详细介绍生命周期。不过，如果你不理会生命周期的部分，错误信息确实包含了为什么代码是有问题的关键：
+錯誤信息引用了一個我們還未涉及到的功能：**生命週期**（*lifetimes*）。第十章會詳細介紹生命週期。不過，如果你不理會生命週期的部分，錯誤信息確實包含了為什麼代碼是有問題的關鍵：
 
 ```text
 this function's return type contains a borrowed value, but there is no value
 for it to be borrowed from.
 ```
 
-让我们仔细看看我们的 `dangle` 代码的每一步到底放生了什么：
+讓我們仔細看看我們的 `dangle` 代碼的每一步到底放生了什麼：
 
-```rust,ignore
+```rust
 fn dangle() -> &String { // dangle returns a reference to a String
 
     let s = String::from("hello"); // s is a new String
@@ -241,9 +241,9 @@ fn dangle() -> &String { // dangle returns a reference to a String
   // Danger!
 ```
 
-因为 `s` 是在 `dangle` 创建的，当 `dangle` 的代码执行完毕后，`s` 将被释放。不过我们尝试返回一个它的引用。这意味着这个引用会指向一个无效的 `String`！这可不对。Rust 不会允许我们这么做的。
+因為 `s` 是在 `dangle` 創建的，當 `dangle` 的代碼執行完畢後，`s` 將被釋放。不過我們嘗試返回一個它的引用。這意味著這個引用會指向一個無效的 `String`！這可不對。Rust 不會允許我們這麼做的。
 
-这里的解决方法是直接返回 `String`：
+這裡的解決方法是直接返回 `String`：
 
 ```rust
 fn no_dangle() -> String {
@@ -253,15 +253,15 @@ fn no_dangle() -> String {
 }
 ```
 
-这样就可以没有任何错误的运行了。所有权被移动出去，所以没有值被释放掉。
+這樣就可以沒有任何錯誤的運行了。所有權被移動出去，所以沒有值被釋放掉。
 
-### 引用的规则
+### 引用的規則
 
-简要的概括一下对引用的讨论：
+簡要的概括一下對引用的討論：
 
-1. 在任意给定时间，**只能** 拥有如下中的一个：
-  * 一个可变引用。
-  * 任意数量的不可变引用。
-2. 引用必须总是有效的。
+1. 在任意給定時間，**只能** 擁有如下中的一個：
+  * 一個可變引用。
+  * 任意數量的不可變引用。
+2. 引用必須總是有效的。
 
-接下来，我们来看看一种不同类型的引用：slice。
+接下來，我們來看看一種不同類型的引用：slice。

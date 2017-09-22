@@ -1,29 +1,29 @@
-## 为使用不同类型的值而设计的 trait 对象
+## 為使用不同類型的值而設計的 trait 對象
 
 > [ch17-02-trait-objects.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch17-02-trait-objects.md)
 > <br>
 > commit 67876e3ef5323ce9d394f3ea6b08cb3d173d9ba9
 
- 在第八章中，我们谈到了 vector 只能存储同种类型元素的局限。在列表 8-1 中有一个例子，其中定义了一个拥有分别存放整型、浮点型和文本型成员的枚举类型 `SpreadsheetCell`，使用这个枚举的 vector 可以在每一个单元格（cell）中储存不同类型的数据，并使得 vector 整体仍然代表一行（row）单元格。这当编译代码时就知道希望可以交替使用的类型为固定集合的情况下是可行的。
+ 在第八章中，我們談到了 vector 只能存儲同種類型元素的侷限。在列表 8-1 中有一個例子，其中定義了一個擁有分別存放整型、浮點型和文本型成員的枚舉類型 `SpreadsheetCell`，使用這個枚舉的 vector 可以在每一個單元格（cell）中儲存不同類型的數據，並使得 vector 整體仍然代表一行（row）單元格。這當編譯代碼時就知道希望可以交替使用的類型為固定集合的情況下是可行的。
 
 <!-- The code example I want to reference did not have a listing number; it's
 the one with SpreadsheetCell. I will go back and add Listing 8-1 next time I
 get Chapter 8 for editing. /Carol -->
 
-有时，我们希望使用的类型的集合对于使用库的程序员来说是可扩展的。例如，很多图形用户接口（GUI）工具有一个项目列表的概念，它通过遍历列表并调用每一个项目的 `draw` 方法来将其绘制到屏幕上。我们将要创建一个叫做 `rust_gui` 的库 crate，它含一个 GUI 库的结构。这个 GUI 库包含一些可供开发者使用的类型，比如 `Button` 或 `TextField`。使用 `rust_gui` 的程序员会想要创建更多可以绘制在屏幕上的类型：其中一些可能会增加一个 `Image`，而另一些可能会增加一个 `SelectBox`。本章节并不准备实现一个功能完善的 GUI 库，不过会展示其中各个部分是如何结合在一起的。
+有時，我們希望使用的類型的集合對於使用庫的程序員來說是可擴展的。例如，很多圖形用戶接口（GUI）工具有一個項目列表的概念，它通過遍歷列表並調用每一個項目的 `draw` 方法來將其繪製到屏幕上。我們將要創建一個叫做 `rust_gui` 的庫 crate，它含一個 GUI 庫的結構。這個 GUI 庫包含一些可供開發者使用的類型，比如 `Button` 或 `TextField`。使用 `rust_gui` 的程序員會想要創建更多可以繪製在屏幕上的類型：其中一些可能會增加一個 `Image`，而另一些可能會增加一個 `SelectBox`。本章節並不準備實現一個功能完善的 GUI 庫，不過會展示其中各個部分是如何結合在一起的。
 
-编写 `rust_gui` 库时，我们并不知道其他程序员想要创建的全部类型，所以无法定义一个 `enum` 来包含所有这些类型。我们所要做的是使 `rust_gui` 能够记录一系列不同类型的值，并能够对其中每一个值调用 `draw` 方法。 GUI 库不需要知道当调用 `draw` 方法时具体会发生什么，只需提供这些值可供调用的方法即可。
+編寫 `rust_gui` 庫時，我們並不知道其他程序員想要創建的全部類型，所以無法定義一個 `enum` 來包含所有這些類型。我們所要做的是使 `rust_gui` 能夠記錄一系列不同類型的值，並能夠對其中每一個值調用 `draw` 方法。 GUI 庫不需要知道當調用 `draw` 方法時具體會發生什麼，只需提供這些值可供調用的方法即可。
 
-在拥有继承的语言中，我们可能定义一个名为 `Component` 的类，该类上有一个 `draw` 方法。其他的类比如 `Button`、`Image` 和 `SelectBox` 会从 `Component` 派生并因此继承 `draw` 方法。它们各自都可以覆盖 `draw` 方法来定义自己的行为，但是框架会把所有这些类型当作是 `Component` 的实例，并在其上调用 `draw`。
+在擁有繼承的語言中，我們可能定義一個名為 `Component` 的類，該類上有一個 `draw` 方法。其他的類比如 `Button`、`Image` 和 `SelectBox` 會從 `Component` 派生並因此繼承 `draw` 方法。它們各自都可以覆蓋 `draw` 方法來定義自己的行為，但是框架會把所有這些類型當作是 `Component` 的實例，並在其上調用 `draw`。
 
-### 定义通用行为的 trait
+### 定義通用行為的 trait
 
-不过，在 Rust 中，我们可以定义一个 `Draw` trait，包含名为 `draw` 的方法。接着可以定义一个存放**trait 对象**（*trait
-object*）的 vector，trait 对象是一个位于某些指针，比如 `&` 引用或 `Box<T>` 智能指针，之后的 trait。第十九章会讲到为何 trait 对象必须位于指针之后的原因。
+不過，在 Rust 中，我們可以定義一個 `Draw` trait，包含名為 `draw` 的方法。接著可以定義一個存放**trait 對象**（*trait
+object*）的 vector，trait 對象是一個位於某些指針，比如 `&` 引用或 `Box<T>` 智能指針，之後的 trait。第十九章會講到為何 trait 對象必須位於指針之後的原因。
 
-之前提到过，我们并不将结构体与枚举称之为“对象”，以便与其他语言中的对象相区别。结构体与枚举和 `impl` 块中的行为是分开的，不同于其他语言中将数据和行为组合进一个称为对象的概念中。trait 对象将由指向具体对象的指针构成的数据和定义于 trait 中方法的行为结合在一起，从这种意义上说它**则**更类似其他语言中的对象。不过 trait 对象与其他语言中的对象是不同的，因为不能向 trait 对象增加数据。trait 对象并不像其他语言中的对象那么通用：他们（trait 对象）的作用是允许对通用行为的抽象。
+之前提到過，我們並不將結構體與枚舉稱之為「對象」，以便與其他語言中的對象相區別。結構體與枚舉和 `impl` 塊中的行為是分開的，不同於其他語言中將數據和行為組合進一個稱為對象的概念中。trait 對象將由指向具體對象的指針構成的數據和定義於 trait 中方法的行為結合在一起，從這種意義上說它**則**更類似其他語言中的對象。不過 trait 對象與其他語言中的對象是不同的，因為不能向 trait 對象增加數據。trait 對象並不像其他語言中的對象那麼通用：他們（trait 對象）的作用是允許對通用行為的抽象。
 
-trait 对象定义了在给定情况下所需的行为。接着就可以在要使用具体类型或泛型的地方使用 trait 来作为 trait 对象。Rust 的类型系统会确保任何我们替换为 trait 对象的值都会实现了 trait 的方法。这样就无需在编译时就知道所有可能的类型，就能够用同样的方法处理所有的实例。列表 17-3 展示了如何定义一个带有 `draw` 方法的 trait `Draw`：
+trait 對象定義了在給定情況下所需的行為。接著就可以在要使用具體類型或泛型的地方使用 trait 來作為 trait 對象。Rust 的類型系統會確保任何我們替換為 trait 對象的值都會實現了 trait 的方法。這樣就無需在編譯時就知道所有可能的類型，就能夠用同樣的方法處理所有的實例。列表 17-3 展示了如何定義一個帶有 `draw` 方法的 trait `Draw`：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -33,13 +33,13 @@ pub trait Draw {
 }
 ```
 
-<span class="caption">列表 17-3:`Draw` trait 的定义</span>
+<span class="caption">列表 17-3:`Draw` trait 的定義</span>
 
 <!-- NEXT PARAGRAPH WRAPPED WEIRD INTENTIONALLY SEE #199 -->
 
 
 
-因为第十章已经讨论过如何定义 trait，这看起来应该比较眼熟。接下来就是新内容了：列表 17-4 有一个名为 `Screen` 的结构体定义，它存放了一个叫做 `components` 的 `Box<Draw>` 类型的 vector 。`Box<Draw>` 是一个 trait 对象：它是 `Box` 中任何实现了 `Draw` trait 的类型的替身。
+因為第十章已經討論過如何定義 trait，這看起來應該比較眼熟。接下來就是新內容了：列表 17-4 有一個名為 `Screen` 的結構體定義，它存放了一個叫做 `components` 的 `Box<Draw>` 類型的 vector 。`Box<Draw>` 是一個 trait 對象：它是 `Box` 中任何實現了 `Draw` trait 的類型的替身。
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -53,9 +53,9 @@ pub struct Screen {
 }
 ```
 
-<span class="caption">列表 17-4: 一个 `Screen` 结构体的定义，它带有一个字段`components`，其包含实现了 `Draw` trait 的 trait 对象的 vector</span>
+<span class="caption">列表 17-4: 一個 `Screen` 結構體的定義，它帶有一個字段`components`，其包含實現了 `Draw` trait 的 trait 對象的 vector</span>
 
-在 `Screen` 结构体上，我们将定义一个 `run` 方法，该方法会对其 `components` 上的每一个元素调用 `draw` 方法，如列表 17-5 所示：
+在 `Screen` 結構體上，我們將定義一個 `run` 方法，該方法會對其 `components` 上的每一個元素調用 `draw` 方法，如列表 17-5 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -77,9 +77,9 @@ impl Screen {
 }
 ```
 
-<span class="caption">列表 17-5:在 `Screen` 上实现一个 `run` 方法，该方法在每个 component 上调用 `draw` 方法</span>
+<span class="caption">列表 17-5:在 `Screen` 上實現一個 `run` 方法，該方法在每個 component 上調用 `draw` 方法</span>
 
-这与定义使用了带有 trait bound 的泛型类型参数的结构体不同。泛型类型参数一次只能替代一个具体的类型，而 trait 对象则允许在运行时替代多种具体类型。例如，可以像列表 17-6 那样定义使用泛型和 trait bound 的结构体 `Screen`：
+這與定義使用了帶有 trait bound 的泛型類型參數的結構體不同。泛型類型參數一次只能替代一個具體的類型，而 trait 對象則允許在運行時替代多種具體類型。例如，可以像列表 17-6 那樣定義使用泛型和 trait bound 的結構體 `Screen`：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -102,15 +102,15 @@ impl<T> Screen<T>
 }
 ```
 
-<span class="caption">列表 17-6: 一种 `Screen` 结构体的替代实现，它的 `run` 方法使用泛型和 trait bound</span>
+<span class="caption">列表 17-6: 一種 `Screen` 結構體的替代實現，它的 `run` 方法使用泛型和 trait bound</span>
 
-这只允许我们拥有一个包含全是 `Button` 类型或者全是 `TextField` 类型的 component 列表的 `Screen` 实例。如果只拥有相同类型的集合，那么使用泛型和 trait bound 是更好的，因为在编译时使用具体类型其定义是单态（monomorphized）的。
+這只允許我們擁有一個包含全是 `Button` 類型或者全是 `TextField` 類型的 component 列表的 `Screen` 實例。如果只擁有相同類型的集合，那麼使用泛型和 trait bound 是更好的，因為在編譯時使用具體類型其定義是單態（monomorphized）的。
 
-相反对于存放了 `Vec<Box<Draw>>` trait 对象的 component 列表的 `Screen` 定义，一个 `Screen` 实例可以存放一个既可以包含 `Box<Button>`，也可以包含 `Box<TextField>` 的 `Vec`。让我们看看它是如何工作的，接着会讲到其运行时性能影响。
+相反對於存放了 `Vec<Box<Draw>>` trait 對象的 component 列表的 `Screen` 定義，一個 `Screen` 實例可以存放一個既可以包含 `Box<Button>`，也可以包含 `Box<TextField>` 的 `Vec`。讓我們看看它是如何工作的，接著會講到其運行時性能影響。
 
-### 来自我们或者库使用者的 trait 实现
+### 來自我們或者庫使用者的 trait 實現
 
-现在来增加一些实现了 `Draw` trait 的类型。我们将提供 `Button` 类型，再一次重申，真正实现 GUI 库超出了本书的范畴，所以 `draw` 方法体中不会有任何有意义的实现。为了想象一下这个实现看起来像什么，一个 `Button` 结构体可能会拥有 `width`、`height`和`label`字段，如列表 17-7 所示：
+現在來增加一些實現了 `Draw` trait 的類型。我們將提供 `Button` 類型，再一次重申，真正實現 GUI 庫超出了本書的範疇，所以 `draw` 方法體中不會有任何有意義的實現。為了想像一下這個實現看起來像什麼，一個 `Button` 結構體可能會擁有 `width`、`height`和`label`字段，如列表 17-7 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -132,11 +132,11 @@ impl Draw for Button {
 }
 ```
 
-<span class="caption">列表 17-7: 一个实现了`Draw` trait 的 `Button` 结构体</span>
+<span class="caption">列表 17-7: 一個實現了`Draw` trait 的 `Button` 結構體</span>
 
-在 `Button` 上的 `width`、`height` 和 `label` 字段会和其他组件不同，比如 `TextField` 可能有 `width`、`height`、`label` 以及 `placeholder` 字段。每一个我们希望能在屏幕上绘制的类型都会使用不同的代码来实现 `Draw` trait 的 `draw` 方法，来定义如何绘制像这里的 `Button` 类型（并不包含任何实际的 GUI 代码，这超出了本章的范畴）。除了实现 `Draw` trait 之外，`Button` 还可能有另一个包含按钮点击如何响应的方法的 `impl` 块。这类方法并不适用于像 `TextField` 这样的类型。
+在 `Button` 上的 `width`、`height` 和 `label` 字段會和其他組件不同，比如 `TextField` 可能有 `width`、`height`、`label` 以及 `placeholder` 字段。每一個我們希望能在屏幕上繪製的類型都會使用不同的代碼來實現 `Draw` trait 的 `draw` 方法，來定義如何繪製像這裡的 `Button` 類型（並不包含任何實際的 GUI 代碼，這超出了本章的範疇）。除了實現 `Draw` trait 之外，`Button` 還可能有另一個包含按鈕點擊如何響應的方法的 `impl` 塊。這類方法並不適用於像 `TextField` 這樣的類型。
 
-一些库的使用者决定实现一个包含 `width`、`height`和`options` 字段的结构体 `SelectBox`。并也为其实现了 `Draw` trait，如列表 17-8 所示：
+一些庫的使用者決定實現一個包含 `width`、`height`和`options` 字段的結構體 `SelectBox`。並也為其實現了 `Draw` trait，如列表 17-8 所示：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -157,9 +157,9 @@ impl Draw for SelectBox {
 }
 ```
 
-<span class="caption">列表 17-8: 在另一个使用 `rust_gui` 的 crate 中，在 `SelectBox` 结构体上实现 `Draw` trait</span>
+<span class="caption">列表 17-8: 在另一個使用 `rust_gui` 的 crate 中，在 `SelectBox` 結構體上實現 `Draw` trait</span>
 
-库使用者现在可以在他们的 `main` 函数中创建一个 `Screen` 实例，并通过将 `SelectBox` 和 `Button` 放入 `Box<T>` 转变为 trait 对象来将它们放入屏幕实例。接着可以调用 `Screen` 的 `run` 方法，它会调用每个组件的 `draw` 方法。列表 17-9 展示了这个实现：
+庫使用者現在可以在他們的 `main` 函數中創建一個 `Screen` 實例，並通過將 `SelectBox` 和 `Button` 放入 `Box<T>` 轉變為 trait 對象來將它們放入屏幕實例。接著可以調用 `Screen` 的 `run` 方法，它會調用每個組件的 `draw` 方法。列表 17-9 展示了這個實現：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -190,15 +190,15 @@ fn main() {
 }
 ```
 
-<span class="caption">列表 17-9: 使用 trait 对象来存储实现了相同 trait 的不同类型的值</span>
+<span class="caption">列表 17-9: 使用 trait 對象來存儲實現了相同 trait 的不同類型的值</span>
 
-即使我们不知道何时何人会增加 `SelectBox` 类型，`Screen` 的实现能够操作`SelectBox` 并绘制它，因为 `SelectBox` 实现了 `Draw` trait，这意味着它实现了 `draw` 方法。
+即使我們不知道何時何人會增加 `SelectBox` 類型，`Screen` 的實現能夠操作`SelectBox` 並繪製它，因為 `SelectBox` 實現了 `Draw` trait，這意味著它實現了 `draw` 方法。
 
-只关心值所反映的信息而不是值的具体类型，这类似于动态类型语言中称为**鸭子类型**（*duck typing*）的概念：如果它走起来像一只鸭子，叫起来像一只鸭子，那么它就是一只鸭子！在列表 17-5 中 `Screen` 上的 `run` 实现中，`run` 并不需要知道各个组件的具体类型是什么。它并不检查组件实例是 `Button` 或者是`SelectBox`，它只是调用组件上的 `draw` 方法。通过指定 `Box<Draw>` 作为 `components` vector 中值的类型，我们就定义了 `Screen` 需要可以在其上调用 `draw` 方法的值。
+只關心值所反映的信息而不是值的具體類型，這類似於動態類型語言中稱為**鴨子類型**（*duck typing*）的概念：如果它走起來像一隻鴨子，叫起來像一隻鴨子，那麼它就是一隻鴨子！在列表 17-5 中 `Screen` 上的 `run` 實現中，`run` 並不需要知道各個組件的具體類型是什麼。它並不檢查組件實例是 `Button` 或者是`SelectBox`，它只是調用組件上的 `draw` 方法。通過指定 `Box<Draw>` 作為 `components` vector 中值的類型，我們就定義了 `Screen` 需要可以在其上調用 `draw` 方法的值。
 
-使用 trait 对象和 Rust 类型系统来使用鸭子类型的优势是无需在运行时检查一个值是否实现了特定方法或者担心在调用时因为值没有实现方法而产生错误。如果值没有实现 trait 对象所需的 trait 则 Rust 不会编译这些代码。
+使用 trait 對象和 Rust 類型系統來使用鴨子類型的優勢是無需在運行時檢查一個值是否實現了特定方法或者擔心在調用時因為值沒有實現方法而產生錯誤。如果值沒有實現 trait 對象所需的 trait 則 Rust 不會編譯這些代碼。
 
-例如，列表 17-10 展示了当创建一个使用 `String` 做为其组件的 `Screen` 时发生的情况：
+例如，列表 17-10 展示了當創建一個使用 `String` 做為其組件的 `Screen` 時發生的情況：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -217,9 +217,9 @@ fn main() {
 }
 ```
 
-<span class="caption">列表 17-10: 尝试使用一种没有实现 trait 对象的 trait 的类型</span>
+<span class="caption">列表 17-10: 嘗試使用一種沒有實現 trait 對象的 trait 的類型</span>
 
-我们会遇到这个错误，因为 `String` 没有实现 `Draw` trait：
+我們會遇到這個錯誤，因為 `String` 沒有實現 `Draw` trait：
 
 ```
 error[E0277]: the trait bound `std::string::String: Draw` is not satisfied
@@ -232,15 +232,15 @@ error[E0277]: the trait bound `std::string::String: Draw` is not satisfied
    = note: required for the cast to the object type `Draw`
 ```
 
-这告诉了我们，要么是我们传递了并不希望传递给 `Screen` 的类型并应该提供其他类型，要么应该在 `String` 上实现 `Draw` 以便 `Screen` 可以调用其上的 `draw`。
+這告訴了我們，要麼是我們傳遞了並不希望傳遞給 `Screen` 的類型並應該提供其他類型，要麼應該在 `String` 上實現 `Draw` 以便 `Screen` 可以調用其上的 `draw`。
 
-### trait 对象执行动态分发
+### trait 對象執行動態分發
 
-回忆一下第十章讨论过的，当对泛型使用 trait bound 时编译器所进行单态化处理：编译器为每一个被泛型类型参数代替的具体类型生成了非泛型的函数和方法实现。单态化所产生的代码进行**静态分发**（*static dispatch*）：当方法被调用时，伴随方法调用的代码在编译时就被确定了，同时寻找这些代码是非常快速的。
+回憶一下第十章討論過的，當對泛型使用 trait bound 時編譯器所進行單態化處理：編譯器為每一個被泛型類型參數代替的具體類型生成了非泛型的函數和方法實現。單態化所產生的代碼進行**靜態分發**（*static dispatch*）：當方法被調用時，伴隨方法調用的代碼在編譯時就被確定了，同時尋找這些代碼是非常快速的。
 
-当使用 trait 对象时，编译器并不进行单态化，因为并不知道所有可能会使用这些代码的类型。相反，Rust 记录当方法被调用时可能会用到的代码，并在运行时计算出特定方法调用时所需的代码。这被称为**动态分发**（*dynamic dispatch*），进行这种代码搜寻是有运行时开销的。动态分发也阻止编译有选择的内联方法的代码，这会禁用一些优化。尽管在编写和支持代码的过程中确实获得了额外的灵活性，但仍然需要权衡取舍。
+當使用 trait 對象時，編譯器並不進行單態化，因為並不知道所有可能會使用這些代碼的類型。相反，Rust 記錄當方法被調用時可能會用到的代碼，並在運行時計算出特定方法調用時所需的代碼。這被稱為**動態分發**（*dynamic dispatch*），進行這種代碼搜尋是有運行時開銷的。動態分發也阻止編譯有選擇的內聯方法的代碼，這會禁用一些優化。儘管在編寫和支持代碼的過程中確實獲得了額外的靈活性，但仍然需要權衡取捨。
 
-### Trait 对象要求对象安全
+### Trait 對象要求對象安全
 
 <!-- Liz: we're conflicted on including this section. Not being able to use a
 trait as a trait object because of object safety is something that
@@ -252,16 +252,16 @@ objects. Clone is an example of one. You'll get errors that will let you know
 if a trait can't be a trait object, look up object safety if you're interested
 in the details"? Thanks! /Carol -->
 
-不是所有的 trait 都可以被放进 trait 对象中；只有**对象安全**（*object safe*）的 trait 才可以。 一个 trait 只有同时满足如下两点时才被认为是对象安全的:
+不是所有的 trait 都可以被放進 trait 對象中；只有**對象安全**（*object safe*）的 trait 才可以。 一個 trait 只有同時滿足如下兩點時才被認為是對象安全的:
 
 * trait 不要求 `Self` 是 `Sized` 的
-* 所有的 trait 方法都是对象安全的
+* 所有的 trait 方法都是對象安全的
 
-`Self` 关键字是我们要实现 trait 或方法的类型的别名。`Sized` 是一个类似第十六章中介绍的 `Send` 和 `Sync` 那样的标记 trait。`Sized` 会自动为在编译时有已知大小的类型实现，比如 `i32` 和引用。包括 slice （`[T]`）和 trait 对象这样的没有已知大小的类型则没有。
+`Self` 關鍵字是我們要實現 trait 或方法的類型的別名。`Sized` 是一個類似第十六章中介紹的 `Send` 和 `Sync` 那樣的標記 trait。`Sized` 會自動為在編譯時有已知大小的類型實現，比如 `i32` 和引用。包括 slice （`[T]`）和 trait 對象這樣的沒有已知大小的類型則沒有。
 
-`Sized` 是一个所有泛型参数类型默认的隐含 trait bound。Rust 中大部分实用的操作都要求类型是 `Sized` 的，所以将 `Sized` 作为默认 trait bound 要求，就可以不必在每一次使用泛型时编写 `T: Sized` 了。然而，如果想要使用在 slice 上使用 trait，则需要去掉 `Sized` trait bound，可以通过指定 `T: ?Sized` 作为 trait bound 来做到这一点。
+`Sized` 是一個所有泛型參數類型默認的隱含 trait bound。Rust 中大部分實用的操作都要求類型是 `Sized` 的，所以將 `Sized` 作為默認 trait bound 要求，就可以不必在每一次使用泛型時編寫 `T: Sized` 了。然而，如果想要使用在 slice 上使用 trait，則需要去掉 `Sized` trait bound，可以通過指定 `T: ?Sized` 作為 trait bound 來做到這一點。
 
-trait 有一个默认的 bound `Self: ?Sized`，这意味着他们可以在是或者不是 `Sized` 的类型上实现。如果创建了一个去掉了 `Self: ?Sized` bound 的 trait `Foo`，它可能看起来像这样：
+trait 有一個默認的 bound `Self: ?Sized`，這意味著他們可以在是或者不是 `Sized` 的類型上實現。如果創建了一個去掉了 `Self: ?Sized` bound 的 trait `Foo`，它可能看起來像這樣：
 
 ```rust
 trait Foo: Sized {
@@ -269,21 +269,21 @@ trait Foo: Sized {
 }
 ```
 
-trait `Sized` 现在就是 trait `Foo` 的**父 trait**（*supertrait*）了，也就意味着 trait `Foo` 要求实现 `Foo` 的类型（也就是 `Self`）是 `Sized` 的。我们将在第十九章中更详细的介绍父 trait。
+trait `Sized` 現在就是 trait `Foo` 的**父 trait**（*supertrait*）了，也就意味著 trait `Foo` 要求實現 `Foo` 的類型（也就是 `Self`）是 `Sized` 的。我們將在第十九章中更詳細的介紹父 trait。
 
-像 `Foo` 这样要求 `Self` 是 `Sized` 的 trait 不被允许成为 trait 对象的原因是，不可能为 trait 对象实现 `Foo` trait：trait 对象不是 `Sized` 的，但是 `Foo` 又要求 `Self` 是 `Sized` 的。一个类型不可能同时既是有确定大小的又是无确定大小的。
+像 `Foo` 這樣要求 `Self` 是 `Sized` 的 trait 不被允許成為 trait 對象的原因是，不可能為 trait 對象實現 `Foo` trait：trait 對象不是 `Sized` 的，但是 `Foo` 又要求 `Self` 是 `Sized` 的。一個類型不可能同時既是有確定大小的又是無確定大小的。
 
-关于第二条对象安全要求说到 trait 的所有方法都必须是对象安全的，一个对象安全的方法满足下列条件之一：
+關於第二條對象安全要求說到 trait 的所有方法都必須是對象安全的，一個對象安全的方法滿足下列條件之一：
 
 * 要求 `Self` 是 `Sized` 的，或者
-* 满足如下三点：
-    * 必须不包含任何泛型类型参数
-    * 其第一个参数必须是 `Self` 类型或者能解引用为 `Self` 的类型（也就是说它必须是一个方法而非关联函数，并且以 `self`、`&self` 或 `&mut self` 作为第一个参数）
-    * 必须不能在方法签名中除第一个参数之外的地方使用 `Self`
+* 滿足如下三點：
+    * 必須不包含任何泛型類型參數
+    * 其第一個參數必須是 `Self` 類型或者能解引用為 `Self` 的類型（也就是說它必須是一個方法而非關聯函數，並且以 `self`、`&self` 或 `&mut self` 作為第一個參數）
+    * 必須不能在方法簽名中除第一個參數之外的地方使用 `Self`
 
-虽然这些规则有一点形式化, 但是换个角度想一下：如果方法在它的签名的其他什么地方要求使用具体的 `Self` 类型，而一个对象又忘记了它具体的类型，这时方法就无法使用它遗忘的原始的具体类型了。当使用 trait 的泛型类型参数被放入具体类型参数时也是如此：这个具体的类型就成了实现该 trait 的类型的一部分。一旦这个类型因使用 trait 对象而被擦除掉了之后，就无法知道放入泛型类型参数的类型是什么了。
+雖然這些規則有一點形式化, 但是換個角度想一下：如果方法在它的簽名的其他什麼地方要求使用具體的 `Self` 類型，而一個對象又忘記了它具體的類型，這時方法就無法使用它遺忘的原始的具體類型了。當使用 trait 的泛型類型參數被放入具體類型參數時也是如此：這個具體的類型就成了實現該 trait 的類型的一部分。一旦這個類型因使用 trait 對象而被擦除掉了之後，就無法知道放入泛型類型參數的類型是什麼了。
 
-一个 trait 的方法不是对象安全的例子是标准库中的 `Clone` trait。`Clone` trait 的 `clone` 方法的参数签名看起来像这样：
+一個 trait 的方法不是對象安全的例子是標準庫中的 `Clone` trait。`Clone` trait 的 `clone` 方法的參數簽名看起來像這樣：
 
 ```rust
 pub trait Clone {
@@ -291,19 +291,19 @@ pub trait Clone {
 }
 ```
 
-`String` 实现了 `Clone` trait，当在 `String` 实例上调用 `clone` 方法时会得到一个 `String` 实例。类似的，当调用 `Vec` 实例的 `clone` 方法会得到一个 `Vec` 实例。`clone` 的签名需要知道什么类型会代替 `Self`，因为这是它的返回值。
+`String` 實現了 `Clone` trait，當在 `String` 實例上調用 `clone` 方法時會得到一個 `String` 實例。類似的，當調用 `Vec` 實例的 `clone` 方法會得到一個 `Vec` 實例。`clone` 的簽名需要知道什麼類型會代替 `Self`，因為這是它的返回值。
 
-如果尝试在像列表 17-3 中 `Draw` 那样的 trait 上实现 `Clone`，就无法知道 `Self` 将会是 `Button`、`SelectBox` 亦或是将来会实现 `Draw` trait 的其他什么类型。
+如果嘗試在像列表 17-3 中 `Draw` 那樣的 trait 上實現 `Clone`，就無法知道 `Self` 將會是 `Button`、`SelectBox` 亦或是將來會實現 `Draw` trait 的其他什麼類型。
 
-如果尝试做一些违反有关 trait 对象但违反对象安全规则的事情，编译器会提示你。例如，如果尝试实现列表 17-4 中的 `Screen` 结构体来存放实现了 `Clone` trait 而不是 `Draw` trait 的类型，像这样：
+如果嘗試做一些違反有關 trait 對象但違反對象安全規則的事情，編譯器會提示你。例如，如果嘗試實現列表 17-4 中的 `Screen` 結構體來存放實現了 `Clone` trait 而不是 `Draw` trait 的類型，像這樣：
 
-```rust,ignore
+```rust
 pub struct Screen {
     pub components: Vec<Box<Clone>>,
 }
 ```
 
-将会得到如下错误：
+將會得到如下錯誤：
 
 ```
 error[E0038]: the trait `std::clone::Clone` cannot be made into an object

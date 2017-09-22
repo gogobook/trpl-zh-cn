@@ -1,18 +1,18 @@
-## 读取文件
+## 讀取文件
 
 > [ch12-02-reading-a-file.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch12-02-reading-a-file.md)
 > <br>
 > commit b693c8400817f1022820fd63e3529cbecc35070c
 
-接下来我们将读取由命令行文件名参数指定的文件。首先，需要一个用来测试的示例文件——用来确保 `minigrep` 正常工作的最好的文件是拥有少量文本和多个行且有一些重复单词的文件。列表 12-3 是一首艾米莉·狄金森（Emily Dickinson）的诗，它正适合这个工作！在项目根目录创建一个文件 `poem.txt`，并输入诗 "I'm nobody! Who are you?"：
+接下來我們將讀取由命令行文件名參數指定的文件。首先，需要一個用來測試的示例文件——用來確保 `minigrep` 正常工作的最好的文件是擁有少量文本和多個行且有一些重複單詞的文件。列表 12-3 是一首艾米莉‧狄金森（Emily Dickinson）的詩，它正適合這個工作！在項目根目錄創建一個文件 `poem.txt`，並輸入詩 "I'm nobody! Who are you?"：
 
 <span class="filename">文件名: poem.txt</span>
 
 ```text
-I’m nobody! Who are you?
+I'm nobody! Who are you?
 Are you nobody, too?
-Then there’s a pair of us — don’t tell!
-They’d banish us, you know.
+Then there's a pair of us — don't tell!
+They'd banish us, you know.
 
 How dreary to be somebody!
 How public, like a frog
@@ -20,9 +20,9 @@ To tell your name the livelong day
 To an admiring bog!
 ```
 
-<span class="caption">列表 12-3：艾米莉·狄金森的诗 “I’m nobody! Who are you?”，一个好的测试用例</span>
+<span class="caption">列表 12-3：艾米莉‧狄金森的詩 「I'm nobody! Who are you?」，一個好的測試用例</span>
 
-创建完这个文件之后，修改 *src/main.rs* 并增加如列表 12-4 所示的打开文件的代码：
+創建完這個文件之後，修改 *src/main.rs* 並增加如列表 12-4 所示的打開文件的代碼：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -51,15 +51,15 @@ fn main() {
 }
 ```
 
-<span class="caption">列表 12-4：读取第二个参数所指定的文件内容</span>
+<span class="caption">列表 12-4：讀取第二個參數所指定的文件內容</span>
 
-首先，我们增加了更多的 `use` 语句来引入标准库中的相关部分：需要 `std::fs::File` 来处理文件，而 `std::io::prelude::*` 则包含许多对于 I/O 包括文件 I/O 有帮助的 trait。类似于 Rust 有一个通用的 prelude 来自动引入特定内容，`std::io` 也有其自己的 prelude 来引入处理 I/O 时所需的通用内容。不同于默认的 prelude，必须显式 `use` 位于 `std::io` 中的 prelude。
+首先，我們增加了更多的 `use` 語句來引入標準庫中的相關部分：需要 `std::fs::File` 來處理文件，而 `std::io::prelude::*` 則包含許多對於 I/O 包括文件 I/O 有幫助的 trait。類似於 Rust 有一個通用的 prelude 來自動引入特定內容，`std::io` 也有其自己的 prelude 來引入處理 I/O 時所需的通用內容。不同於默認的 prelude，必須顯式 `use` 位於 `std::io` 中的 prelude。
 
-在 `main` 中，我们增加了三点内容：第一，通过传递变量 `filename` 的值调用 `File::open` 函数来获取文件的可变句柄。创建了叫做 `contents` 的变量并将其设置为一个可变的，空的`String`。它将会存放之后读取的文件的内容。第三，对文件句柄调用 `read_to_string` 并传递 `contents` 的可变引用作为参数。
+在 `main` 中，我們增加了三點內容：第一，通過傳遞變量 `filename` 的值調用 `File::open` 函數來獲取文件的可變句柄。創建了叫做 `contents` 的變量並將其設置為一個可變的，空的`String`。它將會存放之後讀取的文件的內容。第三，對文件句柄調用 `read_to_string` 並傳遞 `contents` 的可變引用作為參數。
 
-在这些代码之后，我们再次增加了临时的 `println!` 打印出读取文件后 `contents` 的值，这样就可以检查目前为止的程序能否工作。
+在這些代碼之後，我們再次增加了臨時的 `println!` 打印出讀取文件後 `contents` 的值，這樣就可以檢查目前為止的程序能否工作。
 
-尝试运行这些代码，随意指定一个字符串作为第一个命令行参数（因为还未实现搜索功能的部分）而将 *poem.txt* 文件将作为第二个参数：
+嘗試運行這些代碼，隨意指定一個字符串作為第一個命令行參數（因為還未實現搜索功能的部分）而將 *poem.txt* 文件將作為第二個參數：
 
 ```text
 $ cargo run the poem.txt
@@ -68,10 +68,10 @@ $ cargo run the poem.txt
 Searching for the
 In file poem.txt
 With text:
-I’m nobody! Who are you?
+I'm nobody! Who are you?
 Are you nobody, too?
-Then there’s a pair of us — don’t tell!
-They’d banish us, you know.
+Then there's a pair of us — don't tell!
+They'd banish us, you know.
 
 How dreary to be somebody!
 How public, like a frog
@@ -79,4 +79,4 @@ To tell your name the livelong day
 To an admiring bog!
 ```
 
-好的！代码读取并打印出了文件的内容。虽然它还有一些瑕疵：`main` 函数有着多个职能，通常函数只负责一个功能的话会更简洁并易于维护。另一个问题是没有尽可能的处理错误。虽然我们的程序还很小，这些瑕疵并不是什么大问题，不过随着程序功能的丰富，将会越来越难以用简单的方法修复他们。在开发程序时，及早开始重构是一个最佳实践，因为重构少量代码时要容易的多，所以让我们现在就开始吧。
+好的！代碼讀取並打印出了文件的內容。雖然它還有一些瑕疵：`main` 函數有著多個職能，通常函數只負責一個功能的話會更簡潔並易於維護。另一個問題是沒有儘可能的處理錯誤。雖然我們的程序還很小，這些瑕疵並不是什麼大問題，不過隨著程序功能的豐富，將會越來越難以用簡單的方法修復他們。在開發程序時，及早開始重構是一個最佳實踐，因為重構少量代碼時要容易的多，所以讓我們現在就開始吧。

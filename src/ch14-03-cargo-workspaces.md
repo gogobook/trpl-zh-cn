@@ -67,7 +67,7 @@ pub fn add_one(x: i32) -> i32 {
 
 打开 `adder` 的 *src/main.rs* 并增加一行 `extern crate` 将新的 `add-one` 库引入作用域，并修改 `main` 函数来调用 `add_one` 函数，如列表 14-12 所示：
 
-```rust,ignore
+```rust
 extern crate add_one;
 
 fn main() {

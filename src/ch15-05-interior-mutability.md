@@ -1,33 +1,33 @@
-## `RefCell<T>`和内部可变性模式
+## `RefCell<T>`和內部可變性模式
 
 > [ch15-05-interior-mutability.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch15-05-interior-mutability.md)
 > <br>
 > commit 3f2a1bd8dbb19cc48b210fc4fb35c305c8d81b56
 
-**内部可变性**（*Interior mutability*）是 Rust 中的一个设计模式，它允许你即使在有不可变引用时改变数据，这通常是借用规则所不允许。内部可变性模式涉及到在数据结构中使用`unsafe`代码来模糊 Rust 通常的可变性和借用规则。我们还未讲到不安全代码；第十九章会学习他们。内部可变性模式用于当你可以确保代码在运行时也会遵守借用规则，哪怕编译器也不能保证的情况。引入的`unsafe`代码将被封装进安全的 API 中，而外部类型仍然是不可变的。
+**內部可變性**（*Interior mutability*）是 Rust 中的一個設計模式，它允許你即使在有不可變引用時改變數據，這通常是借用規則所不允許。內部可變性模式涉及到在數據結構中使用`unsafe`代碼來模糊 Rust 通常的可變性和借用規則。我們還未講到不安全代碼；第十九章會學習他們。內部可變性模式用於當你可以確保代碼在運行時也會遵守借用規則，哪怕編譯器也不能保證的情況。引入的`unsafe`代碼將被封裝進安全的 API 中，而外部類型仍然是不可變的。
 
-让我们通过遵循内部可变性模式的`RefCell<T>`类型来开始探索。
+讓我們通過遵循內部可變性模式的`RefCell<T>`類型來開始探索。
 
-###  `RefCell<T>`拥有内部可变性
+###  `RefCell<T>`擁有內部可變性
 
-不同于`Rc<T>`，`RefCell<T>`代表其数据的唯一的所有权。那么是什么让`RefCell<T>`不同于像`Box<T>`这样的类型呢？回忆一下第四章所学的借用规则：
+不同於`Rc<T>`，`RefCell<T>`代表其數據的唯一的所有權。那麼是什麼讓`RefCell<T>`不同於像`Box<T>`這樣的類型呢？回憶一下第四章所學的借用規則：
 
-1. 在任意给定时间，**只能**拥有如下中的一个：
-  * 一个可变引用。
-  * 任意属性的不可变引用。
-2. 引用必须总是有效的。
+1. 在任意給定時間，**只能**擁有如下中的一個：
+  * 一個可變引用。
+  * 任意屬性的不可變引用。
+2. 引用必須總是有效的。
 
-对于引用和`Box<T>`，借用规则的不可变性作用于编译时。对于`RefCell<T>`，这些不可变性作用于**运行时**。对于引用，如果违反这些规则，会得到一个编译错误。而对于`RefCell<T>`，违反这些规则会`panic!`。
+對於引用和`Box<T>`，借用規則的不可變性作用於編譯時。對於`RefCell<T>`，這些不可變性作用於**運行時**。對於引用，如果違反這些規則，會得到一個編譯錯誤。而對於`RefCell<T>`，違反這些規則會`panic!`。
 
-Rust 编译器执行的静态分析天生是保守的。代码的一些属性则不可能通过分析代码发现：其中最著名的就是停机问题（停机问题），这超出了本书的范畴，不过如果你感兴趣的话这是一个值得研究的有趣主题。
+Rust 編譯器執行的靜態分析天生是保守的。代碼的一些屬性則不可能通過分析代碼發現：其中最著名的就是停機問題（停機問題），這超出了本書的範疇，不過如果你感興趣的話這是一個值得研究的有趣主題。
 
-因为一些分析是不可能的，Rust 编译器在其不确定的时候甚至都不尝试猜测，所以说它是保守的而且有时会拒绝事实上不会违反 Rust 保证的正确的程序。换句话说，如果 Rust 接受不正确的程序，那么人们也就不会相信 Rust 所做的保证了。如果 Rust 拒绝正确的程序，会给程序员带来不便，但不会带来灾难。`RefCell<T>`正是用于当你知道代码遵守借用规则，而编译器不能理解的时候。
+因為一些分析是不可能的，Rust 編譯器在其不確定的時候甚至都不嘗試猜測，所以說它是保守的而且有時會拒絕事實上不會違反 Rust 保證的正確的程序。換句話說，如果 Rust 接受不正確的程序，那麼人們也就不會相信 Rust 所做的保證了。如果 Rust 拒絕正確的程序，會給程序員帶來不便，但不會帶來災難。`RefCell<T>`正是用於當你知道代碼遵守借用規則，而編譯器不能理解的時候。
 
-类似于`Rc<T>`，`RefCell<T>`只能用于单线程场景。在并发章节会介绍如何在多线程程序中使用`RefCell<T>`的功能。现在所有你需要知道的就是如果尝试在多线程上下文中使用`RefCell<T>`，会得到一个编译错误。
+類似於`Rc<T>`，`RefCell<T>`只能用於單線程場景。在並發章節會介紹如何在多線程程序中使用`RefCell<T>`的功能。現在所有你需要知道的就是如果嘗試在多線程上下文中使用`RefCell<T>`，會得到一個編譯錯誤。
 
-对于引用，可以使用`&`和`&mut`语法来分别创建不可变和可变的引用。不过对于`RefCell<T>`，我们使用`borrow`和`borrow_mut`方法，它是`RefCell<T>`拥有的安全 API 的一部分。`borrow`返回`Ref`类型的智能指针，而`borrow_mut`返回`RefMut`类型的智能指针。这两个类型实现了`Deref`所以可以被当作常规引用处理。`Ref`和`RefMut`动态的借用所有权，而他们的`Drop`实现也动态的释放借用。
+對於引用，可以使用`&`和`&mut`語法來分別創建不可變和可變的引用。不過對於`RefCell<T>`，我們使用`borrow`和`borrow_mut`方法，它是`RefCell<T>`擁有的安全 API 的一部分。`borrow`返回`Ref`類型的智能指針，而`borrow_mut`返回`RefMut`類型的智能指針。這兩個類型實現了`Deref`所以可以被當作常規引用處理。`Ref`和`RefMut`動態的借用所有權，而他們的`Drop`實現也動態的釋放借用。
 
-列表 15-14 展示了如何使用`RefCell<T>`来使函数不可变的和可变的借用它的参数。注意`data`变量使用`let data`而不是`let mut data`来声明为不可变的，而`a_fn_that_mutably_borrows`则允许可变的借用数据并修改它！
+列表 15-14 展示了如何使用`RefCell<T>`來使函數不可變的和可變的借用它的參數。注意`data`變量使用`let data`而不是`let mut data`來聲明為不可變的，而`a_fn_that_mutably_borrows`則允許可變的借用數據並修改它！
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -57,29 +57,29 @@ fn main() {
 <span class="caption">Listing 15-14: Using `RefCell<T>`, `borrow`, and
 `borrow_mut`</span>
 
-这个例子打印出：
+這個例子打印出：
 
 ```
 a is 5
 a is 6
 ```
 
-在`main`函数中，我们新声明了一个包含值 5 的`RefCell<T>`，并储存在变量`data`中，声明时并没有使用`mut`关键字。接着使用`data`的一个不可变引用来调用`demo`函数：对于`main`函数而言`data`是不可变的！
+在`main`函數中，我們新聲明了一個包含值 5 的`RefCell<T>`，並儲存在變量`data`中，聲明時並沒有使用`mut`關鍵字。接著使用`data`的一個不可變引用來調用`demo`函數：對於`main`函數而言`data`是不可變的！
 
-在`demo`函数中，通过调用`borrow`方法来获取到`RefCell<T>`中值的不可变引用，并使用这个不可变引用调用了`a_fn_that_immutably_borrows`函数。更为有趣的是，可以通过`borrow_mut`方法来获取`RefCell<T>`中值的**可变**引用，而`a_fn_that_mutably_borrows`函数就允许修改这个值。可以看到下一次调用`a_fn_that_immutably_borrows`时打印出的值是 6 而不是 5。
+在`demo`函數中，通過調用`borrow`方法來獲取到`RefCell<T>`中值的不可變引用，並使用這個不可變引用調用了`a_fn_that_immutably_borrows`函數。更為有趣的是，可以通過`borrow_mut`方法來獲取`RefCell<T>`中值的**可變**引用，而`a_fn_that_mutably_borrows`函數就允許修改這個值。可以看到下一次調用`a_fn_that_immutably_borrows`時打印出的值是 6 而不是 5。
 
-### `RefCell<T>`在运行时检查借用规则
+### `RefCell<T>`在運行時檢查借用規則
 
-回忆一下第四章因为借用规则，尝试使用常规引用在同一作用域中创建两个可变引用的代码无法编译：
+回憶一下第四章因為借用規則，嘗試使用常規引用在同一作用域中創建兩個可變引用的代碼無法編譯：
 
-```rust,ignore
+```rust
 let mut s = String::from("hello");
 
 let r1 = &mut s;
 let r2 = &mut s;
 ```
 
-这会得到一个编译错误：
+這會得到一個編譯錯誤：
 
 ```
 error[E0499]: cannot borrow `s` as mutable more than once at a time
@@ -93,7 +93,7 @@ error[E0499]: cannot borrow `s` as mutable more than once at a time
   | - first borrow ends here
 ```
 
-与此相反，使用`RefCell<T>`并在同一作用域调用两次`borrow_mut`的代码是**可以**编译的，不过它会在运行时 panic。如下代码：
+與此相反，使用`RefCell<T>`並在同一作用域調用兩次`borrow_mut`的代碼是**可以**編譯的，不過它會在運行時 panic。如下代碼：
 
 ```rust,should_panic
 use std::cell::RefCell;
@@ -106,7 +106,7 @@ fn main() {
 }
 ```
 
-能够编译不过在`cargo run`运行时会出现如下错误：
+能夠編譯不過在`cargo run`運行時會出現如下錯誤：
 
 ```
     Finished dev [unoptimized + debuginfo] target(s) in 0.83 secs
@@ -116,11 +116,11 @@ thread 'main' panicked at 'already borrowed: BorrowMutError',
 note: Run with `RUST_BACKTRACE=1` for a backtrace.
 ```
 
-这个运行时`BorrowMutError`类似于编译错误：它表明我们已经可变得借用过一次`s`了，所以不允许再次借用它。我们并没有绕过借用规则，只是选择让 Rust 在运行时而不是编译时执行他们。你可以选择在任何时候任何地方使用`RefCell<T>`，不过除了不得不编写很多`RefCell`之外，最终还是可能会发现其中的问题（可能是在生产环境而不是开发环境）。另外，在运行时检查借用规则有性能惩罚。
+這個運行時`BorrowMutError`類似於編譯錯誤：它表明我們已經可變得借用過一次`s`了，所以不允許再次借用它。我們並沒有繞過借用規則，只是選擇讓 Rust 在運行時而不是編譯時執行他們。你可以選擇在任何時候任何地方使用`RefCell<T>`，不過除了不得不編寫很多`RefCell`之外，最終還是可能會發現其中的問題（可能是在生產環境而不是開發環境）。另外，在運行時檢查借用規則有性能懲罰。
 
-### 结合`Rc<T>`和`RefCell<T>`来拥有多个可变数据所有者
+### 結合`Rc<T>`和`RefCell<T>`來擁有多個可變數據所有者
 
-那么为什么要权衡考虑选择引入`RefCell<T>`呢？好吧，还记得我们说过`Rc<T>`只能拥有一个`T`的不可变引用吗？考虑到`RefCell<T>`是不可变的，但是拥有内部可变性，可以将`Rc<T>`与`RefCell<T>`结合来创造一个既有引用计数又可变的类型。列表 15-15 展示了一个这么做的例子，再次回到列表 15-5 中的 cons list。在这个例子中，不同于在 cons list 中储存`i32`值，我们储存一个`Rc<RefCell<i32>>`值。希望储存这个类型是因为其可以拥有不属于列表一部分的这个值的所有者（`Rc<T>`提供的多个所有者功能），而且还可以改变内部的`i32`值（`RefCell<T>`提供的内部可变性功能）：
+那麼為什麼要權衡考慮選擇引入`RefCell<T>`呢？好吧，還記得我們說過`Rc<T>`只能擁有一個`T`的不可變引用嗎？考慮到`RefCell<T>`是不可變的，但是擁有內部可變性，可以將`Rc<T>`與`RefCell<T>`結合來創造一個既有引用計數又可變的類型。列表 15-15 展示了一個這麼做的例子，再次回到列表 15-5 中的 cons list。在這個例子中，不同於在 cons list 中儲存`i32`值，我們儲存一個`Rc<RefCell<i32>>`值。希望儲存這個類型是因為其可以擁有不屬於列表一部分的這個值的所有者（`Rc<T>`提供的多個所有者功能），而且還可以改變內部的`i32`值（`RefCell<T>`提供的內部可變性功能）：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -155,11 +155,11 @@ fn main() {
 <span class="caption">Listing 15-15: Using `Rc<RefCell<i32>>` to create a
 `List` that we can mutate</span>
 
-我们创建了一个值，它是`Rc<RefCell<i32>>`的实例。将其储存在变量`value`中因为我们希望之后能直接访问它。接着在`a`中创建了一个拥有存放了`value`值的`Cons`成员的`List`，而且`value`需要被克隆因为我们希望除了`a`之外还拥有`value`的所有权。接着将`a`封装进`Rc<T>`中这样就可以创建都引用`a`的有着不同开头的列表`b`和`c`，类似列表 15-12 中所做的那样。
+我們創建了一個值，它是`Rc<RefCell<i32>>`的實例。將其儲存在變量`value`中因為我們希望之後能直接訪問它。接著在`a`中創建了一個擁有存放了`value`值的`Cons`成員的`List`，而且`value`需要被克隆因為我們希望除了`a`之外還擁有`value`的所有權。接著將`a`封裝進`Rc<T>`中這樣就可以創建都引用`a`的有著不同開頭的列表`b`和`c`，類似列表 15-12 中所做的那樣。
 
-一旦创建了`shared_list`、`b`和`c`，接下来就可以通过解引用`Rc<T>`和对`RefCell`调用`borrow_mut`来将 10 与 5 相加了。
+一旦創建了`shared_list`、`b`和`c`，接下來就可以通過解引用`Rc<T>`和對`RefCell`調用`borrow_mut`來將 10 與 5 相加了。
 
-当打印出`shared_list`、`b`和`c`时，可以看到他们都拥有被修改的值 15：
+當打印出`shared_list`、`b`和`c`時，可以看到他們都擁有被修改的值 15：
 
 ```
 shared_list after = Cons(RefCell { value: 15 }, Nil)
@@ -167,6 +167,6 @@ b after = Cons(RefCell { value: 6 }, Cons(RefCell { value: 15 }, Nil))
 c after = Cons(RefCell { value: 10 }, Cons(RefCell { value: 15 }, Nil))
 ```
 
-这是非常巧妙的！通过使用`RefCell<T>`，我们可以拥有一个表面上不可变的`List`，不过可以使用`RefCell<T>`中提供内部可变性的方法来在需要时修改数据。`RefCell<T>`的运行时借用规则检查也确实保护我们免于出现数据竞争，而且我们也决定牺牲一些速度来换取数据结构的灵活性。
+這是非常巧妙的！通過使用`RefCell<T>`，我們可以擁有一個表面上不可變的`List`，不過可以使用`RefCell<T>`中提供內部可變性的方法來在需要時修改數據。`RefCell<T>`的運行時借用規則檢查也確實保護我們免於出現數據競爭，而且我們也決定犧牲一些速度來換取數據結構的靈活性。
 
-`RefCell<T>`并不是标准库中唯一提供内部可变性的类型。`Cell<T>`有点类似，不过不同于`RefCell<T>`那样提供内部值的引用，其值被拷贝进和拷贝出`Cell<T>`。`Mutex<T>`提供线程间安全的内部可变性，下一章并发会讨论它的应用。请查看标准库来获取更多细节和不同类型的区别。
+`RefCell<T>`並不是標準庫中唯一提供內部可變性的類型。`Cell<T>`有點類似，不過不同於`RefCell<T>`那樣提供內部值的引用，其值被拷貝進和拷貝出`Cell<T>`。`Mutex<T>`提供線程間安全的內部可變性，下一章並發會討論它的應用。請查看標準庫來獲取更多細節和不同類型的區別。

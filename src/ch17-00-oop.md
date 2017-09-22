@@ -1,7 +1,7 @@
-﻿## Rust 是一个面向对象的编程语言吗？
+﻿## Rust 是一個面向對象的編程語言嗎？
 
 > [ch17-00-oop.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch17-00-oop.md)
 > <br>
 > commit 759801361bde74b47e81755fff545c66020e6e63
 
-面向对象编程（Object-Oriented Programming）是一种起源于 20 世纪 60 年代的 Simula 编程语言的模式化编程方式，然后在 90 年代随着 C++ 语言开始流行。关于 OOP 是什么有很多相互矛盾的定义：在一些定义下，Rust 是面向对象的；在其他定义下，Rust 不是。在本章节中，我们会探索一些被普遍认为是面向对象的特性和这些特性是如何体现在 Rust 语言习惯中的。
+面向對象編程（Object-Oriented Programming）是一種起源於 20 世紀 60 年代的 Simula 編程語言的模式化編程方式，然後在 90 年代隨著 C++ 語言開始流行。關於 OOP 是什麼有很多相互矛盾的定義：在一些定義下，Rust 是面向對象的；在其他定義下，Rust 不是。在本章節中，我們會探索一些被普遍認為是面向對象的特性和這些特性是如何體現在 Rust 語言習慣中的。

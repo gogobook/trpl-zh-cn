@@ -1,12 +1,12 @@
-## 发布配置
+## 發佈配置
 
 > [ch14-01-release-profiles.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch14-01-release-profiles.md)
 > <br>
 > commit db6129a30d7c7baed34dd38dbc56f7ed8a66ae92
 
-在 Rust 中 **发布配置**（*release profiles*）是预定义的、可定制的带有不同选项的配置，他们允许程序员更多的控制代码编译的多种选项。每一个配置都彼此相互独立。
+在 Rust 中 **發佈配置**（*release profiles*）是預定義的、可定製的帶有不同選項的配置，他們允許程序員更多的控制代碼編譯的多種選項。每一個配置都彼此相互獨立。
 
-Cargo 定义了四种有着良好默认值的可用于各自使用场景的配置。Cargo 根据运行的命令来选择不同的配置。不同命令所对应的配置如表格 14-1 所示：
+Cargo 定義了四種有著良好默認值的可用於各自使用場景的配置。Cargo 根據運行的命令來選擇不同的配置。不同命令所對應的配置如表格 14-1 所示：
 
 | 命令                 | 配置   |
 |-------------------------|-----------|
@@ -15,9 +15,9 @@ Cargo 定义了四种有着良好默认值的可用于各自使用场景的配�
 | `cargo test`            | `test`    |
 | `cargo doc`             | `doc`     |
 
-<span class="caption">表格 14-1：运行不同 Cargo 命令所使用的配置</span>
+<span class="caption">表格 14-1：運行不同 Cargo 命令所使用的配置</span>
 
-这可能很熟悉，他们出现在构建的输出中，他们展示了构建中所使用的配置：
+這可能很熟悉，他們出現在構建的輸出中，他們展示了構建中所使用的配置：
 
 ```text
 $ cargo build
@@ -26,11 +26,11 @@ $ cargo build --release
     Finished release [optimized] target(s) in 0.0 secs
 ```
 
-这里的 “dev” 和 “release” 提示表明编译器在使用不同的配置。
+這裡的 「dev」 和 「release」 提示表明編譯器在使用不同的配置。
 
-### 定制发布配置
+### 定製發佈配置
 
-Cargo 对每一个配置都有默认设置，当项目的 *Cargo.toml* 文件的 `[profile.*]` 部分没有指定时使用。通过增加任何希望定制的配置对应的 `[profile.*]` 部分，我们可以选择覆盖任意默认设置的子集。例如，如下是 `dev` 和 `release` 配置的 `opt-level` 设置的默认值：
+Cargo 對每一個配置都有默認設置，當項目的 *Cargo.toml* 文件的 `[profile.*]` 部分沒有指定時使用。通過增加任何希望定製的配置對應的 `[profile.*]` 部分，我們可以選擇覆蓋任意默認設置的子集。例如，如下是 `dev` 和 `release` 配置的 `opt-level` 設置的默認值：
 
 ```toml
 [profile.dev]
@@ -40,9 +40,9 @@ opt-level = 0
 opt-level = 3
 ```
 
-`opt-level` 设置控制 Rust 会对代码进行何种程度的优化。这个配置的值从 0 到 3。越高的优化级别需要更多的时间编译，所以如果你在进行开发并经常编译，可能会希望在牺牲一些代码性能的情况下编译得快一些。这就是为什么 `dev` 的 `opt-level` 默认为 `0`。当你准备发布时，花费更多时间在编译上则更好。只需要在发布模式编译一次，而编译出来的程序则会运行很多次，所以发布模式用更长的编译时间换取运行更快的代码。这正是为什么 `release` 配置的 `opt-level` 默认为 `3`。
+`opt-level` 設置控制 Rust 會對代碼進行何種程度的優化。這個配置的值從 0 到 3。越高的優化級別需要更多的時間編譯，所以如果你在進行開發並經常編譯，可能會希望在犧牲一些代碼性能的情況下編譯得快一些。這就是為什麼 `dev` 的 `opt-level` 默認為 `0`。當你準備發佈時，花費更多時間在編譯上則更好。只需要在發佈模式編譯一次，而編譯出來的程序則會運行很多次，所以發佈模式用更長的編譯時間換取運行更快的代碼。這正是為什麼 `release` 配置的 `opt-level` 默認為 `3`。
 
-我们可以选择通过在 *Cargo.toml* 增加不同的值来覆盖任何默认设置。比如，如果我们想要在开发配置中使用级别 1 的优化，则可以在 *Cargo.toml* 中增加这两行：
+我們可以選擇通過在 *Cargo.toml* 增加不同的值來覆蓋任何默認設置。比如，如果我們想要在開發配置中使用級別 1 的優化，則可以在 *Cargo.toml* 中增加這兩行：
 
 <span class="filename">文件名: Cargo.toml</span>
 
@@ -51,8 +51,8 @@ opt-level = 3
 opt-level = 1
 ```
 
-这会覆盖默认的设置 `0`。现在运行 `cargo build` 时，Cargo 将会使用 `dev` 的默认配置加上定制的 `opt-level`。因为 `opt-level` 设置为 `1`，Cargo 会比默认进行更多的优化，但是没有发布构建那么多。
+這會覆蓋默認的設置 `0`。現在運行 `cargo build` 時，Cargo 將會使用 `dev` 的默認配置加上定製的 `opt-level`。因為 `opt-level` 設置為 `1`，Cargo 會比默認進行更多的優化，但是沒有發佈構建那麼多。
 
-对于每个配置的设置和其默认值的完整列表，请查看[Cargo 的文档][cargodoc]。
+對於每個配置的設置和其默認值的完整列表，請查看[Cargo 的文檔][cargodoc]。
 
 [cargodoc]: http://doc.crates.io/

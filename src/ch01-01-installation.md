@@ -1,30 +1,30 @@
-## 安装
+## 安裝
 
 > [ch01-01-installation.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch01-01-installation.md)
 > <br>
 > commit d06a6a181fd61704cbf7feb55bc61d518c6469f9
 
-使用 Rust 的第一步是安装。你需要网络连接来执行本章的命令，因为将要从网上下载 Rust。
+使用 Rust 的第一步是安裝。你需要網絡連接來執行本章的命令，因為將要從網上下載 Rust。
 
-这里将会展示很多使用终端的命令，这些命令均以 `$` 开头。不需要真的输入`$`，在这里他们代表每行命令的起始。网上有很多教程和例子遵循这种惯例：`$` 代表以常规用户身份运行命令，`#` 代表需要用管理员身份运行命令。没有以 `$`（或 `#`）起始的行通常是之前命令的输出。
+這裡將會展示很多使用終端的命令，這些命令均以 `$` 開頭。不需要真的輸入`$`，在這裡他們代表每行命令的起始。網上有很多教程和例子遵循這種慣例：`$` 代表以常規用戶身份運行命令，`#` 代表需要用管理員身份運行命令。沒有以 `$`（或 `#`）起始的行通常是之前命令的輸出。
 
-### 在 Linux 或 Mac 上安装
+### 在 Linux 或 Mac 上安裝
 
-如果你使用 Linux 或 Mac，你需要做的全部就是打开一个终端并输入：
+如果你使用 Linux 或 Mac，你需要做的全部就是打開一個終端並輸入：
 
 ```text
 $ curl https://sh.rustup.rs -sSf | sh
 ```
 
-这会下载一个脚本并开始安装。可能会提示你输入密码，如果一切顺利，将会出现如下内容：
+這會下載一個腳本並開始安裝。可能會提示你輸入密碼，如果一切順利，將會出現如下內容：
 
 ```text
 Rust is installed now. Great!
 ```
 
-当然，如果你对于 `curl | sh` 这样的模式心有疑虑，请随意下载、检查和运行这个脚本。
+當然，如果你對於 `curl | sh` 這樣的模式心有疑慮，請隨意下載、檢查和運行這個腳本。
 
-此安装脚本自动将 Rust 加入系统 PATH 环境变量中，再次登陆时生效。如果你希望立刻（不重新登陆）就开始使用 Rust，在 shell 中运行如下命令：
+此安裝腳本自動將 Rust 加入系統 PATH 環境變量中，再次登陸時生效。如果你希望立刻（不重新登陸）就開始使用 Rust，在 shell 中運行如下命令：
 
 ```text
 $ source $HOME/.cargo/env
@@ -36,28 +36,28 @@ $ source $HOME/.cargo/env
 $ export PATH="$HOME/.cargo/bin:$PATH"
 ```
 
-### 在 Windows 上安装
+### 在 Windows 上安裝
 
-如果你使用 Windows，前往 [https://rustup.rs](https://rustup.rs/)<!-- ignore -->，按说明下载 rustup-init.exe，运行并照其指示操作。
+如果你使用 Windows，前往 [https://rustup.rs](https://rustup.rs/)<!-- ignore -->，按說明下載 rustup-init.exe，運行並照其指示操作。
 
-本书中其余 Windows 相关的命令，假设你使用 `cmd` 作为 shell。如果你使用其它 shell，也许可以执行与 Linux 和 Mac 用户相同的命令。如果不行，请查看该 shell 的文档。
+本書中其餘 Windows 相關的命令，假設你使用 `cmd` 作為 shell。如果你使用其它 shell，也許可以執行與 Linux 和 Mac 用戶相同的命令。如果不行，請查看該 shell 的文檔。
 
-### 自定义安装
+### 自定義安裝
 
-无论出于何种理由，如果不愿意使用 rustup.rs，请查看 [Rust 安装页面](https://www.rust-lang.org/install.html) 获取其他选项。
+無論出於何種理由，如果不願意使用 rustup.rs，請查看 [Rust 安裝頁面](https://www.rust-lang.org/install.html) 獲取其他選項。
 
 
 ### 更新
 
-一旦安装了 Rust，更新到最新版本是很简单的。在 shell 中执行更新脚本：
+一旦安裝了 Rust，更新到最新版本是很簡單的。在 shell 中執行更新腳本：
 
 ```text
 $ rustup update
 ```
 
-### 卸载
+### 卸載
 
-卸载 Rust 与安装一个简单。在 shell 中执行卸载脚本:
+卸載 Rust 與安裝一個簡單。在 shell 中執行卸載腳本:
 
 ```text
 $ rustup self uninstall
@@ -65,33 +65,33 @@ $ rustup self uninstall
 
 ### 故障排除（Troubleshooting）
 
-安装完 Rust 后，打开 shell 并执行：
+安裝完 Rust 後，打開 shell 並執行：
 
 ```text
 $ rustc --version
 ```
 
-应该能看到类似这样格式的版本号、提交哈希和提交日期，对应安装时的最新稳定版：
+應該能看到類似這樣格式的版本號、提交哈希和提交日期，對應安裝時的最新穩定版：
 
 ```text
 rustc x.y.z (abcabcabc yyyy-mm-dd)
 ```
 
-如果出现这些内容，Rust 就安装成功了！
+如果出現這些內容，Rust 就安裝成功了！
 
-恭喜入坑！（此处应该有掌声！）
+恭喜入坑！（此處應該有掌聲！）
 
-如果在 Windows 中使用出现问题，检查 Rust（rustc，cargo 等）是否在 `%PATH%` 环境变量所包含的路径中。
+如果在 Windows 中使用出現問題，檢查 Rust（rustc，cargo 等）是否在 `%PATH%` 環境變量所包含的路徑中。
 
-如果还是不能解决，有许多地方可以求助。最简单的是 [irc.mozilla.org 上的 #rust IRC 频道][irc]<!-- ignore --> ，可以使用 [Mibbit][mibbit] 来访问它。然后就能和其他 Rustacean（Rust 用户的称号，有自嘲意味）聊天并寻求帮助。其它给力的资源包括[用户论坛][users]和 [Stack Overflow][stackoverflow]。
+如果還是不能解決，有許多地方可以求助。最簡單的是 [irc.mozilla.org 上的 #rust IRC 頻道][irc]<!-- ignore --> ，可以使用 [Mibbit][mibbit] 來訪問它。然後就能和其他 Rustacean（Rust 用戶的稱號，有自嘲意味）聊天並尋求幫助。其它給力的資源包括[用戶論壇][users]和 [Stack Overflow][stackoverflow]。
 
 [irc]: irc://irc.mozilla.org/#rust
 [mibbit]: http://chat.mibbit.com/?server=irc.mozilla.org&channel=%23rust
 [users]: https://users.rust-lang.org/
 [stackoverflow]: http://stackoverflow.com/questions/tagged/rust
 
-### 本地文档
+### 本地文檔
 
-安装程序也自带一份文档的本地拷贝，可以离线阅读。运行 `rustup doc` 在浏览器中查看本地文档。
+安裝程序也自帶一份文檔的本地拷貝，可以離線閱讀。運行 `rustup doc` 在瀏覽器中查看本地文檔。
 
-任何时候，如果你拿不准标准库中的类型或函数如何工作，请查看 API 文档！
+任何時候，如果你拿不準標準庫中的類型或函數如何工作，請查看 API 文檔！
