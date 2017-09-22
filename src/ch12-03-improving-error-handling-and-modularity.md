@@ -332,7 +332,7 @@ fn run(config: Config) -> Result<(), Box<Error>> {
 <span class="caption">列表 12-12：修改 `run` 函數返回 `Result`</span>
  `Result<(), Box<Error>>`。之前這個函數返回 unit 類型 `()`，現在它仍然保持作為 `Ok` 時的返回值。
 
-對於錯誤類型，使用了 **trait 對象** `Box<Error>`（在開頭使用了 `use` 語句將 `std::error::Error` 引入作用域）。第十七章會涉及 trait 對象。目前只需知道 `Box<Error>` 意味著函數會返回實現了 `Error` trait 的類型，不過無需指定具體將會返回的值的類型。這提供了在不同的錯誤場景可能有不同類型的錯誤返回值的靈活性。
+對於錯誤類型，使用了 **trait 物件** `Box<Error>`（在開頭使用了 `use` 語句將 `std::error::Error` 引入作用域）。第十七章會涉及 trait 物件。目前只需知道 `Box<Error>` 意味著函數會返回實現了 `Error` trait 的類型，不過無需指定具體將會返回的值的類型。這提供了在不同的錯誤場景可能有不同類型的錯誤返回值的靈活性。
 
 第二個改變是去掉了 `expect` 調用並替換為第九章講到的 `?`。不同於遇到錯誤就 `panic!`，這會從函數中返回錯誤值並讓調用者來處理它。
 

@@ -88,7 +88,7 @@ std::marker::Sized` is not satisfied
   = note: the return type of a function must have a statically known size
 ```
 
-又是 `Sized` trait！Rust 並不知道需要多少空間來儲存閉包。不過我們在上一部分見過這種情況的解決辦法：可以使用 trait 對象：
+又是 `Sized` trait！Rust 並不知道需要多少空間來儲存閉包。不過我們在上一部分見過這種情況的解決辦法：可以使用 trait 物件：
 
 ```rust
 fn returns_closure() -> Box<Fn(i32) -> i32> {
@@ -96,7 +96,7 @@ fn returns_closure() -> Box<Fn(i32) -> i32> {
 }
 ```
 
-關於 trait 對象的更多內容，請參考第十八章。
+關於 trait 物件的更多內容，請參考第十八章。
 
 ## 總結
 

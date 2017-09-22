@@ -6,7 +6,7 @@
 
 在上一部分的結尾處的使用元組的代碼是有問題的，我們需要將 `String` 返回給調用者函數這樣就可以在調用 `calculate_length` 後仍然可以使用 `String` 了，因為 `String` 先被移動到了 `calculate_length`。
 
-下面是如何定義並使用一個（新的）`calculate_length` 函數，它以一個對象的 **引用** 作為參數而不是獲取值的所有權：
+下面是如何定義並使用一個（新的）`calculate_length` 函數，它以一個物件的 **引用** 作為參數而不是獲取值的所有權：
 
 <span class="filename">Filename: src/main.rs</span>
 

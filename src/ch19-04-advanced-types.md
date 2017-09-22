@@ -197,7 +197,7 @@ let s2: str = "How's it going?";
 <!-- Note for Carol: `Rc<str>` is only in an accepted RFC right now, check on
 its progress and pull this out if it's not going to be stable by Oct -->
 
-雖然我們總是說 `&str`，但是可以將 `str` 與所有類型的指針結合：比如 `Box<str>` 或 `Rc<str>`。事實上，之前已經見過了，不過是另一個動態大小類型：trait。每一個 trait 都是一個可以通過 trait 名稱來引用的動態大小類型。在第十七章中，我們提到了為了將 trait 用於 trait 對象，必須將他們放入指針之後，比如 `&Trait` 或 `Box<Trait>`（`Rc<Trait>` 也可以）。
+雖然我們總是說 `&str`，但是可以將 `str` 與所有類型的指針結合：比如 `Box<str>` 或 `Rc<str>`。事實上，之前已經見過了，不過是另一個動態大小類型：trait。每一個 trait 都是一個可以通過 trait 名稱來引用的動態大小類型。在第十七章中，我們提到了為了將 trait 用於 trait 物件，必須將他們放入指針之後，比如 `&Trait` 或 `Box<Trait>`（`Rc<Trait>` 也可以）。
 
 #### `Sized` trait
 

@@ -98,9 +98,10 @@ fn distance<G: AGraph>(graph: &G, start: &G::Node, end: &G::Node) -> u32 {
 
 這樣就清楚多了。只需指定一個泛型參數 `G`，帶有 `AGraph` trait bound。因為 `distance` 完全不需要使用 `Edge` 類型，無需每次都指定它。為了使用 `AGraph` 的關聯類型 `Node`，可以指定為 `G::Node`。
 
-#### 帶有關聯類型的 trait 對象
+#### 帶有關聯類型的 trait 物件
+**TODO** 待英文原版確認中
 
-你可能會好奇為什麼不在列表 19-23 和 19-24 的 `distance` 函數中使用 trait 對象。當使用 trait 對象時使用泛型 `GGraph` trait 的 `distance` 函數的簽名確實更準確了一些：
+你可能會好奇為什麼不在列表 19-23 和 19-24 的 `distance` 函數中使用 trait 物件。當使用 trait 物件時使用泛型 `GGraph` trait 的 `distance` 函數的簽名確實更準確了一些：
 
 ```rust
 # trait GGraph<Node, Edge> {}
@@ -112,9 +113,9 @@ fn distance<N, E>(graph: &GGraph<N, E>, start: &N, end: &N) -> u32 {
 
 與列表 19-24 相比較可能更顯公平。不過依然需要指定 `Edge` 類型，這意味著列表 19-24 仍更為合適，因為無需指定並不需要的類型。
 
-不可能改變列表 19-24 來對圖使用 trait 對象，因為這樣就無法引用 `AGraph` trait 中的關聯類型。
+不可能改變列表 19-24 來對圖使用 trait 物件，因為這樣就無法引用 `AGraph` trait 中的關聯類型。
 
-但是一般而言常見的情形是使用帶有關聯類型 trait 的 trait 對象；列表 19-25 展示了一個函數 `traverse` ，它無需在其他參數中使用關聯類型。然而這種情況必須指定關聯類型的具體類型。這裡選擇接受以 `usize` 作為 `Node` 和以兩個 `usize` 值的元組作為  `Edge` 的實現了 `AGraph` trait 的類型：
+但是一般而言常見的情形是使用帶有關聯類型 trait 的 trait 物件；列表 19-25 展示了一個函數 `traverse` ，它無需在其他參數中使用關聯類型。然而這種情況必須指定關聯類型的具體類型。這裡選擇接受以 `usize` 作為 `Node` 和以兩個 `usize` 值的元組作為  `Edge` 的實現了 `AGraph` trait 的類型：
 
 ```rust
 # trait AGraph {
@@ -125,7 +126,7 @@ fn distance<N, E>(graph: &GGraph<N, E>, start: &N, end: &N) -> u32 {
 fn traverse(graph: &AGraph<Node=usize, Edge=(usize, usize)>) {}
 ```
 
-雖然 trait 對象意味著無需在編譯時就知道 `graph` 參數的具體類型，但是我們確實需要在 `traverse` 函數中通過具體的關聯類型來限制 `AGraph` trait 的使用。如果不提供這樣的限制，Rust 將不能計算出用哪個 `impl` 來匹配這個 trait 對象，因為關聯類型可以作為方法簽名的一部分，Rust 需要在虛函數表(vtable)中查找它們。
+雖然 trait 物件意味著無需在編譯時就知道 `graph` 參數的具體類型，但是我們確實需要在 `traverse` 函數中通過具體的關聯類型來限制 `AGraph` trait 的使用。如果不提供這樣的限制，Rust 將不能計算出用哪個 `impl` 來匹配這個 trait 物件，因為關聯類型可以作為方法簽名的一部分，Rust 需要在虛函數表(vtable)中查找它們。
 
 ### 運算符重載和默認類型參數
 
