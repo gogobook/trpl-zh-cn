@@ -39,7 +39,7 @@ let user1 = User {
 
 <span class="caption">列表 5-2：創建 `User` 結構體的實例</span>
 
-為了從結構體中獲取某個值，可以使用點號。如果我們只想要用戶的郵箱地址，可以用 `user1.email`。要更改結構體中的值，如果結構體的實例是可變的，我們可以使用點號並對對應的字段賦值。列表 5-3 展示了如何改變一個可變的 `User` 實例 `email` 字段的值：
+為了從結構體中抓取某個值，可以使用點號。如果我們只想要用戶的郵箱地址，可以用 `user1.email`。要更改結構體中的值，如果結構體的實例是可變的，我們可以使用點號並對對應的字段賦值。列表 5-3 展示了如何改變一個可變的 `User` 實例 `email` 字段的值：
 
 ```rust
 # struct User {
@@ -81,7 +81,7 @@ fn build_user(email: String, username: String) -> User {
 }
 ```
 
-<span class="caption">列表 5-4：`build_user` 函數獲取 email 和用戶名並返回 `User` 實例</span>
+<span class="caption">列表 5-4：`build_user` 函數抓取 email 和用戶名並返回 `User` 實例</span>
 
 不過，重複 `email` 字段與 `email` 變數的名字，同樣的對於`username`，感覺有一點無趣。將函數參數起與結構體字段相同的名字是可以理解的，但是如果結構體有更多字段，重複他們是十分煩人的。幸運的是，這裡有一個方便的語法！
 

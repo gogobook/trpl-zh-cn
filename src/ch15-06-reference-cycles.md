@@ -85,7 +85,7 @@ fn main() {
 <span class="caption">Listing 15-17: Creating a reference cycle of two `List`
 values pointing to each other</span>
 
-使用`tail`方法來獲取`a`中`RefCell`的引用，並將其放入變數`link`中。接著對`RefCell`使用`borrow_mut`方法將其中的值從存放`Nil`值的`Rc`改為`b`中的`Rc`。這創建了一個看起來像圖 15-18 所示的引用循環：
+使用`tail`方法來抓取`a`中`RefCell`的引用，並將其放入變數`link`中。接著對`RefCell`使用`borrow_mut`方法將其中的值從存放`Nil`值的`Rc`改為`b`中的`Rc`。這創建了一個看起來像圖 15-18 所示的引用循環：
 
 <img alt="Reference cycle of lists" src="img/trpl15-04.svg" class="center" style="width: 50%;" />
 
@@ -102,7 +102,7 @@ pointing to each other</span>
 
 ### 避免引用循環：將`Rc<T>`變為`Weak<T>`
 
-Rust 標準庫中提供了`Weak<T>`，一個用於存在引用循環但只有一個方向有所有權的智能指針。我們已經展示過如何克隆`Rc<T>`來增加引用的`strong_count`；`Weak<T>`是一種引用`Rc<T>`但不增加`strong_count`的方式：相反它增加`Rc`引用的`weak_count`。當`Rc`離開作用域，其內部值會在`strong_count`為 0 的時候被丟棄，即便`weak_count`不為 0 。為了能夠從`Weak<T>`中獲取值，首先需要使用`upgrade`方法將其升級為`Option<Rc<T>>`。升級`Weak<T>`的結果在`Rc`還未被丟棄時是`Some`，而在`Rc`被丟棄時是`None`。因為`upgrade`返回一個`Option`，我們知道 Rust 會確保`Some`和`None`的情況都被處理並不會嘗試使用一個無效的指針。
+Rust 標準庫中提供了`Weak<T>`，一個用於存在引用循環但只有一個方向有所有權的智能指針。我們已經展示過如何克隆`Rc<T>`來增加引用的`strong_count`；`Weak<T>`是一種引用`Rc<T>`但不增加`strong_count`的方式：相反它增加`Rc`引用的`weak_count`。當`Rc`離開作用域，其內部值會在`strong_count`為 0 的時候被丟棄，即便`weak_count`不為 0 。為了能夠從`Weak<T>`中抓取值，首先需要使用`upgrade`方法將其升級為`Option<Rc<T>>`。升級`Weak<T>`的結果在`Rc`還未被丟棄時是`Some`，而在`Rc`被丟棄時是`None`。因為`upgrade`返回一個`Option`，我們知道 Rust 會確保`Some`和`None`的情況都被處理並不會嘗試使用一個無效的指針。
 
 不同於列表 15-17 中每個項只知道它的下一項，假如我們需要一個樹，它的項知道它的子項**和**父項。
 
@@ -191,7 +191,7 @@ fn main() {
 <span class="caption">Listing 15-20: A `leaf` node and a `branch` node where
 `leaf` has a `Weak` reference to its parent, `branch`</span>
 
-創建`leaf`節點是類似的；因為它作為開始並沒有父節點，這裡創建了一個新的`Weak`引用實例。當嘗試通過`upgrade`方法獲取`leaf`父節點的引用時，會得到一個`None`值，如第一個`println!`輸出所示：
+創建`leaf`節點是類似的；因為它作為開始並沒有父節點，這裡創建了一個新的`Weak`引用實例。當嘗試通過`upgrade`方法抓取`leaf`父節點的引用時，會得到一個`None`值，如第一個`println!`輸出所示：
 
 ```=
 leaf parent = None
@@ -272,7 +272,7 @@ examining strong and weak reference counts of `leaf` and `branch`</span>
 
 我們還介紹了提供了很多智能指針功能的 trait `Deref`和`Drop`。同時探索了形成引用循環和造成內存洩漏的可能性，以及如何使用`Weak<T>`避免引用循環。
 
-如果本章內容引起了你的興趣並希望現在就實現你自己的智能指針的話，請閱讀 [The Nomicon] 來獲取更多有用的信息。
+如果本章內容引起了你的興趣並希望現在就實現你自己的智能指針的話，請閱讀 [The Nomicon] 來抓取更多有用的信息。
 
 [The Nomicon]: https://doc.rust-lang.org/stable/nomicon/
 

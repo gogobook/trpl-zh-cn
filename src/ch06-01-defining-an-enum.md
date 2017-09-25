@@ -33,7 +33,7 @@ let four = IpAddrKind::V4;
 let six = IpAddrKind::V6;
 ```
 
-注意枚舉的成員位於其標識符的命名空間中，並使用兩個冒號分開。這麼設計的益處是現在 `IpAddrKind::V4` 和 `IpAddrKind::V6` 是相同類型的：`IpAddrKind`。例如，接著可以定義一個函數來獲取任何 `IpAddrKind`：
+注意枚舉的成員位於其標識符的命名空間中，並使用兩個冒號分開。這麼設計的益處是現在 `IpAddrKind::V4` 和 `IpAddrKind::V6` 是相同類型的：`IpAddrKind`。例如，接著可以定義一個函數來抓取任何 `IpAddrKind`：
 
 ```rust
 # enum IpAddrKind {
@@ -169,7 +169,7 @@ struct WriteMessage(String); // tuple struct
 struct ChangeColorMessage(i32, i32, i32); // tuple struct
 ```
 
-不過如果我們使用不同的結構體，他們都有不同的類型，將不能輕易的定義一個獲取任何這些信息類型的函數，正如可以使用列表 6-2 中定義的 `Message` 枚舉那樣，因為他們是一個類型的。
+不過如果我們使用不同的結構體，他們都有不同的類型，將不能輕易的定義一個抓取任何這些信息類型的函數，正如可以使用列表 6-2 中定義的 `Message` 枚舉那樣，因為他們是一個類型的。
 
 結構體和枚舉還有另一個相似點：就像可以使用 `impl` 來為結構體定義方法那樣，也可以在枚舉上定義方法。這是一個定義於我們 `Message` 枚舉上的叫做 `call` 的方法：
 
@@ -191,7 +191,7 @@ let m = Message::Write(String::from("hello"));
 m.call();
 ```
 
-方法體使用了 `self` 來獲取調用方法的值。這個例子中，創建了一個擁有類型 `Message::Write("hello")` 的變數 `m`，而且這就是當 `m.call()` 運行時 `call` 方法中的 `self` 的值。
+方法體使用了 `self` 來抓取調用方法的值。這個例子中，創建了一個擁有類型 `Message::Write("hello")` 的變數 `m`，而且這就是當 `m.call()` 運行時 `call` 方法中的 `self` 的值。
 
 讓我們看看標準庫中的另一個非常常見且實用的枚舉：`Option`。
 

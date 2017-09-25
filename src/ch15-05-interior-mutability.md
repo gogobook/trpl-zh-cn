@@ -66,7 +66,7 @@ a is 6
 
 在`main`函數中，我們新聲明了一個包含值 5 的`RefCell<T>`，並儲存在變數`data`中，聲明時並沒有使用`mut`關鍵字。接著使用`data`的一個不可變引用來調用`demo`函數：對於`main`函數而言`data`是不可變的！
 
-在`demo`函數中，通過調用`borrow`方法來獲取到`RefCell<T>`中值的不可變引用，並使用這個不可變引用調用了`a_fn_that_immutably_borrows`函數。更為有趣的是，可以通過`borrow_mut`方法來獲取`RefCell<T>`中值的**可變**引用，而`a_fn_that_mutably_borrows`函數就允許修改這個值。可以看到下一次調用`a_fn_that_immutably_borrows`時打印出的值是 6 而不是 5。
+在`demo`函數中，通過調用`borrow`方法來抓取到`RefCell<T>`中值的不可變引用，並使用這個不可變引用調用了`a_fn_that_immutably_borrows`函數。更為有趣的是，可以通過`borrow_mut`方法來抓取`RefCell<T>`中值的**可變**引用，而`a_fn_that_mutably_borrows`函數就允許修改這個值。可以看到下一次調用`a_fn_that_immutably_borrows`時打印出的值是 6 而不是 5。
 
 ### `RefCell<T>`在運行時檢查借用規則
 
@@ -169,4 +169,4 @@ c after = Cons(RefCell { value: 10 }, Cons(RefCell { value: 15 }, Nil))
 
 這是非常巧妙的！通過使用`RefCell<T>`，我們可以擁有一個表面上不可變的`List`，不過可以使用`RefCell<T>`中提供內部可變性的方法來在需要時修改數據。`RefCell<T>`的運行時借用規則檢查也確實保護我們免於出現數據競爭，而且我們也決定犧牲一些速度來換取數據結構的靈活性。
 
-`RefCell<T>`並不是標準庫中唯一提供內部可變性的類型。`Cell<T>`有點類似，不過不同於`RefCell<T>`那樣提供內部值的引用，其值被拷貝進和拷貝出`Cell<T>`。`Mutex<T>`提供線程間安全的內部可變性，下一章並發會討論它的應用。請查看標準庫來獲取更多細節和不同類型的區別。
+`RefCell<T>`並不是標準庫中唯一提供內部可變性的類型。`Cell<T>`有點類似，不過不同於`RefCell<T>`那樣提供內部值的引用，其值被拷貝進和拷貝出`Cell<T>`。`Mutex<T>`提供線程間安全的內部可變性，下一章並發會討論它的應用。請查看標準庫來抓取更多細節和不同類型的區別。

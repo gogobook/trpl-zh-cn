@@ -99,7 +99,7 @@ impl Post {
 
 <span class="caption">列表 17-13: 實現方法 `add_text` 來向博文的 `content` 增加文本</span>
 
-`add_text` 獲取一個 `self` 的可變引用，因為需要改變調用 `add_text` 的 `Post`。接著調用 `content` 中的 `String` 的 `push_str` 並傳遞 `text` 參數來保存到 `content` 中。這不是狀態模式的一部分，因為它的行為並不依賴博文所處的狀態。`add_text` 方法完全不與 `state` 狀態交互，不過這是我們希望支持的行為的一部分。
+`add_text` 抓取一個 `self` 的可變引用，因為需要改變調用 `add_text` 的 `Post`。接著調用 `content` 中的 `String` 的 `push_str` 並傳遞 `text` 參數來保存到 `content` 中。這不是狀態模式的一部分，因為它的行為並不依賴博文所處的狀態。`add_text` 方法完全不與 `state` 狀態交互，不過這是我們希望支持的行為的一部分。
 
 ### 博文草案的內容是空的
 
@@ -126,7 +126,7 @@ impl Post {
 
 ### 請求審核博文來改變其狀態
 
-接下來是請求審核博文，這應當將其狀態由 `Draft` 改為 `PendingReview`。我們希望 `post` 有一個獲取 `self` 可變引用的公有方法 `request_review`。接著將調用內部存放的狀態的 `request_review` 方法，而這第二個 `request_review` 方法會消費當前的狀態並返回要一個狀態。為了能夠消費舊狀態，第二個 `request_review` 方法需要能夠獲取狀態值的所有權。這就是 `Option` 的作用：我們將 `take` 字段 `state` 中的 `Some` 值並留下一個 `None` 值，因為 Rust 並不允許結構體中有空字段。接著將博文的 `state` 設置為這個操作的結果。列表 17-15 展示了這些代碼：
+接下來是請求審核博文，這應當將其狀態由 `Draft` 改為 `PendingReview`。我們希望 `post` 有一個抓取 `self` 可變引用的公有方法 `request_review`。接著將調用內部存放的狀態的 `request_review` 方法，而這第二個 `request_review` 方法會消費當前的狀態並返回要一個狀態。為了能夠消費舊狀態，第二個 `request_review` 方法需要能夠抓取狀態值的所有權。這就是 `Option` 的作用：我們將 `take` 字段 `state` 中的 `Some` 值並留下一個 `None` 值，因為 Rust 並不允許結構體中有空字段。接著將博文的 `state` 設置為這個操作的結果。列表 17-15 展示了這些代碼：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -168,7 +168,7 @@ impl State for PendingReview {
 
 <span class="caption">列表 17-15: 實現 `Post` 和 `State` trait 的 `request_review` 方法</span>
 
-這裡給 `State` trait 增加了 `request_review` 方法；所有實現了這個 trait 的類型現在都需要實現 `request_review` 方法。注意不用於使用`self`、 `&self` 或者 `&mut self` 作為方法的第一個參數，這裡使用了 `self: Box<Self>`。這個語法意味著這個方法調用只對這個類型的 `Box` 有效。這個語法獲取了 `Box<Self>` 的所有權，這是我們希望的，因為需要從老狀態轉換為新狀態，同時希望老狀態不再有效。
+這裡給 `State` trait 增加了 `request_review` 方法；所有實現了這個 trait 的類型現在都需要實現 `request_review` 方法。注意不用於使用`self`、 `&self` 或者 `&mut self` 作為方法的第一個參數，這裡使用了 `self: Box<Self>`。這個語法意味著這個方法調用只對這個類型的 `Box` 有效。這個語法抓取了 `Box<Self>` 的所有權，這是我們希望的，因為需要從老狀態轉換為新狀態，同時希望老狀態不再有效。
 
 `Draft` 的方法 `request_review` 的實現返回一個新的，裝箱的 `PendingReview` 結構體的實例，這是新引入的用來代表博文處於等待審核狀態的類型。結構體 `PendingReview` 同樣也實現了 `request_review` 方法，不過它不進行任何狀態轉換。它返回自身，因為請求審核已經處於 `PendingReview` 狀態的博文應該保持 `PendingReview` 狀態。
 
@@ -299,7 +299,7 @@ impl State for Published {
 
 <span class="caption">列表 17-18: 為 `State` trait 增加 `content` 方法</span>
 
-注意這個方法需要生命週期註解，如第十章所討論的。這裡獲取 `post` 的引用作為參數，並返回 `post` 一部分的引用，所以返回的引用的生命週期與 `post` 參數相關。
+注意這個方法需要生命週期註解，如第十章所討論的。這裡抓取 `post` 的引用作為參數，並返回 `post` 一部分的引用，所以返回的引用的生命週期與 `post` 參數相關。
 
 ### 狀態模式的權衡取捨
 
@@ -338,7 +338,7 @@ fn main() {
 }
 ```
 
-我們仍然希望使用 `Post::new` 創建一個新的草案博文，並仍然希望能夠增加博文的內容。不過不同於存在一個草案博文時返回空字符串的 `content` 方法，我們將使草案博文完全沒有 `content` 方法。這樣如果嘗試獲取草案博文的內容，將會得到一個方法不存在的編譯錯誤。這使得我們不可能在生產環境意外顯示出草案博文的內容，因為這樣的代碼甚至就不能編譯。列表 17-19 展示了 `Post` 結構體、`DraftPost` 結構體以及各自的方法的定義：
+我們仍然希望使用 `Post::new` 創建一個新的草案博文，並仍然希望能夠增加博文的內容。不過不同於存在一個草案博文時返回空字符串的 `content` 方法，我們將使草案博文完全沒有 `content` 方法。這樣如果嘗試抓取草案博文的內容，將會得到一個方法不存在的編譯錯誤。這使得我們不可能在生產環境意外顯示出草案博文的內容，因為這樣的代碼甚至就不能編譯。列表 17-19 展示了 `Post` 結構體、`DraftPost` 結構體以及各自的方法的定義：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -416,7 +416,7 @@ impl PendingReviewPost {
 
 <span class="caption">列表 17-20: `PendingReviewPost` 通過調用 `DraftPost` 的 `request_review` 創建，`approve` 方法將 `PendingReviewPost` 變為發佈的 `Post`</span>
 
-`request_review` 和 `approve` 方法獲取 `self` 的所有權，因此會消費 `DraftPost` 和 `PendingReviewPost` 實例，並分別轉換為 `PendingReviewPost` 和 發佈的 `Post`。這樣在調用 `request_review` 之後就不會遺留任何 `DraftPost` 實例，後者同理。`PendingReviewPost` 並沒有定義 `content` 方法，所以類似 `DraftPost` 嘗試讀取它的內容是一個編譯錯誤。因為唯一得到定義了 `content` 方法的 `Post` 實例的途徑是調用 `PendingReviewPost` 的 `approve` 方法，而得到 `PendingReviewPost` 的唯一辦法是調用 `DraftPost` 的 `request_review` 方法，現在我們就將發博文的工作流編碼進了類型系統。
+`request_review` 和 `approve` 方法抓取 `self` 的所有權，因此會消費 `DraftPost` 和 `PendingReviewPost` 實例，並分別轉換為 `PendingReviewPost` 和 發佈的 `Post`。這樣在調用 `request_review` 之後就不會遺留任何 `DraftPost` 實例，後者同理。`PendingReviewPost` 並沒有定義 `content` 方法，所以類似 `DraftPost` 嘗試讀取它的內容是一個編譯錯誤。因為唯一得到定義了 `content` 方法的 `Post` 實例的途徑是調用 `PendingReviewPost` 的 `approve` 方法，而得到 `PendingReviewPost` 的唯一辦法是調用 `DraftPost` 的 `request_review` 方法，現在我們就將發博文的工作流編碼進了類型系統。
 
 這也意味著不得不對 `main`做出一些小的修改。因為 `request_review` 和 `approve` 返回新實例而不是修改被調用的結構體，我們需要增加更多的 `let post = ` 覆蓋賦值來保存返回的實例。也不能再斷言草案和等待審核的博文的內容為空字符串了，我們也不再需要他們：不能編譯嘗試使用這些狀態下博文內容的代碼。更新後的 `main` 的代碼如列表 18-21 所示：
 
@@ -449,6 +449,6 @@ fn main() {
 
 ## 總結
 
-閱讀本章後，不管你是否認為 Rust 是一個面向物件語言，現在你都見識了 trait 物件是一個 Rust 中獲取部分面向物件功能的方法。動態分發可以通過犧牲一些運行時性能來為你的代碼提供一些靈活性。這些靈活性可以用來實現有助於代碼可維護性的面向物件模式。Rust 也有像所有權這樣不同於面向物件語言的功能。面向物件模式並不總是利用 Rust 實力的最好方式。
+閱讀本章後，不管你是否認為 Rust 是一個面向物件語言，現在你都見識了 trait 物件是一個 Rust 中抓取部分面向物件功能的方法。動態分發可以通過犧牲一些運行時性能來為你的代碼提供一些靈活性。這些靈活性可以用來實現有助於代碼可維護性的面向物件模式。Rust 也有像所有權這樣不同於面向物件語言的功能。面向物件模式並不總是利用 Rust 實力的最好方式。
 
 接下來，讓我們看看另一個提供了多樣靈活性的Rust功能：模式。貫穿全書的模式, 我們已經和它們打過照面了，但並沒有見識過它們的全部本領。讓我們開始探索吧！

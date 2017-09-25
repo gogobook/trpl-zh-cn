@@ -18,7 +18,7 @@ $ cargo new hello --bin
 $ cd hello
 ```
 
-並在 `src/main.rs` 放入列表 20-1 中的代碼作為開始。這段代碼會在地址 `127.0.0.1:8080` 上監聽傳入的 TCP 流。當獲取到傳入的流，它會打印出 `Connection established!`：
+並在 `src/main.rs` 放入列表 20-1 中的代碼作為開始。這段代碼會在地址 `127.0.0.1:8080` 上監聽傳入的 TCP 流。當抓取到傳入的流，它會打印出 `Connection established!`：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -93,13 +93,13 @@ fn handle_connection(mut stream: TcpStream) {
 
 <span class="caption">列表 20-2：讀取 `TcpStream` 並打印數據</span>
 
-在開頭增加 `std::io::prelude` 以便將讀寫流所需的 trait 引入作用域。相比在 `main` 的 `for` 中在獲取到連接時打印信息，現在調用新的 `handle_connection` 函數並向其傳遞 `stream`。
+在開頭增加 `std::io::prelude` 以便將讀寫流所需的 trait 引入作用域。相比在 `main` 的 `for` 中在抓取到連接時打印信息，現在調用新的 `handle_connection` 函數並向其傳遞 `stream`。
 
 在 `handle_connection` 中，通過 `mut` 關鍵字將 `stream` 參數變為可變。我們將從流中讀取數據，所以它需要是可修改的。
 
 接下來，需要實際讀取流。這裡分兩步進行：首先，在棧上聲明一個 `buffer` 來存放讀取到的數據。這裡創建了一個 512 字節的緩衝區，它足以存放基本請求的數據。這對於本章的目的來說是足夠的。如果希望處理任意大小的請求，管理所需的緩衝區將更複雜，不過現在一切從簡。接著將緩衝區傳遞給 `stream.read` ，它會從 `TcpStream` 中讀取字節並放入緩衝區中。
 
-接下來將緩衝區中的字節轉換為字符串並打印出來。`String::from_utf8_lossy` 函數獲取一個 `&[u8]` 並產生一個 `String`。函數名的 「lossy」 部分來源於當其遇到無效的 UTF-8 序列時的行為：它使用  �，`U+FFFD REPLACEMENT CHARACTER`，來代替無效序列。你可能會在緩衝區的剩餘部分看到這些替代字符，因為他們沒有被請求數據填滿。
+接下來將緩衝區中的字節轉換為字符串並打印出來。`String::from_utf8_lossy` 函數抓取一個 `&[u8]` 並產生一個 `String`。函數名的 「lossy」 部分來源於當其遇到無效的 UTF-8 序列時的行為：它使用  �，`U+FFFD REPLACEMENT CHARACTER`，來代替無效序列。你可能會在緩衝區的剩餘部分看到這些替代字符，因為他們沒有被請求數據填滿。
 
 讓我們試一試！啟動程序並再次在瀏覽器中發起請求。注意瀏覽器中仍然會出現錯誤頁面，不過終端中程序的輸出現在看起來像這樣：
 
@@ -120,7 +120,7 @@ Upgrade-Insecure-Requests: 1
 ������������������������������������
 ```
 
-根據使用的瀏覽器不同可能會出現稍微不同的數據。也可能會看到請求重複出現。現在我們打印出了請求數據，可以通過觀察 `Request: GET` 之後的路徑來解釋為何會從瀏覽器得到多個連接。如果重複的連接都是請求 `/`，就知道了瀏覽器嘗試重複獲取 `/` 因為它沒有得到響應。
+根據使用的瀏覽器不同可能會出現稍微不同的數據。也可能會看到請求重複出現。現在我們打印出了請求數據，可以通過觀察 `Request: GET` 之後的路徑來解釋為何會從瀏覽器得到多個連接。如果重複的連接都是請求 `/`，就知道了瀏覽器嘗試重複抓取 `/` 因為它沒有得到響應。
 
 拆開請求數據來理解瀏覽器向我們請求了什麼。HTTP 是一個基於文本的協議，而一個請求有如下格式：
 
@@ -189,7 +189,7 @@ fn handle_connection(mut stream: TcpStream) {
 
 <span class="caption">列表 20-3：將一個微型成功 HTTP 響應寫入流</span>
 
-新代碼中的第一行定義了變數 `response` 來存放將要返回的成功響應的數據。接著，在 `response` 上調用 `as_bytes`，因為 `stream` 的 `write` 方法獲取一個 `&[u8]` 並直接將這些字節發送給連接。
+新代碼中的第一行定義了變數 `response` 來存放將要返回的成功響應的數據。接著，在 `response` 上調用 `as_bytes`，因為 `stream` 的 `write` 方法抓取一個 `&[u8]` 並直接將這些字節發送給連接。
 
 `write` 可能會失敗，所以 `write` 返回 `Result<T, E>`；我們繼續使用 `unwrap` 以繼續本章的核心內容而不是處理錯誤。最後，`flush` 會等待直到所有字節都被寫入連接中；`TcpStream` 包含一個內部緩衝區來最小化對底層操作系統的調用。
 

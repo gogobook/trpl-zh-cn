@@ -38,7 +38,7 @@ error[E0507]: cannot move out of borrowed content
    |             ^^^^^^ cannot move out of borrowed content
 ```
 
-因為我們只有每個 `worker` 的可變借用，並不能調用 `join`：`join` 獲取其參數的所有權。為瞭解決這個問題，需要一個方法將 `thread` 移動出擁有其所有權的 `Worker` 實例以便 `join` 可以消費這個線程。列表 17-15 中我們曾見過這麼做的方法：如果 `Worker` 存放的是 `Option<thread::JoinHandle<()>`，就可以在 `Option` 上調用 `take` 方法將值從 `Some` 成員中移動出來而對 `None` 成員不做處理。換句話說，正在運行的 `Worker` 的 `thread` 將是 `Some` 成員值，而當需要清理 worker 時，將 `Some` 替換為 `None`，這樣 worker 就沒有可以運行的線程了。
+因為我們只有每個 `worker` 的可變借用，並不能調用 `join`：`join` 抓取其參數的所有權。為瞭解決這個問題，需要一個方法將 `thread` 移動出擁有其所有權的 `Worker` 實例以便 `join` 可以消費這個線程。列表 17-15 中我們曾見過這麼做的方法：如果 `Worker` 存放的是 `Option<thread::JoinHandle<()>`，就可以在 `Option` 上調用 `take` 方法將值從 `Some` 成員中移動出來而對 `None` 成員不做處理。換句話說，正在運行的 `Worker` 的 `thread` 將是 `Some` 成員值，而當需要清理 worker 時，將 `Some` 替換為 `None`，這樣 worker 就沒有可以運行的線程了。
 
 所以我們知道了需要更新 `Worker` 的定義為如下：
 
@@ -193,7 +193,7 @@ impl Worker {
 
 <span class="caption">列表 20-23：收發 `Message` 值並在 `Worker` 收到 `Message::Terminate` 時退出循環</span>
 
-需要將 `ThreadPool` 定義、創建通道的 `ThreadPool::new` 和 `Worker::new` 簽名中的 `Job` 改為 `Message`。`ThreadPool` 的 `execute` 方法需要發送封裝進 `Message::NewJob` 成員的任務，當獲取到 `NewJob` 時會處理任務而收到 `Terminate` 成員時則會退出循環。
+需要將 `ThreadPool` 定義、創建通道的 `ThreadPool::new` 和 `Worker::new` 簽名中的 `Job` 改為 `Message`。`ThreadPool` 的 `execute` 方法需要發送封裝進 `Message::NewJob` 成員的任務，當抓取到 `NewJob` 時會處理任務而收到 `Terminate` 成員時則會退出循環。
 
 通過這些修改，代碼再次能夠編譯並按照期望的行為運行。不過還是會得到一個警告，因為並沒有在任何消息中使用 `Terminate` 成員。如列表 20-14 所示那樣修改 `Drop` 實現：
 
@@ -285,7 +285,7 @@ Shutting down worker 2
 Shutting down worker 3
 ```
 
-當然，你可能會看到不同順序的輸出。可以從信息中看到服務是如何運行的： worker 0 和 worker 3 獲取了頭兩個請求，接著在第三個請求時，我們停止接收連接。當 `ThreadPool` 在 `main` 的結尾離開作用域時，其 `Drop` 實現開始工作，線程池通知所有線程終止。每個 worker 在收到終止消息時會打印出一個信息，接著線程池調用 `join` 來終止每一個 worker 線程。
+當然，你可能會看到不同順序的輸出。可以從信息中看到服務是如何運行的： worker 0 和 worker 3 抓取了頭兩個請求，接著在第三個請求時，我們停止接收連接。當 `ThreadPool` 在 `main` 的結尾離開作用域時，其 `Drop` 實現開始工作，線程池通知所有線程終止。每個 worker 在收到終止消息時會打印出一個信息，接著線程池調用 `join` 來終止每一個 worker 線程。
 
 這個特定的運行過程中一個有趣的地方在於：注意我們向通道中發出終止消息，而在任何線程收到消息之前，就嘗試 join worker 0 了。worker 0 還沒有收到終止消息，所以主線程阻塞直到 worker 0 結束。與此同時，每一個線程都收到了終止消息。一旦 worker 0 結束，主線程就等待其他 worker 結束，此時他們都已經收到終止消息並能夠停止了。
 

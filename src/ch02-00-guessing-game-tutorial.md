@@ -17,7 +17,7 @@ $ cargo new guessing_game --bin
 $ cd guessing_game
 ```
 
-第一個命令，`cargo new`，它獲取項目的名稱（`guessing_game`）作為第一個參數。`--bin` 參數告訴 Cargo 創建一個二進制項目，與第一章類似。第二個命令進入到新創建的項目目錄。
+第一個命令，`cargo new`，它抓取項目的名稱（`guessing_game`）作為第一個參數。`--bin` 參數告訴 Cargo 創建一個二進制項目，與第一章類似。第二個命令進入到新創建的項目目錄。
 
 看看生成的 *Cargo.toml* 文件：
 
@@ -32,7 +32,7 @@ authors = ["Your Name <you@example.com>"]
 [dependencies]
 ```
 
-如果 Cargo 從環境中獲取的開發者信息不正確，修改這個文件並再次保存。
+如果 Cargo 從環境中抓取的開發者信息不正確，修改這個文件並再次保存。
 
 正如第一章那樣，`cargo new` 生成了一個 「Hello, world!」 程序。查看 *src/main.rs* 文件：
 
@@ -80,9 +80,9 @@ fn main() {
 }
 ```
 
-<span class="caption">列表 2-1：獲取用戶猜測並打印的代碼</span>
+<span class="caption">列表 2-1：抓取用戶猜測並打印的代碼</span>
 
-這些代碼包含很多信息，我們一點一點地過一遍。為了獲取用戶輸入並打印結果作為輸出，我們需要將 `io`（輸入/輸出）庫引入當前作用域。`io` 庫來自於標準庫（也被稱為`std`）：
+這些代碼包含很多信息，我們一點一點地過一遍。為了抓取用戶輸入並打印結果作為輸出，我們需要將 `io`（輸入/輸出）庫引入當前作用域。`io` 庫來自於標準庫（也被稱為`std`）：
 
 ```rust
 use std::io;
@@ -154,7 +154,7 @@ io::stdin().read_line(&mut guess)
 
 [iostdin]: https://doc.rust-lang.org/std/io/struct.Stdin.html
 
-代碼的下一部分，`.read_line(&mut guess)`，調用 [`read_line`][read_line]<!-- ignore --> 方法從標準輸入句柄獲取用戶輸入。我們還向 `read_line()` 傳遞了一個參數：`&mut guess`。
+代碼的下一部分，`.read_line(&mut guess)`，調用 [`read_line`][read_line]<!-- ignore --> 方法從標準輸入句柄抓取用戶輸入。我們還向 `read_line()` 傳遞了一個參數：`&mut guess`。
 
 [read_line]: https://doc.rust-lang.org/std/io/struct.Stdin.html#method.read_line
 
@@ -189,7 +189,7 @@ io::stdin().read_line(&mut guess).expect("Failed to read line");
 
 對於 `Result`，它的成員是 `Ok` 或 `Err`，`Ok` 表示操作成功，內部包含成功時產生的值。`Err` 意味著操作失敗，包含失敗的前因後果。
 
-這些 `Result` 類型的作用是編碼錯誤處理信息。`Result` 類型的值，像其他類型一樣，擁有定義於其上的方法。`io::Result` 的實例擁有 [`expect` 方法][expect]<!-- ignore -->。如果 `io::Result` 實例的值是 `Err`，`expect` 會導致程序崩潰，並顯示當做參數傳遞給 `expect` 的信息。如果 `read_line` 方法返回 `Err`，則可能是來源於底層操作系統錯誤的結果。如果 `io::Result` 實例的值是 `Ok`，`expect` 會獲取 `Ok` 中的值並原樣返回。在本例中，這個值是用戶輸入到標準輸入中的字節的數量。
+這些 `Result` 類型的作用是編碼錯誤處理信息。`Result` 類型的值，像其他類型一樣，擁有定義於其上的方法。`io::Result` 的實例擁有 [`expect` 方法][expect]<!-- ignore -->。如果 `io::Result` 實例的值是 `Err`，`expect` 會導致程序崩潰，並顯示當做參數傳遞給 `expect` 的信息。如果 `read_line` 方法返回 `Err`，則可能是來源於底層操作系統錯誤的結果。如果 `io::Result` 實例的值是 `Ok`，`expect` 會抓取 `Ok` 中的值並原樣返回。在本例中，這個值是用戶輸入到標準輸入中的字節的數量。
 
 [expect]: https://doc.rust-lang.org/std/result/enum.Result.html#method.expect
 
@@ -239,7 +239,7 @@ Please input your guess.
 You guessed: 6
 ```
 
-至此為止，遊戲的第一部分已經完成：我們從鍵盤獲取輸入並打印了出來。
+至此為止，遊戲的第一部分已經完成：我們從鍵盤抓取輸入並打印了出來。
 
 ## 生成一個秘密數字
 
@@ -281,7 +281,7 @@ $ cargo build
 
 可能會出現不同的版本號（多虧了語義化版本，它們與代碼是兼容的！），同時顯示順序也可能會有所不同。
 
-現在我們有了一個外部依賴，Cargo 從 *registry* 上獲取所有包的最新版本信息，這是一份來自 [Crates.io][cratesio] 的數據拷貝。Crates.io 是 Rust 生態環境中的開發者們向他人貢獻 Rust 開源項目的地方。
+現在我們有了一個外部依賴，Cargo 從 *registry* 上抓取所有包的最新版本信息，這是一份來自 [Crates.io][cratesio] 的數據拷貝。Crates.io 是 Rust 生態環境中的開發者們向他人貢獻 Rust 開源項目的地方。
 
 [cratesio]: https://crates.io
 
@@ -370,7 +370,7 @@ fn main() {
 
 接下來增加了另一行 `use`：`use rand::Rng`。`Rng` 是一個 trait，它定義了隨機數生成器應實現的方法 ，想使用這些方法的話此 trait 必須在作用域中。第十章會詳細介紹 trait。
 
-另外，中間還新增加了兩行。`rand::thread_rng` 函數提供實際使用的隨機數生成器：它位於當前執行線程，並從操作系統獲取 seed。接下來，調用隨機數生成器的 `gen_range` 方法。這個方法由剛才引入到作用域的 `Rng` trait 定義。`gen_range` 方法獲取兩個數字作為參數，並生成一個範圍在兩者之間的隨機數。它包含下限但不包含上限，所以需要指定 `1` 和 `101` 來請求一個 1 和 100 之間的數。
+另外，中間還新增加了兩行。`rand::thread_rng` 函數提供實際使用的隨機數生成器：它位於當前執行線程，並從操作系統抓取 seed。接下來，調用隨機數生成器的 `gen_range` 方法。這個方法由剛才引入到作用域的 `Rng` trait 定義。`gen_range` 方法抓取兩個數字作為參數，並生成一個範圍在兩者之間的隨機數。它包含下限但不包含上限，所以需要指定 `1` 和 `101` 來請求一個 1 和 100 之間的數。
 
 知道 use 哪個 trait 和該從 crate 中調用哪個方法並不代表你 **知道** 如何使用。crate 的使用說明位於其文檔中。Cargo 有一個很棒的功能是：運行 `cargo doc --open` 命令來構建所有本地依賴提供的文檔，並在瀏覽器中打開。例如，假設你對 `rand` crate 中的其他功能感興趣，`cargo doc --open` 並點擊左側導航欄中的 `rand`。
 
@@ -454,7 +454,7 @@ match guess.cmp(&secret_number) {
 
 [match]: ch06-02-match.html
 
-一個 `match` 表達式由 **分支（arms）** 構成。一個分支包含一個 **模式**（*pattern*）和表達式開頭的值與分支模式相匹配時應該執行的代碼。Rust 獲取提供給 `match` 的值並挨個檢查每個分支的模式。`match` 結構和模式是 Rust 中強大的功能，它體現了代碼可能遇到的多種情形，並幫助你沒有遺漏的處理。這些功能將分別在第六章和第十八章詳細介紹。
+一個 `match` 表達式由 **分支（arms）** 構成。一個分支包含一個 **模式**（*pattern*）和表達式開頭的值與分支模式相匹配時應該執行的代碼。Rust 抓取提供給 `match` 的值並挨個檢查每個分支的模式。`match` 結構和模式是 Rust 中強大的功能，它體現了代碼可能遇到的多種情形，並幫助你沒有遺漏的處理。這些功能將分別在第六章和第十八章詳細介紹。
 
 讓我們看看使用 `match` 表達式的例子。假設用戶猜了 50，這時隨機生成的秘密數字是 38。比較 50 與 38 時，因為 50 比 38 要大，`cmp` 方法會返回 `Ordering::Greater`。`Ordering::Greater` 是 `match` 表達式得到的值。它檢查第一個分支的模式，`Ordering::Less` 與 `Ordering::Greater`並不匹配，所以它忽略了這個分支的動作並來到下一個分支。下一個分支的模式是 `Ordering::Greater`，**正確** 匹配！這個分支關聯的代碼被執行，在屏幕打印出 `Too big!`。`match` 表達式就此終止，因為該場景下沒有檢查最後一個分支的必要。
 

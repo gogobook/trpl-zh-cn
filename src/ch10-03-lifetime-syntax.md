@@ -117,7 +117,7 @@ fn main() {
 
 <span class="caption">列表 10-21：`main` 函數調用 `longest` 函數來尋找兩個字符串 slice 中較長的一個</span>
 
-注意函數期望獲取字符串 slice（如第四章所講到的這是引用）因為我們並不希望`longest` 函數獲取其參數的所有權。我們希望函數能夠接受 `String` 的 slice（也就是變量 `string1` 的類型）以及字符串字面值（也就是變量 `string2` 包含的值）。
+注意函數期望抓取字符串 slice（如第四章所講到的這是引用）因為我們並不希望`longest` 函數抓取其參數的所有權。我們希望函數能夠接受 `String` 的 slice（也就是變量 `string1` 的類型）以及字符串字面值（也就是變量 `string2` 包含的值）。
 
 <!-- why is `a` a slice and `b` a literal? You mean "a" from the string "abcd"? -->
 <!-- I've changed the variable names to remove ambiguity between the variable
@@ -206,7 +206,7 @@ fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
 
 這段代碼能夠編譯並會產生我們想要使用列表 10-21 中的 `main` 函數得到的結果。
 
-現在函數簽名表明對於某些生命週期 `'a`，函數會獲取兩個參數，他們都是與生命週期 `'a` 存在的一樣長的字符串 slice。函數會返回一個同樣也與生命週期 `'a` 存在的一樣長的字符串 slice。這就是我們告訴 Rust 需要其保證的協議。
+現在函數簽名表明對於某些生命週期 `'a`，函數會抓取兩個參數，他們都是與生命週期 `'a` 存在的一樣長的字符串 slice。函數會返回一個同樣也與生命週期 `'a` 存在的一樣長的字符串 slice。這就是我們告訴 Rust 需要其保證的協議。
 
 通過在函數簽名中指定生命週期參數，不會改變任何參數或返回值的生命週期，不過我們說過任何不堅持這個協議的類型都將被借用檢查器拒絕。這個函數並不知道（或需要知道）`x` 和 `y` 具體會存在多久，不過只需要知道一些可以使用 `'a` 替代的作用域將會滿足這個簽名。
 

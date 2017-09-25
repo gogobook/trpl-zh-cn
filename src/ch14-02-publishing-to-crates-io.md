@@ -104,7 +104,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
 
 公有 API 的結構是你發佈 crate 時主要需要考慮的。crate 用戶沒有你那麼熟悉其結構，並且如何模塊層級過大他們可能會難以找到所需的部分。
 
-好消息是，如果結果對於用戶來說 **不是** 很方便，你也無需重新安排內部組織：你可以選擇使用 `pub use` 重導出（re-export）項來使公有結構不同於私有結構。重導出獲取位於一個位置的公有項並將其公開到另一個位置，好像它就定義在這個新位置一樣。
+好消息是，如果結果對於用戶來說 **不是** 很方便，你也無需重新安排內部組織：你可以選擇使用 `pub use` 重導出（re-export）項來使公有結構不同於私有結構。重導出抓取位於一個位置的公有項並將其公開到另一個位置，好像它就定義在這個新位置一樣。
 
 例如，假設我們創建了一個模塊化了充滿藝術化氣息的庫 `art`。在這個庫中是一個包含兩個枚舉 `PrimaryColor` 和 `SecondaryColor` 的模塊 `kinds`，以及一個包含函數 `mix` 的模塊 `utils`，如列表 14-6 所示：
 
@@ -227,7 +227,7 @@ fn main() {
 
 ### 創建 Crates.io 賬號
 
-在你可以發佈任何 crate 之前，需要在 crates.io 上註冊賬號並獲取一個 API token。為此，訪問位於 *https://crates.io* 的官網並使用 GitHub 賬號登陸————目前 GitHub 賬號是必須的，不過將來該網站可能會支持其他創建賬號的方法。一旦登陸之後，查看位於 *https://crates.io/me* 的賬戶設置頁面並獲取 API token。接著使用該 API token 運行 `cargo login` 命令，像這樣：
+在你可以發佈任何 crate 之前，需要在 crates.io 上註冊賬號並抓取一個 API token。為此，訪問位於 *https://crates.io* 的官網並使用 GitHub 賬號登陸————目前 GitHub 賬號是必須的，不過將來該網站可能會支持其他創建賬號的方法。一旦登陸之後，查看位於 *https://crates.io/me* 的賬戶設置頁面並抓取 API token。接著使用該 API token 運行 `cargo login` 命令，像這樣：
 
 ```text
 $ cargo login abcdefghijklmnopqrstuvwxyz012345

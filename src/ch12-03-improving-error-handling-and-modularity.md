@@ -18,7 +18,7 @@
 
 ### 二進制項目的關注分離
 
-`main` 函數負責多個任務的組織問題在許多二進制項目中很常見。所以 Rust 社區開發出一類在 `main` 函數開始變得龐大時進行二進製程序的關注分離的指導性過程。這些過程有如下步驟：
+`main` 函數負責多個任務的組織問題在許多二進制項目中很常見。所以 Rust 社區開發出一類在 `main` 函數開始變得龐大時進行二進制程序的關注分離的指導性過程。這些過程有如下步驟：
 
 1. 將程序拆分成 *main.rs* 和 *lib.rs* 並將程序的邏輯放入 *lib.rs* 中。
 2. 當命令行解析邏輯比較小時，可以保留在 *main.rs* 中。
@@ -104,7 +104,7 @@ fn parse_config(args: &[String]) -> Config {
 
 <span class="caption">列表 12-6：重構 `parse_config` 返回一個 `Config` 結構體實例</span>
 
-`parse_config` 的簽名表明它現在返回一個 `Config` 值。在 `parse_config` 的函數體中，之前返回引用了 `args` 中 `String` 值的字符串 slice，現在我們選擇定義 `Config` 來包含擁有所有權的 `String` 值。`main` 中的 `args` 變數是參數值的所有者並只允許 `parse_config` 函數借用他們，這意味著如果 `Config` 嘗試獲取 `args` 中值的所有權將違反 Rust 的借用規則。
+`parse_config` 的簽名表明它現在返回一個 `Config` 值。在 `parse_config` 的函數體中，之前返回引用了 `args` 中 `String` 值的字符串 slice，現在我們選擇定義 `Config` 來包含擁有所有權的 `String` 值。`main` 中的 `args` 變數是參數值的所有者並只允許 `parse_config` 函數借用他們，這意味著如果 `Config` 嘗試抓取 `args` 中值的所有權將違反 Rust 的借用規則。
 
 還有許多不同的方式可以處理 `String` 的數據，而最簡單但有些不太高效的方式是調用這些值的 `clone` 方法。這會生成 `Config` 實例可以擁有的數據的完整拷貝，不過會比儲存字符串數據的引用消耗更多的時間和內存。不過拷貝數據使得代碼顯得更加直白因為無需管理引用的生命週期，所以在這種情況下犧牲一小部分性能來換取簡潔性的取捨是值得的。
 
@@ -304,7 +304,7 @@ fn run(config: Config) {
 
 <span class="caption">列表 12-11：提取 `run` 函數來包含剩餘的程序邏輯</span>
 
-現在 `run` 函數包含了 `main` 中從讀取文件開始的剩餘的所有邏輯。`run` 函數獲取一個 `Config` 實例作為參數。
+現在 `run` 函數包含了 `main` 中從讀取文件開始的剩餘的所有邏輯。`run` 函數抓取一個 `Config` 實例作為參數。
 
 #### 從 `run` 函數中返回錯誤
 

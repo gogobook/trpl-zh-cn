@@ -44,7 +44,7 @@ $ export PATH="$HOME/.cargo/bin:$PATH"
 
 ### 自定義安裝
 
-無論出於何種理由，如果不願意使用 rustup.rs，請查看 [Rust 安裝頁面](https://www.rust-lang.org/install.html) 獲取其他選項。
+無論出於何種理由，如果不願意使用 rustup.rs，請查看 [Rust 安裝頁面](https://www.rust-lang.org/install.html) 抓取其他選項。
 
 
 ### 更新

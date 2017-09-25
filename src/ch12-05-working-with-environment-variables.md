@@ -82,7 +82,7 @@ fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
 
 首先我們將 `query` 字符串轉換為小寫，並將其覆蓋到同名的變數中。對查詢字符串調用 `to_lowercase` 是必需的，這樣不管用戶的查詢是 「rust」、「RUST」、「Rust」 或者 「rUsT」，我們都將其當作 「rust」 處理並對大小寫不敏感。
 
-注意 `query` 現在是一個 `String` 而不是字符串 slice，因為調用 `to_lowercase` 是在創建新數據，而不是引用現有數據。如果查詢字符串是 「rUsT」，這個字符串 slice 並不包含可供我們使用的小寫的 「u」 或 「t」，所以必需分配一個包含 「rust」 的新 `String`。現在當我們將 `query` 作為一個參數傳遞給 `contains` 方法時，需要增加一個 & 因為 `contains` 的簽名被定義為獲取一個字符串 slice。
+注意 `query` 現在是一個 `String` 而不是字符串 slice，因為調用 `to_lowercase` 是在創建新數據，而不是引用現有數據。如果查詢字符串是 「rUsT」，這個字符串 slice 並不包含可供我們使用的小寫的 「u」 或 「t」，所以必需分配一個包含 「rust」 的新 `String`。現在當我們將 `query` 作為一個參數傳遞給 `contains` 方法時，需要增加一個 & 因為 `contains` 的簽名被定義為抓取一個字符串 slice。
 
 接下來在檢查每個 `line` 是否包含 `search` 之前增加了一個 `to_lowercase` 調用將他們都變為小寫。現在我們將 `line` 和 `query` 都轉換成了小寫，這樣就可以不管查詢的大小寫進行匹配了。
 

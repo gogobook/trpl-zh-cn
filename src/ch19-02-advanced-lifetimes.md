@@ -46,7 +46,7 @@ impl<'a> Parser<'a> {
 
 <span class="caption">列表 19-13：將所有 `Context` 和 `Parser` 的引用標註為相同的生命週期參數</span>
 
-這次可以編譯了。接下來，在列表 19-14 中，讓我們編寫一個獲取 `Context` 的實例，使用 `Parser` 來解析其內容，並返回 `parse` 的返回值的函數。這還不能運行：
+這次可以編譯了。接下來，在列表 19-14 中，讓我們編寫一個抓取 `Context` 的實例，使用 `Parser` 來解析其內容，並返回 `parse` 的返回值的函數。這還不能運行：
 
 ```rust
 fn parse_context(context: Context) -> Result<(), &str> {
@@ -54,7 +54,7 @@ fn parse_context(context: Context) -> Result<(), &str> {
 }
 ```
 
-<span class="caption">列表 19-14：一個增加獲取 `Context` 並使用 `Parser` 的函數 `parse_context` 的嘗試</span>
+<span class="caption">列表 19-14：一個增加抓取 `Context` 並使用 `Parser` 的函數 `parse_context` 的嘗試</span>
 
 當嘗試編譯這段額外帶有 `parse_context` 函數的代碼時會得到兩個相當冗長的錯誤：
 
@@ -98,7 +98,7 @@ body at 15:55...
 
 這些錯誤表明我們創建的兩個 `Parser` 實例和 `context` 參數從 `Parser` 被創建開始一直存活到 `parse_context` 函數結束，不過他們都需要在整個函數的生命週期中都有效。
 
-換句話說，`Parser` 和 `context` 需要比整個函數**長壽**（*outlive*）並在函數開始之前和結束之後都有效以確保代碼中的所有引用始終是有效的。雖然兩個我們創建的 `Parser` 和 `context` 參數在函數的結尾就離開了作用域（因為 `parse_context` 獲取了 `context` 的所有權）。
+換句話說，`Parser` 和 `context` 需要比整個函數**長壽**（*outlive*）並在函數開始之前和結束之後都有效以確保代碼中的所有引用始終是有效的。雖然兩個我們創建的 `Parser` 和 `context` 參數在函數的結尾就離開了作用域（因為 `parse_context` 抓取了 `context` 的所有權）。
 
 讓我們再次看看列表 19-13 中的定義，特別是 `parse` 方法的簽名：
 
@@ -114,7 +114,7 @@ body at 15:55...
 
 正是如此，`parse` 返回值的錯誤部分的生命週期與 `Parser` 實例的生命週期（`parse` 方法簽名中的 `&self`）相綁定。這就可以理解了，因為返回的字符串 slice 引用了 `Parser` 存放的 `Context` 實例中的字符串 slice，同時在 `Parser` 結構體的定義中我們指定了 `Parser` 中存放的 `Context` 引用的生命週期和 `Context` 中存放的字符串 slice 的生命週期應該一致。
 
-問題是 `parse_context` 函數返回 `parse` 返回值，所以 `parse_context` 返回值的生命週期也與 `Parser` 的生命週期相聯繫。不過 `parse_context` 函數中創建的 `Parser` 實例並不能存活到函數結束之後（它是臨時的），同時 `context` 將會在函數的結尾離開作用域（`parse_context` 獲取了它的所有權）。
+問題是 `parse_context` 函數返回 `parse` 返回值，所以 `parse_context` 返回值的生命週期也與 `Parser` 的生命週期相聯繫。不過 `parse_context` 函數中創建的 `Parser` 實例並不能存活到函數結束之後（它是臨時的），同時 `context` 將會在函數的結尾離開作用域（`parse_context` 抓取了它的所有權）。
 
 不允許一個在函數結尾離開作用域的值的引用。Rust 認為這是我們想要做的，因為我們將所有生命週期用相同的生命週期參數標記。這告訴了 Rust `Context` 中存放的字符串 slice 的生命週期與 `Parser` 中存放的 `Context` 引用的生命週期一致。
 
