@@ -82,7 +82,7 @@ error: function `connect` is private
   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ```
 
-非常好！另一個不同的錯誤！好的，不同的錯誤信息也是值得慶祝的（可能是程序員被黑的最慘的一次）。新錯誤表明 「函數 `connect` 是私有的」，那麼讓我們修改 *src/client.rs* 將 `client::connect` 也設為公有：
+非常好！另一個不同的錯誤！好的，不同的錯誤信息也是值得慶祝的（可能是程式設計師被黑的最慘的一次）。新錯誤表明 「函數 `connect` 是私有的」，那麼讓我們修改 *src/client.rs* 將 `client::connect` 也設為公有：
 
 <span class="filename">文件名: src/client.rs</span>
 

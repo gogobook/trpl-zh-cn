@@ -170,7 +170,7 @@ but the index is 1', /stable-dist-rustc/build/src/libcollections/vec.rs:1307
 note: Run with `RUST_BACKTRACE=1` for a backtrace.
 ```
 
-`index out of bounds: the len is 1 but the index is 1` 是一個針對程序員的錯誤信息，然而這並不能真正幫助終端用戶理解發生了什麼和他們應該做什麼。現在就讓我們修復它吧。
+`index out of bounds: the len is 1 but the index is 1` 是一個針對程式設計師的錯誤信息，然而這並不能真正幫助終端用戶理解發生了什麼和他們應該做什麼。現在就讓我們修復它吧。
 
 ### 改善錯誤信息
 
