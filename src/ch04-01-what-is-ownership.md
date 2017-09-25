@@ -83,7 +83,7 @@ let s = "hello";
 let s = String::from("hello");
 ```
 
-這兩個冒號（`::`）運算符允許將特定的 `from` 函數置於 `String` 類型的命名空間（namespace）下而不需要使用類似 `string_from` 這樣的名字。在第五章的 「方法語法」（「Method Syntax」）部分會著重講解這個語法而且在第七章會講到模塊的命名空間。
+這兩個冒號（`::`）運算符允許將特定的 `from` 函數置於 `String` 類型的命名空間（namespace）下而不需要使用類似 `string_from` 這樣的名字。在第五章的 「方法語法」（「Method Syntax」）部分會著重講解這個語法而且在第七章會講到模組的命名空間。
 
 這類字符串 *可以* 被修改：
 

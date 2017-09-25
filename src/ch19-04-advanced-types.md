@@ -77,7 +77,7 @@ fn returns_long_type() -> Thunk {
 
 這樣就讀寫起來就容易多了！為類型別名選擇一個好名字也可以幫助你表達意圖（單詞 *thunk* 表示會在之後被計算的代碼，所以這是一個存放閉包的合適的名字）。
 
-類型別名的另一個常用用法是與 `Result<T, E>` 結合。考慮一下標準庫中的 `std::io` 模塊。I/O 操作通常會返回一個 `Result<T, E>`，因為這些操作可能會失敗。`std::io::Error` 結構體代表了所有可能的 I/O 錯誤。`std::io` 中大部分函數會返回 `Result<T, E>`，其中 `E` 是 `std::io::Error`，比如 `Write` trait 中的這些函數：
+類型別名的另一個常用用法是與 `Result<T, E>` 結合。考慮一下標準庫中的 `std::io` 模組。I/O 操作通常會返回一個 `Result<T, E>`，因為這些操作可能會失敗。`std::io::Error` 結構體代表了所有可能的 I/O 錯誤。`std::io` 中大部分函數會返回 `Result<T, E>`，其中 `E` 是 `std::io::Error`，比如 `Write` trait 中的這些函數：
 
 ```rust
 use std::io::Error;

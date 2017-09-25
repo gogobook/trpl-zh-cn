@@ -32,7 +32,7 @@
 
 ## 基本 Rust 技能
 
-- [模塊](ch07-00-modules.md)
+- [模組](ch07-00-modules.md)
     - [`mod`和文件系統](ch07-01-mod-and-the-filesystem.md)
     - [使用`pub`控制可見性](ch07-02-controlling-visibility-with-pub.md)
     - [使用`use`導入命名](ch07-03-importing-names-with-use.md)
@@ -60,7 +60,7 @@
 - [一個 I/O 項目](ch12-00-an-io-project.md)
     - [接受命令行參數](ch12-01-accepting-command-line-arguments.md)
     - [讀取文件](ch12-02-reading-a-file.md)
-    - [增強錯誤處理和模塊化](ch12-03-improving-error-handling-and-modularity.md)
+    - [增強錯誤處理和模組化](ch12-03-improving-error-handling-and-modularity.md)
     - [測試庫的功能](ch12-04-testing-the-librarys-functionality.md)
     - [處理環境變數](ch12-05-working-with-environment-variables.md)
     - [輸出到`stderr`而不是`stdout`](ch12-06-writing-to-stderr-instead-of-stdout.md)

@@ -1,4 +1,4 @@
-## 重構改進模塊性和錯誤處理
+## 重構改進模組性和錯誤處理
 
 > [ch12-03-improving-error-handling-and-modularity.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch12-03-improving-error-handling-and-modularity.md)
 > <br>
@@ -440,6 +440,6 @@ fn main() {
 
 為了將庫 crate 引入二進制 crate，我們使用 `extern crate minigrep`。接著增加 `use minigrep::Config` 將 `Config` 類型引入作用域，並使用 crate 名作為 `run` 函數的前綴。通過這些重構，所有功能應該能夠聯繫在一起並運行了。運行 `cargo run` 來確保一切都正確的銜接在一起。
 
-哇哦！這可有很多的工作，不過我們為將來成功打下了基礎。現在處理錯誤將更容易，同時代碼也更加模塊化。從現在開始幾乎所有的工作都將在 *src/lib.rs* 中進行。
+哇哦！這可有很多的工作，不過我們為將來成功打下了基礎。現在處理錯誤將更容易，同時代碼也更加模組化。從現在開始幾乎所有的工作都將在 *src/lib.rs* 中進行。
 
-讓我們利用這些新創建的模塊的優勢來進行一些在舊代碼中難以展開的工作，他們在新代碼中卻很簡單：編寫測試！
+讓我們利用這些新創建的模組的優勢來進行一些在舊代碼中難以展開的工作，他們在新代碼中卻很簡單：編寫測試！

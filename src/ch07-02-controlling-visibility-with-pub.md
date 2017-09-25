@@ -42,11 +42,11 @@ fn main() {
 
 使用 `extern crate` 指令將 `communicator` 庫 crate 引入到作用域，因為事實上我們的包現在包含 **兩個** crate。Cargo 認為 *src/main.rs* 是一個二進制 crate 的根文件，與現存的以 *src/lib.rs* 為根文件的庫 crate 相區分。這個模式在可執行項目中非常常見：大部分功能位於庫 crate 中，而二進制 crate 使用這個庫 crate。通過這種方式，其他程序也可以使用這個庫 crate，這是一個很好的關注分離（separation of concerns）。
 
-從一個外部 crate 的視角觀察 `communicator` 庫的內部，我們創建的所有模塊都位於一個與 crate 同名的模塊內部，`communicator`。這個頂層的模塊被稱為 crate 的 **根模塊**（*root module*）。
+從一個外部 crate 的視角觀察 `communicator` 庫的內部，我們創建的所有模組都位於一個與 crate 同名的模組內部，`communicator`。這個頂層的模組被稱為 crate 的 **根模組**（*root module*）。
 
-另外注意到即便在項目的子模塊中使用外部 crate，`extern crate` 也應該位於根模塊（也就是 *src/main.rs* 或 *src/lib.rs*）。接著，在子模塊中，我們就可以像頂層模塊那樣引用外部 crate 中的項了。
+另外注意到即便在項目的子模組中使用外部 crate，`extern crate` 也應該位於根模組（也就是 *src/main.rs* 或 *src/lib.rs*）。接著，在子模組中，我們就可以像頂層模組那樣引用外部 crate 中的項了。
 
-我們的二進制 crate 如今正好調用了庫中 `client` 模塊的 `connect` 函數。然而，執行 `cargo build` 會在之前的警告之後出現一個錯誤：
+我們的二進制 crate 如今正好調用了庫中 `client` 模組的 `connect` 函數。然而，執行 `cargo build` 會在之前的警告之後出現一個錯誤：
 
 ```text
 error: module `client` is private
@@ -56,13 +56,13 @@ error: module `client` is private
   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ```
 
-啊哈！這告訴了我們 `client` 模塊是私有的，這也正是那些警告的癥結所在。這也是我們第一次在 Rust 上下文中涉及到 **公有**（*public*）和 **私有**（*private*）的概念。Rust 所有代碼的預設狀態是私有的：除了自己之外別人不允許使用這些代碼。如果不在自己的項目中使用一個私有函數，因為程序自身是唯一允許使用這個函數的代碼，Rust 會警告說函數未被使用。
+啊哈！這告訴了我們 `client` 模組是私有的，這也正是那些警告的癥結所在。這也是我們第一次在 Rust 上下文中涉及到 **公有**（*public*）和 **私有**（*private*）的概念。Rust 所有代碼的預設狀態是私有的：除了自己之外別人不允許使用這些代碼。如果不在自己的項目中使用一個私有函數，因為程序自身是唯一允許使用這個函數的代碼，Rust 會警告說函數未被使用。
 
 一旦我們指定一個像 `client::connect` 的函數為公有，不光二進制 crate 中的函數調用是允許的，函數未被使用的警告也會消失。將其標記為公有讓 Rust 知道了我們意在使函數在程序的外部被使用。現在這個可能的理論上的外部可用性使得 Rust 認為這個函數 「已經被使用」。因此。當某項被標記為公有，Rust 不再要求它在程序自身被使用並停止警告某項未被使用。
 
 ### 標記函數為公有
 
-為了告訴 Rust 某項為公有，在想要標記為公有的項的聲明開頭加上 `pub` 關鍵字。現在我們將致力於修復 `client::connect` 未被使用的警告，以及二進制 crate 中 「模塊`client`是私有的」 的錯誤。像這樣修改 *src/lib.rs* 使 `client` 模塊公有：
+為了告訴 Rust 某項為公有，在想要標記為公有的項的聲明開頭加上 `pub` 關鍵字。現在我們將致力於修復 `client::connect` 未被使用的警告，以及二進制 crate 中 「模組`client`是私有的」 的錯誤。像這樣修改 *src/lib.rs* 使 `client` 模組公有：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -138,7 +138,7 @@ warning: function is never used: `connect`, #[warn(dead_code)] on by default
   | ^
 ```
 
-恩，雖然將 `network::connect` 設為 `pub` 了我們仍然得到了一個未被使用函數的警告。這是因為模塊中的函數是公有的，不過函數所在的 `network` 模塊卻不是公有的。這回我們是自內向外修改庫文件的，而 `client::connect` 的時候是自外向內修改的。我們需要修改 *src/lib.rs* 讓 `network` 也是公有的：
+恩，雖然將 `network::connect` 設為 `pub` 了我們仍然得到了一個未被使用函數的警告。這是因為模組中的函數是公有的，不過函數所在的 `network` 模組卻不是公有的。這回我們是自內向外修改庫文件的，而 `client::connect` 的時候是自外向內修改的。我們需要修改 *src/lib.rs* 讓 `network` 也是公有的：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -164,8 +164,8 @@ warning: function is never used: `connect`, #[warn(dead_code)] on by default
 
 總的來說，有如下項的可見性規則：
 
-1. 如果一個項是公有的，它能被任何父模塊訪問
-2. 如果一個項是私有的，它能被其直接父模塊及其任何子模塊訪問
+1. 如果一個項是公有的，它能被任何父模組訪問
+2. 如果一個項是私有的，它能被其直接父模組及其任何子模組訪問
 
 ### 私有性示例
 
@@ -200,22 +200,22 @@ fn try_me() {
 
 #### 檢查錯誤
 
-`try_me` 函數位於項目的根模塊。叫做 `outermost` 的模塊是私有的，不過第二條私有性規則說明` try_me` 函數允許訪問 `outermost` 模塊，因為 `outermost` 位於當前（根）模塊，`try_me` 也是。
+`try_me` 函數位於項目的根模組。叫做 `outermost` 的模組是私有的，不過第二條私有性規則說明` try_me` 函數允許訪問 `outermost` 模組，因為 `outermost` 位於當前（根）模組，`try_me` 也是。
 
-`outermost::middle_function` 的調用是正確的。因為 `middle_function` 是公有的，而 `try_me` 通過其父模塊 `outermost` 訪問 `middle_function`。根據上一段的規則我們可以確定這個模塊是可訪問的。
+`outermost::middle_function` 的調用是正確的。因為 `middle_function` 是公有的，而 `try_me` 通過其父模組 `outermost` 訪問 `middle_function`。根據上一段的規則我們可以確定這個模組是可訪問的。
 
-`outermost::middle_secret_function` 的調用會造成一個編譯錯誤。`middle_secret_function` 是私有的，所以第二條（私有性）規則生效了。根模塊既不是 `middle_secret_function` 的當前模塊（`outermost`是），也不是 `middle_secret_function` 當前模塊的子模塊。
+`outermost::middle_secret_function` 的調用會造成一個編譯錯誤。`middle_secret_function` 是私有的，所以第二條（私有性）規則生效了。根模組既不是 `middle_secret_function` 的當前模組（`outermost`是），也不是 `middle_secret_function` 當前模組的子模組。
 
-叫做 `inside` 的模塊是私有的且沒有子模塊，所以它只能被當前模塊 `outermost` 訪問。這意味著 `try_me` 函數不允許調用 `outermost::inside::inner_function` 或 `outermost::inside::secret_function` 中的任何一個。
+叫做 `inside` 的模組是私有的且沒有子模組，所以它只能被當前模組 `outermost` 訪問。這意味著 `try_me` 函數不允許調用 `outermost::inside::inner_function` 或 `outermost::inside::secret_function` 中的任何一個。
 
 #### 修改錯誤
 
 這裡有一些嘗試修復錯誤的代碼修改意見。在你嘗試他們之前，猜測一下他們哪個能修復錯誤，接著編譯查看你是否猜對了，並結合私有性規則理解為什麼。
 
-* 如果 `inside` 模塊是公有的？
+* 如果 `inside` 模組是公有的？
 * 如果 `outermost` 是公有的而 `inside` 是私有的？
-* 如果在 `inner_function` 函數體中調用 `::outermost::middle_secret_function()`？（開頭的兩個冒號意味著從根模塊開始引用模塊。）
+* 如果在 `inner_function` 函數體中調用 `::outermost::middle_secret_function()`？（開頭的兩個冒號意味著從根模組開始引用模組。）
 
 請隨意設計更多的實驗並嘗試理解他們！
 
-接下來，讓我們討論一下使用 `use` 關鍵字將模塊項目引入作用域。
+接下來，讓我們討論一下使用 `use` 關鍵字將模組項目引入作用域。

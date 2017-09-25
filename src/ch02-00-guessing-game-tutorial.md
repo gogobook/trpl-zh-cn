@@ -178,7 +178,7 @@ io::stdin().read_line(&mut guess).expect("Failed to read line");
 
 ### 使用 `Result` 類型來處理潛在的錯誤
 
-之前提到了 `read_line` 將用戶輸入附加到傳遞給它的字符串中，不過它也返回一個值——在這個例子中是 [`io::Result`][ioresult]<!-- ignore -->。Rust 標準庫中有很多叫做 `Result` 的類型。一個 [`Result`][result]<!-- ignore --> 泛型以及對應子模塊的特定版本，比如 `io::Result`。
+之前提到了 `read_line` 將用戶輸入附加到傳遞給它的字符串中，不過它也返回一個值——在這個例子中是 [`io::Result`][ioresult]<!-- ignore -->。Rust 標準庫中有很多叫做 `Result` 的類型。一個 [`Result`][result]<!-- ignore --> 泛型以及對應子模組的特定版本，比如 `io::Result`。
 
 [ioresult]: https://doc.rust-lang.org/std/io/type.Result.html
 [result]: https://doc.rust-lang.org/std/result/enum.Result.html

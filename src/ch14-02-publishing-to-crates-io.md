@@ -69,7 +69,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
 
 #### 註釋包含項的結構
 
-還有另一種風格的文檔註釋，`//!`，這為包含註釋的項，而不是註釋之後的項增加文檔。這通常用於 crate 根文件或模塊的根文件為 crate 或模塊整體提供文檔。
+還有另一種風格的文檔註釋，`//!`，這為包含註釋的項，而不是註釋之後的項增加文檔。這通常用於 crate 根文件或模組的根文件為 crate 或模組整體提供文檔。
 
 作為一個例子，如果我們希望增加描述包含 `add_one` 函數的 `my_crate` crate 目的的文檔，可以在 *src/lib.rs* 開頭增加以 `//!` 開頭的註釋，如列表 14-4 所示：
 
@@ -95,18 +95,18 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
 
 <span class="caption">圖 14-5：包含 `my_crate` 整體描述的註釋所渲染的文檔</span>
 
-位於項之中的文檔註釋對於描述 crate 和模塊特別有用。使用他們描述其容器整體的目的來幫助 crate 用戶理解你的代碼組織。
+位於項之中的文檔註釋對於描述 crate 和模組特別有用。使用他們描述其容器整體的目的來幫助 crate 用戶理解你的代碼組織。
 
 
 ### 使用 `pub use` 導出合適的公有 API
 
-第七章介紹了如何使用 `mod` 關鍵字來將代碼組織進模塊中，如何使用 `pub` 關鍵字將項變為公有，和如何使用 `use` 關鍵字將項引入作用域。然而對你開發來說很有道理的結果可能對用戶來說就不太方便了。你可能希望將結構組織進有多個層次的層級中，不過想要使用被定義在很深層級中的類型的人可能很難發現這些類型是否存在。他們也可能會厭煩 `use my_crate::some_module::another_module::UsefulType;` 而不是 `use my_crate::UsefulType;` 來使用類型。
+第七章介紹了如何使用 `mod` 關鍵字來將代碼組織進模組中，如何使用 `pub` 關鍵字將項變為公有，和如何使用 `use` 關鍵字將項引入作用域。然而對你開發來說很有道理的結果可能對用戶來說就不太方便了。你可能希望將結構組織進有多個層次的層級中，不過想要使用被定義在很深層級中的類型的人可能很難發現這些類型是否存在。他們也可能會厭煩 `use my_crate::some_module::another_module::UsefulType;` 而不是 `use my_crate::UsefulType;` 來使用類型。
 
-公有 API 的結構是你發佈 crate 時主要需要考慮的。crate 用戶沒有你那麼熟悉其結構，並且如何模塊層級過大他們可能會難以找到所需的部分。
+公有 API 的結構是你發佈 crate 時主要需要考慮的。crate 用戶沒有你那麼熟悉其結構，並且如何模組層級過大他們可能會難以找到所需的部分。
 
 好消息是，如果結果對於用戶來說 **不是** 很方便，你也無需重新安排內部組織：你可以選擇使用 `pub use` 重導出（re-export）項來使公有結構不同於私有結構。重導出抓取位於一個位置的公有項並將其公開到另一個位置，好像它就定義在這個新位置一樣。
 
-例如，假設我們創建了一個模塊化了充滿藝術化氣息的庫 `art`。在這個庫中是一個包含兩個枚舉 `PrimaryColor` 和 `SecondaryColor` 的模塊 `kinds`，以及一個包含函數 `mix` 的模塊 `utils`，如列表 14-6 所示：
+例如，假設我們創建了一個模組化了充滿藝術化氣息的庫 `art`。在這個庫中是一個包含兩個枚舉 `PrimaryColor` 和 `SecondaryColor` 的模組 `kinds`，以及一個包含函數 `mix` 的模組 `utils`，如列表 14-6 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -143,17 +143,17 @@ pub mod utils {
 }
 ```
 
-<span class="caption">列表 14-6：一個庫 `art` 其組織包含 `kinds` 和 `utils` 模塊</span>
+<span class="caption">列表 14-6：一個庫 `art` 其組織包含 `kinds` 和 `utils` 模組</span>
 
 `cargo doc` 所生成的 crate 文檔首頁如圖 14-7 所示：
 
-<img alt="包含 `kinds` 和 `utils` 模塊的 `art`" src="img/trpl14-07.png" class="center" />
+<img alt="包含 `kinds` 和 `utils` 模組的 `art`" src="img/trpl14-07.png" class="center" />
 
-<span class="caption">圖 14-7：包含 `kinds` 和 `utils` 模塊的庫 `art` 的文檔首頁</span>
+<span class="caption">圖 14-7：包含 `kinds` 和 `utils` 模組的庫 `art` 的文檔首頁</span>
 
 注意 `PrimaryColor` 和 `SecondaryColor` 類型沒有在首頁中列出，`mix` 函數也是。必須點擊 `kinds` 或 `utils` 才能看到他們。
 
-另一個依賴這個庫的 crate 需要 `use` 語句來導入 `art` 中的項，這包含指定其當前定義的模塊結構。列表 14-8 展示了一個使用 `art` crate 中 `PrimaryColor` 和 `mix` 項的 crate 的例子：
+另一個依賴這個庫的 crate 需要 `use` 語句來導入 `art` 中的項，這包含指定其當前定義的模組結構。列表 14-8 展示了一個使用 `art` crate 中 `PrimaryColor` 和 `mix` 項的 crate 的例子：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -172,7 +172,7 @@ fn main() {
 
 <span class="caption">列表 14-8：一個通過導出內部結構使用 `art` crate 中項的 crate</span>
 
-列表 14-8 中使用 `art` crate 代碼的作者不得不搞清楚 `PrimaryColor` 位於 `kinds` 模塊而 `mix` 位於 `utils` 模塊。`art` crate 的模塊結構相比使用它的開發者來說對編寫它的開發者更有意義。其內部的 `kinds` 模塊和 `utils` 模塊的組織結構並沒有對嘗試理解如何使用它的人提供任何有價值的信息。`art` crate 的模塊結構因不得不搞清楚所需的內容在何處和必須在 `use` 語句中指定模塊名稱而顯得混亂和不便。
+列表 14-8 中使用 `art` crate 代碼的作者不得不搞清楚 `PrimaryColor` 位於 `kinds` 模組而 `mix` 位於 `utils` 模組。`art` crate 的模組結構相比使用它的開發者來說對編寫它的開發者更有意義。其內部的 `kinds` 模組和 `utils` 模組的組織結構並沒有對嘗試理解如何使用它的人提供任何有價值的信息。`art` crate 的模組結構因不得不搞清楚所需的內容在何處和必須在 `use` 語句中指定模組名稱而顯得混亂和不便。
 
 為了從公有 API 中去掉 crate 的內部組織，我們可以採用列表 14-6 中的 `art` crate 並增加 `pub use` 語句來重導出項到頂層結構，如列表 14-9 所示：
 
@@ -221,7 +221,7 @@ fn main() {
 
 <span class="caption">列表 14-11：一個使用 `art` crate</span>
 
-對於有很多嵌套模塊的情況，使用 `pub use` 將類型重導出到頂級結構對於使用 crate 的人來說將會是大為不同的體驗。
+對於有很多嵌套模組的情況，使用 `pub use` 將類型重導出到頂級結構對於使用 crate 的人來說將會是大為不同的體驗。
 
 創建一個有用的公有 API 結構更像是一門藝術而非科學，你可以反覆檢視他們來找出最適合用戶的 API。選擇 `pub use` 提供了組織 crate 內部結構和與終端用戶體現解耦的靈活性。觀察一些你所安裝的 crate 的代碼來看看其內部結構是否不同於公有 API。
 

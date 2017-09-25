@@ -153,7 +153,7 @@ pub fn run(config: Config) -> Result<(), Box<Error>>{
 
 <span class="caption">列表 12-22：根據 `config.case_sensitive` 的值調用 `search` 或 `search_case_insensitive`</span>
 
-最後需要實際檢查環境變數。處理環境變數的函數位於標準庫的 `env` 模塊中，所以我們需要在 *src/lib.rs* 的開頭增加一個 `use std::env;` 行將這個模塊引入作用域中。接著在 `Config::new` 中使用 `env` 模塊的 `var` 方法來檢查一個叫做 `CASE_INSENSITIVE` 的環境變數，如列表 12-23 所示：
+最後需要實際檢查環境變數。處理環境變數的函數位於標準庫的 `env` 模組中，所以我們需要在 *src/lib.rs* 的開頭增加一個 `use std::env;` 行將這個模組引入作用域中。接著在 `Config::new` 中使用 `env` 模組的 `var` 方法來檢查一個叫做 `CASE_INSENSITIVE` 的環境變數，如列表 12-23 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -217,4 +217,4 @@ To an admiring bog!
 
 一些程序允許對相同配置同時使用參數 **和** 環境變數。在這種情況下，程序來決定參數和環境變數的優先級。作為一個留給你的測試，嘗試通過一個命令行參數或一個環境變數來控制大小寫不敏感搜索。並在運行程序時遇到矛盾值時決定命令行參數和環境變數的優先級。
 
-`std::env` 模塊還包含了更多處理環境變數的實用功能；請查看官方文檔來瞭解其可用的功能。
+`std::env` 模組還包含了更多處理環境變數的實用功能；請查看官方文檔來瞭解其可用的功能。
