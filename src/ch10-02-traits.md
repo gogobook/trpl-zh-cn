@@ -159,7 +159,7 @@ println!("New article available! {}", article.summary());
 
 將 `Summarizable` trait 改變為擁有預設 `summary` 實現並不要求對列表 10-13 中 `Tweet` 和列表 10-14 中 `WeatherForecast` 的 `Summarizable` 實現做任何改變：重載一個預設實現的語法與實現沒有預設實現的 trait 方法時完全一樣的。
 
-預設實現允許調用相同 trait 中的其他方法，哪怕這些方法沒有預設實現。通過這種方法，trait 可以實現很多有用的功能而只需實現一小部分特定內容。我們可以選擇讓`Summarizable` trait 也擁有一個要求實現 的`author_summary` 方法，接著 `summary` 方法則提供預設實現並調用 `author_summary` 方法：
+預設實現允許調用相同 trait 中的其他方法，哪怕這些方法沒有預設實現。通過這種方法，trait 可以實現很多有用的功能而只需實現一小部分特定內容。我們可以選擇讓`Summarizable` trait 也擁有一個要求實現的`author_summary` 方法，接著 `summary` 方法則提供預設實現並調用 `author_summary` 方法：
 
 ```rust
 pub trait Summarizable {
