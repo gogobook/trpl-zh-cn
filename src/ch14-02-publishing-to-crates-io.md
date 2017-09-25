@@ -13,7 +13,7 @@ Rust 和 Cargo 有一些幫助它人更方便找到和使用你發佈的包的�
 
 準確的包文檔有助於其他用戶立即如何以及何時使用他們，所以花一些時間編寫文檔是值得的。第三章中我們討論了如何使用 `//` 註釋 Rust 代碼。Rust 也有特定的用於文檔的註釋類型，通常被稱為 **文檔註釋**（*documentation comments*），他們會生成 HTML 文檔。這些 HTML 展示公有 API 文檔註釋的內容，他們意在讓對庫感興趣的程式設計師理解如何 **使用** 這個 crate，而不是它是如何被 **實現** 的。
 
-文檔註釋使用 `///` 而不是 `//` 並支持 Markdown 註解來格式化文本。文檔註釋就位於需要文檔的項的之前。列表 14-2 展示了一個 `my_crate` crate 中 `add_one` 函數的文檔註釋：
+文檔註釋使用 `///` 而不是 `//` 並支持 Markdown 註解來格式化文本。文檔註釋就位於需要文檔的項的之前。代碼例 14-2 展示了一個 `my_crate` crate 中 `add_one` 函數的文檔註釋：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -32,7 +32,7 @@ pub fn add_one(x: i32) -> i32 {
 }
 ```
 
-<span class="caption">列表 14-2：一個函數的文檔註釋</span>
+<span class="caption">代碼例 14-2：一個函數的文檔註釋</span>
 
 這裡，我們提供了一個 `add_one` 函數工作的描述，接著開始了一個標題為 「Examples」 的部分，和展示如何使用 `add_one` 函數的代碼。可以運行 `cargo doc` 來生成這個文檔註釋的 HTML 文檔。這個命令運行由 Rust 分發的工具 `rustdoc` 並將生成的 HTML 文檔放入 *target/doc* 目錄。
 
@@ -44,17 +44,17 @@ pub fn add_one(x: i32) -> i32 {
 
 #### 常用（文檔註釋）部分
 
-列表 14-2 中使用了 `# Examples` Markdown 標題在 HTML 中創建了一個以 「Examples」 為標題的部分。一些其他經常在文檔註釋中使用的部分有：
+代碼例 14-2 中使用了 `# Examples` Markdown 標題在 HTML 中創建了一個以 「Examples」 為標題的部分。一些其他經常在文檔註釋中使用的部分有：
 
 - Panics：這個函數可能會 `panic!` 的場景。並不希望程序崩潰的函數調用者應該確保他們不會在這些情況下調用此函數。
 - Errors：如果這個函數返回 `Result`，此部分描述可能會出現何種錯誤以及什麼情況會造成這些錯誤，這有助於調用者編寫代碼來採用不同的方式處理不同的錯誤。
 - Safety：如果這個函數使用 `unsafe` 代碼（這會在第十九章討論），這一部分應該會涉及到期望函數調用者支持的確保 `unsafe` 塊中代碼正常工作的不變條件（invariants）。
 
-大部分文檔註釋不需要所有這些部分，不過這是一個提醒你檢查調用你代碼的人有興趣瞭解的內容的列表。
+大部分文檔註釋不需要所有這些部分，不過這是一個提醒你檢查調用你代碼的人有興趣瞭解的內容的代碼例。
 
 #### 文檔註釋作為測試
 
-在文檔註釋中增加示例代碼塊是一個清楚的表明如何使用庫的方法，這麼做還有一個額外的好處：`cargo test` 也會像測試那樣運行文檔中的示例代碼！沒有什麼比有例子的文檔更好的了！也沒有什麼比不能正常工作的例子更糟的了，因為代碼在編寫文檔時已經改變。嘗試 `cargo test` 運行像列表 14-2 中 `add_one` 函數的文檔；應該在測試結果中看到像這樣的部分：
+在文檔註釋中增加示例代碼塊是一個清楚的表明如何使用庫的方法，這麼做還有一個額外的好處：`cargo test` 也會像測試那樣運行文檔中的示例代碼！沒有什麼比有例子的文檔更好的了！也沒有什麼比不能正常工作的例子更糟的了，因為代碼在編寫文檔時已經改變。嘗試 `cargo test` 運行像代碼例 14-2 中 `add_one` 函數的文檔；應該在測試結果中看到像這樣的部分：
 
 ```text
    Doc-tests my_crate
@@ -71,7 +71,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
 
 還有另一種風格的文檔註釋，`//!`，這為包含註釋的項，而不是註釋之後的項增加文檔。這通常用於 crate 根文件或模組的根文件為 crate 或模組整體提供文檔。
 
-作為一個例子，如果我們希望增加描述包含 `add_one` 函數的 `my_crate` crate 目的的文檔，可以在 *src/lib.rs* 開頭增加以 `//!` 開頭的註釋，如列表 14-4 所示：
+作為一個例子，如果我們希望增加描述包含 `add_one` 函數的 `my_crate` crate 目的的文檔，可以在 *src/lib.rs* 開頭增加以 `//!` 開頭的註釋，如代碼例 14-4 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -85,11 +85,11 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
 // ...snip...
 ```
 
-<span class="caption">列表 14-4：`my_crate` crate 整體的文檔</span>
+<span class="caption">代碼例 14-4：`my_crate` crate 整體的文檔</span>
 
 注意 `//!` 的最後一行之後沒有任何代碼。因為他們以 `//!` 開頭而不是 `///`，這是屬於包含此註釋的項而不是註釋之後項的文檔。在這個情況中，包含這個註釋的項是 *src/lib.rs* 文件，也就是 crate 根文件。這些註釋描述了整個 crate。
 
-如果運行 `cargo doc --open`，將會發現這些註釋顯示在 `my_crate` 文檔的首頁，位於 crate 中公有項列表之上，如圖 14-5 所示：
+如果運行 `cargo doc --open`，將會發現這些註釋顯示在 `my_crate` 文檔的首頁，位於 crate 中公有項代碼例之上，如圖 14-5 所示：
 
 <img alt="crate 整體註釋所渲染的 HTML 文檔" src="img/trpl14-05.png" class="center" />
 
@@ -106,7 +106,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
 
 好消息是，如果結果對於用戶來說 **不是** 很方便，你也無需重新安排內部組織：你可以選擇使用 `pub use` 重導出（re-export）項來使公有結構不同於私有結構。重導出抓取位於一個位置的公有項並將其公開到另一個位置，好像它就定義在這個新位置一樣。
 
-例如，假設我們創建了一個模組化了充滿藝術化氣息的庫 `art`。在這個庫中是一個包含兩個枚舉 `PrimaryColor` 和 `SecondaryColor` 的模組 `kinds`，以及一個包含函數 `mix` 的模組 `utils`，如列表 14-6 所示：
+例如，假設我們創建了一個模組化了充滿藝術化氣息的庫 `art`。在這個庫中是一個包含兩個枚舉 `PrimaryColor` 和 `SecondaryColor` 的模組 `kinds`，以及一個包含函數 `mix` 的模組 `utils`，如代碼例 14-6 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -143,7 +143,7 @@ pub mod utils {
 }
 ```
 
-<span class="caption">列表 14-6：一個庫 `art` 其組織包含 `kinds` 和 `utils` 模組</span>
+<span class="caption">代碼例 14-6：一個庫 `art` 其組織包含 `kinds` 和 `utils` 模組</span>
 
 `cargo doc` 所生成的 crate 文檔首頁如圖 14-7 所示：
 
@@ -153,7 +153,7 @@ pub mod utils {
 
 注意 `PrimaryColor` 和 `SecondaryColor` 類型沒有在首頁中列出，`mix` 函數也是。必須點擊 `kinds` 或 `utils` 才能看到他們。
 
-另一個依賴這個庫的 crate 需要 `use` 語句來導入 `art` 中的項，這包含指定其當前定義的模組結構。列表 14-8 展示了一個使用 `art` crate 中 `PrimaryColor` 和 `mix` 項的 crate 的例子：
+另一個依賴這個庫的 crate 需要 `use` 語句來導入 `art` 中的項，這包含指定其當前定義的模組結構。代碼例 14-8 展示了一個使用 `art` crate 中 `PrimaryColor` 和 `mix` 項的 crate 的例子：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -170,11 +170,11 @@ fn main() {
 }
 ```
 
-<span class="caption">列表 14-8：一個通過導出內部結構使用 `art` crate 中項的 crate</span>
+<span class="caption">代碼例 14-8：一個通過導出內部結構使用 `art` crate 中項的 crate</span>
 
-列表 14-8 中使用 `art` crate 代碼的作者不得不搞清楚 `PrimaryColor` 位於 `kinds` 模組而 `mix` 位於 `utils` 模組。`art` crate 的模組結構相比使用它的開發者來說對編寫它的開發者更有意義。其內部的 `kinds` 模組和 `utils` 模組的組織結構並沒有對嘗試理解如何使用它的人提供任何有價值的信息。`art` crate 的模組結構因不得不搞清楚所需的內容在何處和必須在 `use` 語句中指定模組名稱而顯得混亂和不便。
+代碼例 14-8 中使用 `art` crate 代碼的作者不得不搞清楚 `PrimaryColor` 位於 `kinds` 模組而 `mix` 位於 `utils` 模組。`art` crate 的模組結構相比使用它的開發者來說對編寫它的開發者更有意義。其內部的 `kinds` 模組和 `utils` 模組的組織結構並沒有對嘗試理解如何使用它的人提供任何有價值的信息。`art` crate 的模組結構因不得不搞清楚所需的內容在何處和必須在 `use` 語句中指定模組名稱而顯得混亂和不便。
 
-為了從公有 API 中去掉 crate 的內部組織，我們可以採用列表 14-6 中的 `art` crate 並增加 `pub use` 語句來重導出項到頂層結構，如列表 14-9 所示：
+為了從公有 API 中去掉 crate 的內部組織，我們可以採用代碼例 14-6 中的 `art` crate 並增加 `pub use` 語句來重導出項到頂層結構，如代碼例 14-9 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -196,7 +196,7 @@ pub mod utils {
 }
 ```
 
-<span class="caption">列表 14-9：增加 `pub use` 語句重導出項</span>
+<span class="caption">代碼例 14-9：增加 `pub use` 語句重導出項</span>
 
 現在此 crate 由 `cargo doc` 生成的 API 文檔會在首頁列出重導出的項以及其鏈接，如圖 14-10 所示，這就使得這些類型易於查找。
 
@@ -204,7 +204,7 @@ pub mod utils {
 
 <span class="caption">圖 14-10：`art` 文檔的首頁，這裡列出了重導出的項</span>
 
-`art` crate 的用戶仍然可以看見和選擇使用列表 14-8 中的內部結構，或者可以使用列表 14-9 中更為方便的結構，如列表 14-11 所示：
+`art` crate 的用戶仍然可以看見和選擇使用代碼例 14-8 中的內部結構，或者可以使用代碼例 14-9 中更為方便的結構，如代碼例 14-11 所示：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -219,7 +219,7 @@ fn main() {
 }
 ```
 
-<span class="caption">列表 14-11：一個使用 `art` crate</span>
+<span class="caption">代碼例 14-11：一個使用 `art` crate</span>
 
 對於有很多嵌套模組的情況，使用 `pub use` 將類型重導出到頂級結構對於使用 crate 的人來說將會是大為不同的體驗。
 

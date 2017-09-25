@@ -10,7 +10,7 @@
 
 首先，增加一個新函數，當設置了環境變數時會調用它。
 
-這裡將繼續遵循上一部分開始使用的 TDD 過程，其第一步是再次編寫一個失敗測試。我們將為新的大小寫不敏感搜索函數新增一個測試函數，並將老的測試函數從 `one_result` 改名為 `case_sensitive` 來更清楚的表明這兩個測試的區別，如列表 12-20 所示：
+這裡將繼續遵循上一部分開始使用的 TDD 過程，其第一步是再次編寫一個失敗測試。我們將為新的大小寫不敏感搜索函數新增一個測試函數，並將老的測試函數從 `one_result` 改名為 `case_sensitive` 來更清楚的表明這兩個測試的區別，如代碼例 12-20 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -51,15 +51,15 @@ Trust me.";
 }
 ```
 
-<span class="caption">列表 12-20：為準備添加的大小寫不敏感函數新增失敗測試</span>
+<span class="caption">代碼例 12-20：為準備添加的大小寫不敏感函數新增失敗測試</span>
 
 注意我們也改變了老測試中 `contents` 的值。還新增了一個含有文本 "Duct tape" 的行，它有一個大寫的 D，這在大小寫敏感搜索時不應該匹配 "duct"。我們修改這個測試以確保不會意外破壞已經實現的大小寫敏感搜索功能；這個測試現在應該能通過並在處理大小寫不敏感搜索時應該能一直通過。
 
-大小寫 **不敏感** 搜索的新測試使用 "rUsT" 作為其查詢字符串。在我們將要增加的 `search_case_insensitive` 函數中，「rUsT」 查詢應該包含 「Rust:」 包含一個大寫的 R 還有 「Trust me.」 這兩行，即便他們與查詢的大小寫都不同。這個測試現在會編譯失敗因為還沒有定義 `search_case_insensitive` 函數。請隨意增加一個總是返回空 vector 的骨架實現，正如列表 12-16 中 `search` 函數為了使測試編譯並失敗時所做的那樣。
+大小寫 **不敏感** 搜索的新測試使用 "rUsT" 作為其查詢字符串。在我們將要增加的 `search_case_insensitive` 函數中，「rUsT」 查詢應該包含 「Rust:」 包含一個大寫的 R 還有 「Trust me.」 這兩行，即便他們與查詢的大小寫都不同。這個測試現在會編譯失敗因為還沒有定義 `search_case_insensitive` 函數。請隨意增加一個總是返回空 vector 的骨架實現，正如代碼例 12-16 中 `search` 函數為了使測試編譯並失敗時所做的那樣。
 
 ### 實現 `search_case_insensitive` 函數
 
-`search_case_insensitive` 函數，如列表 12-21 所示，將與 `search` 函數基本相同。唯一的區別是它會將 `query` 變數和每一 `line` 都變為小寫，這樣不管輸入參數是大寫還是小寫，在檢查該行是否包含查詢字符串時都會是小寫。
+`search_case_insensitive` 函數，如代碼例 12-21 所示，將與 `search` 函數基本相同。唯一的區別是它會將 `query` 變數和每一 `line` 都變為小寫，這樣不管輸入參數是大寫還是小寫，在檢查該行是否包含查詢字符串時都會是小寫。
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -78,7 +78,7 @@ fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
 }
 ```
 
-<span class="caption">列表 12-21：定義 `search_case_insensitive` 函數，它在比較查詢和每一行之前將他們都轉換為小寫</span>
+<span class="caption">代碼例 12-21：定義 `search_case_insensitive` 函數，它在比較查詢和每一行之前將他們都轉換為小寫</span>
 
 首先我們將 `query` 字符串轉換為小寫，並將其覆蓋到同名的變數中。對查詢字符串調用 `to_lowercase` 是必需的，這樣不管用戶的查詢是 「rust」、「RUST」、「Rust」 或者 「rUsT」，我們都將其當作 「rust」 處理並對大小寫不敏感。
 
@@ -108,7 +108,7 @@ pub struct Config {
 }
 ```
 
-這裡增加了 `case_sensitive` 字符來存放一個布爾值。接著我們需要 `run` 函數檢查 `case_sensitive` 字段的值並使用它來決定是否調用 `search` 函數或 `search_case_insensitive` 函數，如列表 12-22 所示：
+這裡增加了 `case_sensitive` 字符來存放一個布爾值。接著我們需要 `run` 函數檢查 `case_sensitive` 字段的值並使用它來決定是否調用 `search` 函數或 `search_case_insensitive` 函數，如代碼例 12-22 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -151,9 +151,9 @@ pub fn run(config: Config) -> Result<(), Box<Error>>{
 }
 ```
 
-<span class="caption">列表 12-22：根據 `config.case_sensitive` 的值調用 `search` 或 `search_case_insensitive`</span>
+<span class="caption">代碼例 12-22：根據 `config.case_sensitive` 的值調用 `search` 或 `search_case_insensitive`</span>
 
-最後需要實際檢查環境變數。處理環境變數的函數位於標準庫的 `env` 模組中，所以我們需要在 *src/lib.rs* 的開頭增加一個 `use std::env;` 行將這個模組引入作用域中。接著在 `Config::new` 中使用 `env` 模組的 `var` 方法來檢查一個叫做 `CASE_INSENSITIVE` 的環境變數，如列表 12-23 所示：
+最後需要實際檢查環境變數。處理環境變數的函數位於標準庫的 `env` 模組中，所以我們需要在 *src/lib.rs* 的開頭增加一個 `use std::env;` 行將這個模組引入作用域中。接著在 `Config::new` 中使用 `env` 模組的 `var` 方法來檢查一個叫做 `CASE_INSENSITIVE` 的環境變數，如代碼例 12-23 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -183,13 +183,13 @@ impl Config {
 }
 ```
 
-<span class="caption">列表 12-23：檢查叫做 `CASE_INSENSITIVE` 的環境變數</span>
+<span class="caption">代碼例 12-23：檢查叫做 `CASE_INSENSITIVE` 的環境變數</span>
 
 這裡創建了一個新變數 `case_sensitive`。為了設置它的值，需要調用 `env::var` 函數並傳遞我們需要尋找的環境變數名稱，`CASE_INSENSITIVE`。`env::var` 返回一個 `Result`，它在環境變數被設置時返回包含其值的 `Ok` 成員，並在環境變數未被設置時返回 `Err` 成員。
 
 我們使用 `Result` 的 `is_err` 方法來檢查其是否是一個 error（也就是環境變數未被設置的情況），這也就意味著我們 **需要** 進行一個大小寫敏感搜索。如果`CASE_INSENSITIVE` 環境變數被設置為任何值，`is_err` 會返回 false 並將進行大小寫不敏感搜索。我們並不關心環境變數所設置的 **值**，只關心它是否被設置了，所以檢查 `is_err` 而不是 `unwrap`、`expect` 或任何我們已經見過的 `Result` 的方法。
 
-我們將變數 `case_sensitive` 的值傳遞給 `Config` 實例，這樣 `run` 函數可以讀取其值並決定是否調用 `search` 或者列表 12-22 中實現的 `search_case_insensitive`。
+我們將變數 `case_sensitive` 的值傳遞給 `Config` 實例，這樣 `run` 函數可以讀取其值並決定是否調用 `search` 或者代碼例 12-22 中實現的 `search_case_insensitive`。
 
 讓我們試一試吧！首先不設置環境變數並使用查詢 「to」 運行程序，這應該會匹配任何全小寫的單詞 「to」 的行：
 

@@ -10,7 +10,7 @@
 
 ### 如果使用 `thread::spawn` 的代碼結構
 
-首先，讓我們探索一下為每一個連接都創建一個線程看起來如何。這並不是最終方案，因為正如之前講到的它會潛在的分配無限的線程，不過這是一個開始。列表 20-11 展示了 `main` 的改變，它在 `for` 循環中為每一個流分配了一個新線程進行處理：
+首先，讓我們探索一下為每一個連接都創建一個線程看起來如何。這並不是最終方案，因為正如之前講到的它會潛在的分配無限的線程，不過這是一個開始。代碼例 20-11 展示了 `main` 的改變，它在 `for` 循環中為每一個流分配了一個新線程進行處理：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -34,13 +34,13 @@ fn main() {
 # fn handle_connection(mut stream: TcpStream) {}
 ```
 
-<span class="caption">列表 20-11：為每一個流新建一個線程</span>
+<span class="caption">代碼例 20-11：為每一個流新建一個線程</span>
 
 正如第十六章講到的，`thread::spawn` 會創建一個新線程並運行閉包中的代碼。如果運行這段代碼並在兩個瀏覽器標籤頁中加載 `/sleep` 和 `/`，確實會發現 `/` 請求並沒有等待 `/sleep` 結束。不過正如之前提到的，這最終會使系統崩潰因為我們無限制的創建新線程。
 
 ### 為 `ThreadPool` 創建一個類似的接口
 
-我們期望線程池以類似且熟悉的方式工作，以便從線程切換到線程池並不會對運行於線程池中的代碼做出較大的修改。列表 20-12 展示我們希望用來替換 `thread::spawn` 的 `ThreadPool` 結構體的假想接口：
+我們期望線程池以類似且熟悉的方式工作，以便從線程切換到線程池並不會對運行於線程池中的代碼做出較大的修改。代碼例 20-12 展示我們希望用來替換 `thread::spawn` 的 `ThreadPool` 結構體的假想接口：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -71,13 +71,13 @@ fn main() {
 # fn handle_connection(mut stream: TcpStream) {}
 ```
 
-<span class="caption">列表 20-12：如何使用我們將要實現的 `ThreadPool`</span>
+<span class="caption">代碼例 20-12：如何使用我們將要實現的 `ThreadPool`</span>
 
 這裡使用 `ThreadPool::new` 來創建一個新的線程池，它有一個可配置的線程數的參數，在這裡是四。這樣在 `for` 循環中，`pool.execute` 將會以類似 `thread::spawn` 的方式工作。
 
 ### 採用編譯器驅動開發來驅動 API 的編譯
 
-繼續並對列表 20-12 中的 *src/main.rs* 做出修改，並利用編譯器錯誤來驅動開發。下面是我們得到的第一個錯誤：
+繼續並對代碼例 20-12 中的 *src/main.rs* 做出修改，並利用編譯器錯誤來驅動開發。下面是我們得到的第一個錯誤：
 
 ```
 $ cargo check

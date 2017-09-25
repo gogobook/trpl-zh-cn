@@ -20,7 +20,7 @@
 
 ### 使用`spawn`創建新線程
 
-為了創建一個新線程，調用`thread::spawn`函數並傳遞一個閉包（第十三章學習了閉包），它包含希望在新線程運行的代碼。列表 16-1 中的例子在新線程中打印了一些文本而其餘的文本在主線程中打印：
+為了創建一個新線程，調用`thread::spawn`函數並傳遞一個閉包（第十三章學習了閉包），它包含希望在新線程運行的代碼。代碼例 16-1 中的例子在新線程中打印了一些文本而其餘的文本在主線程中打印：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -62,7 +62,7 @@ hi number 5 from the spawned thread!
 
 #### 使用`join`等待所有線程結束
 
-由於主線程先於新建線程結束，不僅列表 16-1 中的代碼大部分時候不能保證新建線程執行完畢，甚至不能實際保證新建線程會被執行！可以通過保存`thread::spawn`的返回值來解決這個問題，這是一個`JoinHandle`。這看起來如列表 16-2 所示：
+由於主線程先於新建線程結束，不僅代碼例 16-1 中的代碼大部分時候不能保證新建線程執行完畢，甚至不能實際保證新建線程會被執行！可以通過保存`thread::spawn`的返回值來解決這個問題，這是一個`JoinHandle`。這看起來如代碼例 16-2 所示：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -157,7 +157,7 @@ hi number 4 from the main thread!
 
 現在我們正在創建新線程，所以讓我們討論一下抓取環境值的閉包吧！
 
-注意列表 16-1 中傳遞給`thread::spawn`的閉包並沒有任何參數：並沒有在新建線程代碼中使用任何主線程的數據。為了在新建線程中使用來自於主線程的數據，需要新建線程的閉包抓取它需要的值。列表 16-3 展示了一個嘗試在主線程中創建一個 vector 並用於新建線程的例子，不過這麼寫還不能工作：
+注意代碼例 16-1 中傳遞給`thread::spawn`的閉包並沒有任何參數：並沒有在新建線程代碼中使用任何主線程的數據。為了在新建線程中使用來自於主線程的數據，需要新建線程的閉包抓取它需要的值。代碼例 16-3 展示了一個嘗試在主線程中創建一個 vector 並用於新建線程的例子，不過這麼寫還不能工作：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -199,7 +199,7 @@ variables), use the `move` keyword, as shown:
 
 當在閉包環境中抓取某些值時，Rust 會嘗試推斷如何抓取它。`println!`只需要`v`的一個引用，所以閉包嘗試借用`v`。但是這有一個問題：我們並不知道新建線程會運行多久，所以無法知道`v`是否一直時有效的。
 
-考慮一下列表 16-4 中的代碼，它展示了一個`v`的引用很有可能不再有效的場景：
+考慮一下代碼例 16-4 中的代碼，它展示了一個`v`的引用很有可能不再有效的場景：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -232,7 +232,7 @@ variables), use the `move` keyword, as shown:
   |     let handle = thread::spawn(move || {
 ```
 
-通過在閉包之前增加`move`關鍵字，我們強制閉包抓取它使用的值的所有權，而不是引用借用。列表 16-5 中展示的對列表 16-3 代碼的修改可以按照我們的預期編譯並運行：
+通過在閉包之前增加`move`關鍵字，我們強制閉包抓取它使用的值的所有權，而不是引用借用。代碼例 16-5 中展示的對代碼例 16-3 代碼的修改可以按照我們的預期編譯並運行：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -253,7 +253,7 @@ fn main() {
 <span class="caption">Listing 16-5: Using the `move` keyword to force a closure
 to take ownership of the values it uses</span>
 
-那麼列表 16-4 中那個主線程調用了`drop`的代碼該怎麼辦呢？如果在閉包上增加了`move`，就將`v`移動到了閉包的環境中，我們將不能對其調用`drop`了。相反會出現這個編譯時錯誤：
+那麼代碼例 16-4 中那個主線程調用了`drop`的代碼該怎麼辦呢？如果在閉包上增加了`move`，就將`v`移動到了閉包的環境中，我們將不能對其調用`drop`了。相反會出現這個編譯時錯誤：
 
 ```
 error[E0382]: use of moved value: `v`

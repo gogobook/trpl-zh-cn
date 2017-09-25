@@ -18,7 +18,7 @@ $ cargo new hello --bin
 $ cd hello
 ```
 
-並在 `src/main.rs` 放入列表 20-1 中的代碼作為開始。這段代碼會在地址 `127.0.0.1:8080` 上監聽傳入的 TCP 流。當抓取到傳入的流，它會打印出 `Connection established!`：
+並在 `src/main.rs` 放入代碼例 20-1 中的代碼作為開始。這段代碼會在地址 `127.0.0.1:8080` 上監聽傳入的 TCP 流。當抓取到傳入的流，它會打印出 `Connection established!`：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -36,7 +36,7 @@ fn main() {
 }
 ```
 
-<span class="caption">列表 20-1：監聽傳入的流並在接收到流時打印信息</span>
+<span class="caption">代碼例 20-1：監聽傳入的流並在接收到流時打印信息</span>
 
 `TcpListener` 用於監聽 TCP 連接。我們選擇監聽地址 `127.0.0.1:8080`。冒號之前的部分是一個代表本機的 IP 地址，而 `8080` 是端口。選擇這個端口是因為通常 HTTP 監聽 80 端口，不過連接 80 端口需要管理員權限。普通用戶可以監聽大於 1024 的端口；8080 端口易於記憶因為它重複了 HTTP 的 80 端口兩次。
 
@@ -63,7 +63,7 @@ Connection established!
 
 ### 讀取請求
 
-下面讀取瀏覽器的請求！因為我們增加了出於處理連接目的的功能。開始一個新函數來將設置 server 和連接，與處理每個請求分離，踐行關注分離原則。在這個新的 `handle_connection` 函數中，從 `stream` 中讀取數據並打印出來以便觀察瀏覽器發送過來的數據。將代碼修改為如列表 20-2 所示：
+下面讀取瀏覽器的請求！因為我們增加了出於處理連接目的的功能。開始一個新函數來將設置 server 和連接，與處理每個請求分離，踐行關注分離原則。在這個新的 `handle_connection` 函數中，從 `stream` 中讀取數據並打印出來以便觀察瀏覽器發送過來的數據。將代碼修改為如代碼例 20-2 所示：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -91,7 +91,7 @@ fn handle_connection(mut stream: TcpStream) {
 }
 ```
 
-<span class="caption">列表 20-2：讀取 `TcpStream` 並打印數據</span>
+<span class="caption">代碼例 20-2：讀取 `TcpStream` 並打印數據</span>
 
 在開頭增加 `std::io::prelude` 以便將讀寫流所需的 trait 引入作用域。相比在 `main` 的 `for` 中在抓取到連接時打印信息，現在調用新的 `handle_connection` 函數並向其傳遞 `stream`。
 
@@ -168,7 +168,7 @@ message-body
 HTTP/1.1 200 OK\r\n\r\n
 ```
 
-這些文本是一個微型的成功 HTTP 響應。讓我們把這些寫入流！去掉打印請求信息的 `println!` 行，並在這裡增加如列表 20-3 所示的代碼：
+這些文本是一個微型的成功 HTTP 響應。讓我們把這些寫入流！去掉打印請求信息的 `println!` 行，並在這裡增加如代碼例 20-3 所示的代碼：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -187,7 +187,7 @@ fn handle_connection(mut stream: TcpStream) {
 }
 ```
 
-<span class="caption">列表 20-3：將一個微型成功 HTTP 響應寫入流</span>
+<span class="caption">代碼例 20-3：將一個微型成功 HTTP 響應寫入流</span>
 
 新代碼中的第一行定義了變數 `response` 來存放將要返回的成功響應的數據。接著，在 `response` 上調用 `as_bytes`，因為 `stream` 的 `write` 方法抓取一個 `&[u8]` 並直接將這些字節發送給連接。
 
@@ -197,7 +197,7 @@ fn handle_connection(mut stream: TcpStream) {
 
 ### 返回真正的 HTML
 
-讓我們不只是返回空頁面。在項目根目錄創建一個新文件，*hello.html*，也就是說，不是在 `src` 目錄。在此可以放入任何你期望的 HTML；列表 20-4 展示了本書作者改採用的：
+讓我們不只是返回空頁面。在項目根目錄創建一個新文件，*hello.html*，也就是說，不是在 `src` 目錄。在此可以放入任何你期望的 HTML；代碼例 20-4 展示了本書作者改採用的：
 
 <span class="filename">文件名: hello.html</span>
 
@@ -215,9 +215,9 @@ fn handle_connection(mut stream: TcpStream) {
 </html>
 ```
 
-<span class="caption">列表 20-4：一個簡單的 HTML 文件用來作為響應</span>
+<span class="caption">代碼例 20-4：一個簡單的 HTML 文件用來作為響應</span>
 
-這是一個極小化的 HTML 5 文檔，它有一個標題和一小段文本。如列表 20-5 所示修改 `handle_connection` 來讀取 HTML 文件，將其加入到響應的 body 中，並發送：
+這是一個極小化的 HTML 5 文檔，它有一個標題和一小段文本。如代碼例 20-5 所示修改 `handle_connection` 來讀取 HTML 文件，將其加入到響應的 body 中，並發送：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -244,9 +244,9 @@ fn handle_connection(mut stream: TcpStream) {
 }
 ```
 
-<span class="caption">列表 20-5：將 *hello.html* 的內容作為響應 body 發送</span>
+<span class="caption">代碼例 20-5：將 *hello.html* 的內容作為響應 body 發送</span>
 
-在開頭增加了一行來將標準庫中的 `File` 引入作用域，打開和讀取文件的代碼應該看起來很熟悉，因為第十二章 I/O 項目的列表 12-4 中讀取文件內容時出現過類似的代碼。
+在開頭增加了一行來將標準庫中的 `File` 引入作用域，打開和讀取文件的代碼應該看起來很熟悉，因為第十二章 I/O 項目的代碼例 12-4 中讀取文件內容時出現過類似的代碼。
 
 接下來，使用 `format!` 將文件內容加入到將要寫入流的成功響應的 body 中。
 
@@ -256,7 +256,7 @@ fn handle_connection(mut stream: TcpStream) {
 
 ### 驗證請求並有選擇的響應
 
-目前我們的 server 不管客戶端請求什麼都會返回相同的 HTML 文件。讓我們檢查瀏覽器是否請求 `/`， 並在其請求其他內容時返回錯誤。如列表 20-6 所示修改 `handle_connection` ，它增加了所需的那部分代碼。這一部分將接收到的請求的內容與已知的 `/` 請求的一部分做比較，並增加了 `if` 和 `else` 塊來加入處理不同請求的代碼：
+目前我們的 server 不管客戶端請求什麼都會返回相同的 HTML 文件。讓我們檢查瀏覽器是否請求 `/`， 並在其請求其他內容時返回錯誤。如代碼例 20-6 所示修改 `handle_connection` ，它增加了所需的那部分代碼。這一部分將接收到的請求的內容與已知的 `/` 請求的一部分做比較，並增加了 `if` 和 `else` 塊來加入處理不同請求的代碼：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -288,15 +288,15 @@ fn handle_connection(mut stream: TcpStream) {
 }
 ```
 
-<span class="caption">列表 20-6：將請求與期望的 `/` 請求內容做匹配，並設置對 `/` 和其他請求的條件化處理</span>
+<span class="caption">代碼例 20-6：將請求與期望的 `/` 請求內容做匹配，並設置對 `/` 和其他請求的條件化處理</span>
 
-這裡在變數 `get` 中硬編碼了所需的請求相關的數據。因為我們從緩衝區中讀取原始字節，所以使用了字節字符串，使用 `b""` 使得 `get` 也是一個字節字符串。接著檢查 `buffer` 是否以 `get` 中的字節開頭。如果是，這就是一個格式良好的 `/` 請求，也就是 `if` 塊中期望處理的成功情況。`if` 塊中包含列表 20-5 中增加的返回 HTML 文件內容的代碼。
+這裡在變數 `get` 中硬編碼了所需的請求相關的數據。因為我們從緩衝區中讀取原始字節，所以使用了字節字符串，使用 `b""` 使得 `get` 也是一個字節字符串。接著檢查 `buffer` 是否以 `get` 中的字節開頭。如果是，這就是一個格式良好的 `/` 請求，也就是 `if` 塊中期望處理的成功情況。`if` 塊中包含代碼例 20-5 中增加的返回 HTML 文件內容的代碼。
 
 如果 `buffer` 不以 `get` 中的字節開頭，就說明是其他請求。對於所有其他請求都將使用 `else` 塊中增加的代碼來響應。
 
-如果運行代碼並請求 `127.0.0.1:8080`，就會得到 *hello.html* 中的 HTML。如果進行其他請求，比如 `127.0.0.1:8080/something-else`，則會得到像運行列表 20-1 和 20-2 中代碼那樣的連接錯誤。
+如果運行代碼並請求 `127.0.0.1:8080`，就會得到 *hello.html* 中的 HTML。如果進行其他請求，比如 `127.0.0.1:8080/something-else`，則會得到像運行代碼例 20-1 和 20-2 中代碼那樣的連接錯誤。
 
-如列表 20-7 所示向 `else` 塊增加代碼來返回一個帶有 `404` 狀態碼的響應，這代表了所請求的內容沒有找到。接著也會返回一個 HTML 向瀏覽器終端用戶表明此意：
+如代碼例 20-7 所示向 `else` 塊增加代碼來返回一個帶有 `404` 狀態碼的響應，這代表了所請求的內容沒有找到。接著也會返回一個 HTML 向瀏覽器終端用戶表明此意：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -323,9 +323,9 @@ fn handle_connection(mut stream: TcpStream) {
 # }
 ```
 
-<span class="caption">列表 20-7：對於任何不是 `/` 的請求返回 `404` 狀態碼的響應和錯誤頁面</span>
+<span class="caption">代碼例 20-7：對於任何不是 `/` 的請求返回 `404` 狀態碼的響應和錯誤頁面</span>
 
-這裡，響應頭有狀態碼 `404` 和原因短語 `NOT FOUND`。仍然沒有任何 header，而其 body 將是 *404.html* 文件中的 HTML。也在 *hello.html* 同級目錄創建 *404.html* 文件作為錯誤頁面；這一次也可以隨意使用任何 HTML 或使用列表 20-8 中的示例 HTML：
+這裡，響應頭有狀態碼 `404` 和原因短語 `NOT FOUND`。仍然沒有任何 header，而其 body 將是 *404.html* 文件中的 HTML。也在 *hello.html* 同級目錄創建 *404.html* 文件作為錯誤頁面；這一次也可以隨意使用任何 HTML 或使用代碼例 20-8 中的示例 HTML：
 
 <span class="filename">文件名: 404.html</span>
 
@@ -343,11 +343,11 @@ fn handle_connection(mut stream: TcpStream) {
 </html>
 ```
 
-<span class="caption">列表 20-8：任何 `404` 響應所返回錯誤頁面內容樣例</span>
+<span class="caption">代碼例 20-8：任何 `404` 響應所返回錯誤頁面內容樣例</span>
 
 有了這些修改，再次運行 server。請求 `127.0.0.1:8080` 應該會返回 *hello.html*，而對於任何其他請求，比如 `127.0.0.1:8080/foo`，應該會返回 *404.html* 中的錯誤 HTML！
 
-`if` 和 `else` 塊中的代碼有很多的重複：他們都讀取文件並將其內容寫入流。這兩個情況唯一的區別是狀態行和文件名。將這些區別分別提取到一行 `if` 和 `else` 中，對狀態行和文件名變數賦值；然後在讀取文件和寫入響應的代碼中無條件的使用這些變數。重構後代碼後的結果如列表 20-9 所示：
+`if` 和 `else` 塊中的代碼有很多的重複：他們都讀取文件並將其內容寫入流。這兩個情況唯一的區別是狀態行和文件名。將這些區別分別提取到一行 `if` 和 `else` 中，對狀態行和文件名變數賦值；然後在讀取文件和寫入響應的代碼中無條件的使用這些變數。重構後代碼後的結果如代碼例 20-9 所示：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -382,11 +382,11 @@ fn handle_connection(mut stream: TcpStream) {
 }
 ```
 
-<span class="caption">列表 20-9：重構代碼使得 `if` 和 `else` 塊中只包含兩個情況所不同的代碼</span>
+<span class="caption">代碼例 20-9：重構代碼使得 `if` 和 `else` 塊中只包含兩個情況所不同的代碼</span>
 
 這裡，`if` 和 `else` 塊所做的唯一的事就是在一個元組中返回合適的狀態行和文件名的值；接著使用第十八章講到的使用模式的 `let` 語句通過解構元組的兩部分給 `filename` 和 `header` 賦值。
 
-讀取文件和寫入響應的冗餘代碼現在位於 `if` 和 `else` 塊之外，並會使用變數 `status_line` 和 `filename`。這樣更易於觀察這兩種情況真正有何不同，並且如果需要改變如何讀取文件或寫入響應時只需要更新一處的代碼。列表 20-9 中代碼的行為與列表 20-8 完全一樣。
+讀取文件和寫入響應的冗餘代碼現在位於 `if` 和 `else` 塊之外，並會使用變數 `status_line` 和 `filename`。這樣更易於觀察這兩種情況真正有何不同，並且如果需要改變如何讀取文件或寫入響應時只需要更新一處的代碼。代碼例 20-9 中代碼的行為與代碼例 20-8 完全一樣。
 
 好極了！我們有了一個 40 行左右 Rust 代碼的小而簡單的 server，它對一個請求返回頁面內容而對所有其他請求返回 `404` 響應。
 

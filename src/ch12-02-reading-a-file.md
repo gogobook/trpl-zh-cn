@@ -4,7 +4,7 @@
 > <br>
 > commit b693c8400817f1022820fd63e3529cbecc35070c
 
-接下來我們將讀取由命令行文件名參數指定的文件。首先，需要一個用來測試的示例文件——用來確保 `minigrep` 正常工作的最好的文件是擁有少量文本和多個行且有一些重複單詞的文件。列表 12-3 是一首艾米莉‧狄金森（Emily Dickinson）的詩，它正適合這個工作！在項目根目錄創建一個文件 `poem.txt`，並輸入詩 "I'm nobody! Who are you?"：
+接下來我們將讀取由命令行文件名參數指定的文件。首先，需要一個用來測試的示例文件——用來確保 `minigrep` 正常工作的最好的文件是擁有少量文本和多個行且有一些重複單詞的文件。代碼例 12-3 是一首艾米莉‧狄金森（Emily Dickinson）的詩，它正適合這個工作！在項目根目錄創建一個文件 `poem.txt`，並輸入詩 "I'm nobody! Who are you?"：
 
 <span class="filename">文件名: poem.txt</span>
 
@@ -20,9 +20,9 @@ To tell your name the livelong day
 To an admiring bog!
 ```
 
-<span class="caption">列表 12-3：艾米莉‧狄金森的詩 「I'm nobody! Who are you?」，一個好的測試用例</span>
+<span class="caption">代碼例 12-3：艾米莉‧狄金森的詩 「I'm nobody! Who are you?」，一個好的測試用例</span>
 
-創建完這個文件之後，修改 *src/main.rs* 並增加如列表 12-4 所示的打開文件的代碼：
+創建完這個文件之後，修改 *src/main.rs* 並增加如代碼例 12-4 所示的打開文件的代碼：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -51,7 +51,7 @@ fn main() {
 }
 ```
 
-<span class="caption">列表 12-4：讀取第二個參數所指定的文件內容</span>
+<span class="caption">代碼例 12-4：讀取第二個參數所指定的文件內容</span>
 
 首先，我們增加了更多的 `use` 語句來引入標準庫中的相關部分：需要 `std::fs::File` 來處理文件，而 `std::io::prelude::*` 則包含許多對於 I/O 包括文件 I/O 有幫助的 trait。類似於 Rust 有一個通用的 prelude 來自動引入特定內容，`std::io` 也有其自己的 prelude 來引入處理 I/O 時所需的通用內容。不同於預設的 prelude，必須顯式 `use` 位於 `std::io` 中的 prelude。
 

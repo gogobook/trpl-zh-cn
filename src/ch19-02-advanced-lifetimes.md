@@ -8,7 +8,7 @@
 
 ### 生命週期子類型
 
-想像一下我們想要編寫一個解析器。為此，會有一個儲存了需要解析的字符串的引用的結構體，我們稱之為結構體 `Context`。解析器將會解析字符串並返回成功或失敗。解析器需要借用 `Context` 來進行解析。其實現看起來像列表 19-12 中的代碼，它還不能編譯，因為目前我們去掉了生命週期註解：
+想像一下我們想要編寫一個解析器。為此，會有一個儲存了需要解析的字符串的引用的結構體，我們稱之為結構體 `Context`。解析器將會解析字符串並返回成功或失敗。解析器需要借用 `Context` 來進行解析。其實現看起來像代碼例 19-12 中的代碼，它還不能編譯，因為目前我們去掉了生命週期註解：
 
 ```rust
 struct Context(&str);
@@ -24,11 +24,11 @@ impl Parser {
 }
 ```
 
-<span class="caption">列表 19-12：定義結構體 `Context` 來存放一個字符串 slice，結構體 `Parser` 包含一個 `Context` 實例和一個 `parse` 方法，它總是返回一個引用了字符串 slice 的錯誤</span>
+<span class="caption">代碼例 19-12：定義結構體 `Context` 來存放一個字符串 slice，結構體 `Parser` 包含一個 `Context` 實例和一個 `parse` 方法，它總是返回一個引用了字符串 slice 的錯誤</span>
 
 為了簡單起見，`parse` 方法返回 `Result<(), &str>`。也就是說，成功時不做任何操作，失敗時則返回字符串 slice 沒有正確解析的部分。真實的實現將會包含比這更多的錯誤信息，也將會在解析成功時返回創建的結果，不過我們將去掉這些部分的實現，因為他們與這個例子的生命週期部分並不相關。我們還定義了 `parse` 總是在第一個字節之後返回錯誤。注意如果第一個字節並不位於一個有效的字符範圍內（比如 Unicode）將會 panic；我們有一次簡化了例子以專注於涉及到的生命週期。
 
-那麼我們如何為 `Context` 中的字符串 slice 和 `Parser` 中 `Context` 的引用放入生命週期參數呢？最直接的方法是在每處都使用相同的生命週期，如列表 19-13 所示：
+那麼我們如何為 `Context` 中的字符串 slice 和 `Parser` 中 `Context` 的引用放入生命週期參數呢？最直接的方法是在每處都使用相同的生命週期，如代碼例 19-13 所示：
 
 ```rust
 struct Context<'a>(&'a str);
@@ -44,9 +44,9 @@ impl<'a> Parser<'a> {
 }
 ```
 
-<span class="caption">列表 19-13：將所有 `Context` 和 `Parser` 的引用標註為相同的生命週期參數</span>
+<span class="caption">代碼例 19-13：將所有 `Context` 和 `Parser` 的引用標註為相同的生命週期參數</span>
 
-這次可以編譯了。接下來，在列表 19-14 中，讓我們編寫一個抓取 `Context` 的實例，使用 `Parser` 來解析其內容，並返回 `parse` 的返回值的函數。這還不能運行：
+這次可以編譯了。接下來，在代碼例 19-14 中，讓我們編寫一個抓取 `Context` 的實例，使用 `Parser` 來解析其內容，並返回 `parse` 的返回值的函數。這還不能運行：
 
 ```rust
 fn parse_context(context: Context) -> Result<(), &str> {
@@ -54,7 +54,7 @@ fn parse_context(context: Context) -> Result<(), &str> {
 }
 ```
 
-<span class="caption">列表 19-14：一個增加抓取 `Context` 並使用 `Parser` 的函數 `parse_context` 的嘗試</span>
+<span class="caption">代碼例 19-14：一個增加抓取 `Context` 並使用 `Parser` 的函數 `parse_context` 的嘗試</span>
 
 當嘗試編譯這段額外帶有 `parse_context` 函數的代碼時會得到兩個相當冗長的錯誤：
 
@@ -100,7 +100,7 @@ body at 15:55...
 
 換句話說，`Parser` 和 `context` 需要比整個函數**長壽**（*outlive*）並在函數開始之前和結束之後都有效以確保代碼中的所有引用始終是有效的。雖然兩個我們創建的 `Parser` 和 `context` 參數在函數的結尾就離開了作用域（因為 `parse_context` 抓取了 `context` 的所有權）。
 
-讓我們再次看看列表 19-13 中的定義，特別是 `parse` 方法的簽名：
+讓我們再次看看代碼例 19-13 中的定義，特別是 `parse` 方法的簽名：
 
 ```rust
     fn parse(&self) -> Result<(), &str> {
@@ -122,7 +122,7 @@ body at 15:55...
 
 通過瞭解 `parse` 實現所做的工作，可以知道 `parse` 的返回值（的生命週期）與 `Parser` 相聯繫的唯一理由是它引用了 `Parser` 的 `Context`，也就是引用了這個字符串 slice，這正是 `parse_context` 所需要關心的生命週期。需要一個方法來告訴 Rust `Context` 中的字符串 slice 與 `Parser` 中 `Context` 的引用有著不同的生命週期，而且 `parse_context` 返回值與 `Context` 中字符串 slice 的生命週期相聯繫。
 
-我們只能嘗試像列表 19-15 那樣給予 `Parser` 和 `Context` 不同的生命週期參數。這裡選擇了生命週期參數名 `'s` 和 `'c` 是為了使得 `Context` 中字符串 slice 與 `Parser` 中 `Context` 引用的生命週期顯得更明了（英文首字母）。注意這並不能完全解決問題，不過這是一個開始，我們將看看為什麼這還不足以能夠編譯代碼。
+我們只能嘗試像代碼例 19-15 那樣給予 `Parser` 和 `Context` 不同的生命週期參數。這裡選擇了生命週期參數名 `'s` 和 `'c` 是為了使得 `Context` 中字符串 slice 與 `Parser` 中 `Context` 引用的生命週期顯得更明了（英文首字母）。注意這並不能完全解決問題，不過這是一個開始，我們將看看為什麼這還不足以能夠編譯代碼。
 
 ```rust
 struct Context<'s>(&'s str);
@@ -142,9 +142,9 @@ fn parse_context(context: Context) -> Result<(), &str> {
 }
 ```
 
-<span class="caption">列表 19-15：為字符串 slice 和 `Context` 的引用指定不同的生命週期參數</span>
+<span class="caption">代碼例 19-15：為字符串 slice 和 `Context` 的引用指定不同的生命週期參數</span>
 
-這裡在與列表 19-13 完全相同的地方標註了引用的生命週期，不過根據引用是字符串 slice 或 `Context` 與否使用了不同的參數。另外還在 `parse` 返回值的字符串 slice 部分增加了註解來表明它與 `Context` 中字符串 slice 的生命週期相關聯。
+這裡在與代碼例 19-13 完全相同的地方標註了引用的生命週期，不過根據引用是字符串 slice 或 `Context` 與否使用了不同的參數。另外還在 `parse` 返回值的字符串 slice 部分增加了註解來表明它與 `Context` 中字符串 slice 的生命週期相關聯。
 
 這裡是現在得到的錯誤：
 
@@ -191,13 +191,13 @@ struct Parser<'c, 's: 'c> {
 
 ### 生命週期 bound
 
-在第十章，我們討論了如何在泛型類型上使用 trait bound。也可以像泛型那樣為生命週期參數增加限制，這被稱為**生命週期 bound**。例如，考慮一下一個封裝了引用的類型。回憶一下第十五章的 `RefCell<T>` 類型：其 `borrow` 和 `borrow_mut` 方法分別返回 `Ref` 和 `RefMut` 類型。這些類型是引用的封裝，他們在運行時記錄檢查借用規則。`Ref` 結構體的定義如列表 19-16 所示，現在還不帶有生命週期 bound：
+在第十章，我們討論了如何在泛型類型上使用 trait bound。也可以像泛型那樣為生命週期參數增加限制，這被稱為**生命週期 bound**。例如，考慮一下一個封裝了引用的類型。回憶一下第十五章的 `RefCell<T>` 類型：其 `borrow` 和 `borrow_mut` 方法分別返回 `Ref` 和 `RefMut` 類型。這些類型是引用的封裝，他們在運行時記錄檢查借用規則。`Ref` 結構體的定義如代碼例 19-16 所示，現在還不帶有生命週期 bound：
 
 ```rust
 struct Ref<'a, T>(&'a T);
 ```
 
-<span class="caption">列表 19-16：定義結構體來封裝泛型的引用；開始時沒有生命週期 bound</span>
+<span class="caption">代碼例 19-16：定義結構體來封裝泛型的引用；開始時沒有生命週期 bound</span>
 
 若不限制生命週期 `'a` 為與泛型參數 `T` 有關，會得到一個錯誤因為 Rust 不知道泛型 `T` 會存活多久：
 
@@ -225,21 +225,21 @@ consider adding an explicit lifetime bound `T: 'a` so that the reference type
 `&'a T` does not outlive the data it points at.
 ```
 
-列表 19-17 展示了按照這個建議，在聲明泛型 `T` 時指定生命週期 bound。現在代碼可以編譯了，因為 `T: 'a` 指定了 `T` 可以為任意類型，不過如果它包含任何引用的話，其生命週期必須至少與 `'a` 一樣長：
+代碼例 19-17 展示了按照這個建議，在聲明泛型 `T` 時指定生命週期 bound。現在代碼可以編譯了，因為 `T: 'a` 指定了 `T` 可以為任意類型，不過如果它包含任何引用的話，其生命週期必須至少與 `'a` 一樣長：
 
 ```rust
 struct Ref<'a, T: 'a>(&'a T);
 ```
 
-<span class="caption">列表19-17：為 `T` 增加生命週期 bound 來指定 `T` 中的任何引用需至少與 `'a` 存活的一樣久</span>
+<span class="caption">代碼例19-17：為 `T` 增加生命週期 bound 來指定 `T` 中的任何引用需至少與 `'a` 存活的一樣久</span>
 
-我們可以選擇不同的方法來解決這個問題，如列表 19-18 中展示的 `StaticRef` 結構體定義所示，通過在 `T` 上增加 `'static` 生命週期 bound。這意味著如果 `T` 包含任何引用，他們必須有 `'static` 生命週期：
+我們可以選擇不同的方法來解決這個問題，如代碼例 19-18 中展示的 `StaticRef` 結構體定義所示，通過在 `T` 上增加 `'static` 生命週期 bound。這意味著如果 `T` 包含任何引用，他們必須有 `'static` 生命週期：
 
 ```rust
 struct StaticRef<T: 'static>(&'static T);
 ```
 
-<span class="caption">列表 19-18：在 `T` 上增加 `'static` 生命週期 bound 來限制 `T` 為只擁有 `'static` 引用或沒有引用的類型</span>
+<span class="caption">代碼例 19-18：在 `T` 上增加 `'static` 生命週期 bound 來限制 `T` 為只擁有 `'static` 引用或沒有引用的類型</span>
 
 沒有任何引用的類型被算作 `T: 'static`。因為 `'static` 意味著引用必須同整個程序存活的一樣長，一個不包含引用的類型滿足所有引用都與程序存活的一樣長的標準（因為他們沒有引用）。可以這樣理解：如果借用檢查器關心的是引用是否存活的夠久，那麼沒有引用的類型與有永遠存在的引用的類型並沒有真正的區別；對於確定引用是否比其所引用的值存活得較短的目的來說兩者是一樣的。
 
@@ -261,7 +261,7 @@ let num = 5;
 let obj = Box::new(Bar { x: &num }) as Box<Foo>;
 ```
 
-<span class="caption">列表 19-19：使用一個帶有生命週期的類型作為 trait 物件</span>
+<span class="caption">代碼例 19-19：使用一個帶有生命週期的類型作為 trait 物件</span>
 
 這些代碼能沒有任何錯誤的編譯，即便並沒有明確指出 `obj` 中涉及的任何生命週期。這是因為有如下生命週期與 trait 物件必須遵守的規則：
 

@@ -53,6 +53,6 @@ opt-level = 1
 
 這會覆蓋預設的設置 `0`。現在運行 `cargo build` 時，Cargo 將會使用 `dev` 的預設配置加上定製的 `opt-level`。因為 `opt-level` 設置為 `1`，Cargo 會比預設進行更多的優化，但是沒有發佈構建那麼多。
 
-對於每個配置的設置和其預設值的完整列表，請查看[Cargo 的文檔][cargodoc]。
+對於每個配置的設置和其預設值的完整代碼例，請查看[Cargo 的文檔][cargodoc]。
 
 [cargodoc]: http://doc.crates.io/

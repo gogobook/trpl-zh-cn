@@ -74,7 +74,7 @@ error: Process didn't exit successfully: `target/debug/panic` (exit code: 101)
 
 這指向了一個不是我們編寫的文件，*libcollections/vec.rs*。這是標準庫中 `Vec<T>` 的實現。這是當對 vector `v` 使用 `[]` 時 *libcollections/vec.rs* 中會執行的代碼，也是真正出現 `panic!` 的地方。
 
-接下來的幾行提醒我們可以設置 `RUST_BACKTRACE` 環境變數來得到一個 backtrace 來調查究竟是什麼導致了錯誤。讓我們來試試看。列表 9-1 顯示了其輸出：
+接下來的幾行提醒我們可以設置 `RUST_BACKTRACE` 環境變數來得到一個 backtrace 來調查究竟是什麼導致了錯誤。讓我們來試試看。代碼例 9-1 顯示了其輸出：
 
 ```text
 $ RUST_BACKTRACE=1 cargo run
@@ -116,9 +116,9 @@ stack backtrace:
   17:                0x0 - <unknown>
 ```
 
-<span class="caption">列表 9-1：當設置 `RUST_BACKTRACE` 環境變數時 `panic!` 調用所生成的 backtrace 信息</span>
+<span class="caption">代碼例 9-1：當設置 `RUST_BACKTRACE` 環境變數時 `panic!` 調用所生成的 backtrace 信息</span>
 
-這裡有大量的輸出！backtrace 第 11 行指向了我們程序中引起錯誤的行：*src/main.rs* 的第四行。backtrace 是一個執行到目前位置所有被調用的函數的列表。Rust 的 backtrace 跟其他語言中的一樣：閱讀 backtrace 的關鍵是從頭開始讀直到發現你編寫的文件。這就是問題的發源地。這一行往上是你的代碼調用的代碼；往下則是調用你的代碼的代碼。這些行可能包含核心 Rust 代碼，標準庫代碼或用到的 crate 代碼。
+這裡有大量的輸出！backtrace 第 11 行指向了我們程序中引起錯誤的行：*src/main.rs* 的第四行。backtrace 是一個執行到目前位置所有被調用的函數的代碼例。Rust 的 backtrace 跟其他語言中的一樣：閱讀 backtrace 的關鍵是從頭開始讀直到發現你編寫的文件。這就是問題的發源地。這一行往上是你的代碼調用的代碼；往下則是調用你的代碼的代碼。這些行可能包含核心 Rust 代碼，標準庫代碼或用到的 crate 代碼。
 
 如果你不希望我們的程序 panic，第一個提到我們編寫的代碼行的位置是你應該開始調查的，以便查明是什麼值如何在這個地方引起了 panic。在上面的例子中，我們故意編寫會 panic 的代碼來演示如何使用 backtrace，修復這個 panic 的方法就是不要嘗試在一個只包含三個項的 vector 中請求索引是 100 的元素。當將來你的代碼出現了 panic，你需要搞清楚在這特定的場景下代碼中執行了什麼操作和什麼值導致了 panic，以及應當如何處理才能避免這個問題。
 

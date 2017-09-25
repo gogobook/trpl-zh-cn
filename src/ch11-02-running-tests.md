@@ -26,7 +26,7 @@ $ cargo test -- --test-threads=1
 
 如果測試通過了，Rust 的測試庫預設會捕獲打印到標準輸出的任何內容。例如，如果在測試中調用 `println!` 而測試通過了，我們將不會在終端看到 `println!` 的輸出：只會看到說明測試通過的行。如果測試失敗了，就會看到所有標準輸出和其他錯誤信息。
 
-例如，列表 11-20 有一個無意義的函數它打印出其參數的值並接著返回 10。接著還有一個會通過的測試和一個會失敗的測試：
+例如，代碼例 11-20 有一個無意義的函數它打印出其參數的值並接著返回 10。接著還有一個會通過的測試和一個會失敗的測試：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -54,7 +54,7 @@ mod tests {
 }
 ```
 
-<span class="caption">列表 11-10：一個調用了 `println!` 的函數的測試</span>
+<span class="caption">代碼例 11-10：一個調用了 `println!` 的函數的測試</span>
 
 運行 `cargo test` 將會看到這些測試的輸出：
 
@@ -85,7 +85,7 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured
 $ cargo test -- --nocapture
 ```
 
-使用 `--nocapture` 參數再次運行列表 11-10 中的測試會顯示：
+使用 `--nocapture` 參數再次運行代碼例 11-10 中的測試會顯示：
 
 ```text
 running 2 tests
@@ -111,7 +111,7 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured
 
 有時運行整個測試集會耗費很長時間。如果你負責特定位置的代碼，你可能會希望只運行這些代碼相關的測試。可以向 `cargo test` 傳遞希望運行的測試的（部分）名稱作為參數來選擇運行哪些測試。
 
-為了展示如何運行測試的子集，列表 11-11 使用 `add_two` 函數創建了三個測試來供我們選擇運行哪一個：
+為了展示如何運行測試的子集，代碼例 11-11 使用 `add_two` 函數創建了三個測試來供我們選擇運行哪一個：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -141,7 +141,7 @@ mod tests {
 }
 ```
 
-<span class="caption">列表 11-11：不同名稱的三個測試</span>
+<span class="caption">代碼例 11-11：不同名稱的三個測試</span>
 
 如果沒有傳遞任何參數就運行測試，如你所見，所有測試都會並行運行：
 

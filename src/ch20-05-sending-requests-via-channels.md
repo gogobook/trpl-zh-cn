@@ -16,7 +16,7 @@
 4. `ThreadPool` 的 `execute` 方法會在發送端發出期望執行的任務。
 5. 在線程中，`Worker` 會遍歷通道的接收端並執行任何接收到的任務。
 
-讓我們以在 `ThreadPool::new` 中創建通道並讓 `ThreadPool` 實例充當發送端開始，如列表 20-16 所示。`Job` 是將在通道中發出的類型；目前它是一個沒有任何內容的結構體：
+讓我們以在 `ThreadPool::new` 中創建通道並讓 `ThreadPool` 實例充當發送端開始，如代碼例 20-16 所示。`Job` 是將在通道中發出的類型；目前它是一個沒有任何內容的結構體：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -70,11 +70,11 @@ impl ThreadPool {
 # }
 ```
 
-<span class="caption">列表 20-16：修改 `ThreadPool` 來儲存一個發送 `Job` 實例的通道發送端</span>
+<span class="caption">代碼例 20-16：修改 `ThreadPool` 來儲存一個發送 `Job` 實例的通道發送端</span>
 
 在 `ThreadPool::new` 中，新建了一個通道，並接著讓線程池在接收端等待。這段代碼能夠編譯，不過仍有警告。
 
-在線程池創建每個 worker 時將通道的接收端傳遞給他們。須知我們希望在 worker 所分配的線程中使用通道的接收端，所以將在閉包中引用 `receiver` 參數。列表 20-17 中展示的代碼還不能編譯：
+在線程池創建每個 worker 時將通道的接收端傳遞給他們。須知我們希望在 worker 所分配的線程中使用通道的接收端，所以將在閉包中引用 `receiver` 參數。代碼例 20-17 中展示的代碼還不能編譯：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -116,7 +116,7 @@ impl Worker {
 }
 ```
 
-<span class="caption">列表 20-17：將通道的接收端傳遞給 worker</span>
+<span class="caption">代碼例 20-17：將通道的接收端傳遞給 worker</span>
 
 這是一些小而直觀的修改：將通道的接收端傳遞進了 `Worker::new`，並接著在閉包中使用他們。
 
@@ -140,7 +140,7 @@ error[E0382]: use of moved value: `receiver`
 
 另外，從通道隊列中取出任務涉及到修改 `receiver`，所以這些線程需要一個能安全的共享和修改 `receiver` 的方式。如果修改不是線程安全的，則可能遇到競爭狀態，例如兩個線程因同時在隊列中取出相同的任務並執行了相同的工作。
 
-所以回憶一下第十六章討論的線程安全智能指針，為了在多個線程間共享所有權並允許線程修改其值，需要使用 `Arc<Mutex<T>>`。`Arc` 使得多個 worker 擁有接收端，而 `Mutex` 則確保一次只有一個 worker 能從接收端得到任務。列表 20-18 展示了所做的修改：
+所以回憶一下第十六章討論的線程安全智能指針，為了在多個線程間共享所有權並允許線程修改其值，需要使用 `Arc<Mutex<T>>`。`Arc` 使得多個 worker 擁有接收端，而 `Mutex` 則確保一次只有一個 worker 能從接收端得到任務。代碼例 20-18 展示了所做的修改：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -201,13 +201,13 @@ impl Worker {
 }
 ```
 
-<span class="caption">列表 20-18：使用 `Arc` 和 `Mutex` 在 worker 間共享通道的接收端</span>
+<span class="caption">代碼例 20-18：使用 `Arc` 和 `Mutex` 在 worker 間共享通道的接收端</span>
 
 在 `ThreadPool::new` 中，將通道的接收端放入一個 `Arc` 和一個 `Mutex` 中。對於每一個新 worker，則克隆 `Arc` 來增加引用計數，如此這些 worker 就可以共享接收端的所有權了。
 
 通過這些修改，代碼可以編譯了！我們做到了！
 
-最好讓我們實現 `ThreadPool` 上的 `execute` 方法。同時也要修改 `Job` 結構體：它將不再是結構體，`Job` 將是一個有著 `execute` 接收到的閉包類型的 trait 物件的類型別名。我們討論過類型別名如何將長的類型變短，現在就這種情況！看一看列表 20-19：
+最好讓我們實現 `ThreadPool` 上的 `execute` 方法。同時也要修改 `Job` 結構體：它將不再是結構體，`Job` 將是一個有著 `execute` 接收到的閉包類型的 trait 物件的類型別名。我們討論過類型別名如何將長的類型變短，現在就這種情況！看一看代碼例 20-19：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -238,11 +238,11 @@ impl ThreadPool {
 // ...snip...
 ```
 
-<span class="caption">列表 20-19：為存放每一個閉包的 `Box` 創建一個 `Job` 類型別名，接著在通道中發出</span>
+<span class="caption">代碼例 20-19：為存放每一個閉包的 `Box` 創建一個 `Job` 類型別名，接著在通道中發出</span>
 
 在使用 `execute` 得到的閉包新建 `Job` 實例之後，將這些任務從通道的發送端發出。這裡調用 `send` 上的 `unwrap`，因為如果接收端停止接收新消息則發送可能會失敗，這可能發生於我們停止了所有的執行線程。不過目前這是不可能的，因為只要線程池存在他們就會一直執行。使用 `unwrap` 是因為我們知道失敗不可能發生，即便編譯器不這麼認為，正如第九章討論的這是 `unwrap` 的一個恰當用法。
 
-那我們結束了嗎？不完全是！在 worker 中，傳遞給 `thread::spawn` 的閉包仍然還只是**引用**了通道的接收端。但是我們需要閉包一直循環，向通道的接收端請求任務，並在得到任務時執行他們。如列表 20-20 對 `Worker::new` 做出修改：
+那我們結束了嗎？不完全是！在 worker 中，傳遞給 `thread::spawn` 的閉包仍然還只是**引用**了通道的接收端。但是我們需要閉包一直循環，向通道的接收端請求任務，並在得到任務時執行他們。如代碼例 20-20 對 `Worker::new` 做出修改：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -269,7 +269,7 @@ impl Worker {
 }
 ```
 
-<span class="caption">列表 20-20： 在 worker 線程中接收並執行任務</span>
+<span class="caption">代碼例 20-20： 在 worker 線程中接收並執行任務</span>
 
 這裡，首先在 `receiver` 上調用了 `lock` 來抓取互斥器，接著 `unwrap` 在出現任何錯誤時 panic。如果互斥器處於一種叫做**被污染**（*poisoned*）的狀態時抓取鎖肯能會失敗，這可能發生於其他線程在持有鎖時 panic 了並沒有釋放鎖。如果當前線程因為這個原因不能得到所，調用 `unwrap` 使其 panic 也是正確的行為。如果你覺得有意義的話請隨意將 `unwrap` 改為帶有錯誤信息的 `expect`。
 
@@ -291,11 +291,11 @@ statically determined
 
 這個錯誤非常的神秘，因為這個問題本身就很神秘。為了調用儲存在 `Box<T>` （這正是 `Job` 別名的類型）中的 `FnOnce` 閉包，該閉包需要能將自己移動出 `Box<T>`，因為當調用這個閉包時，它抓取 `self` 的所有權。通常來說，將值移動出 `Box<T>` 是不被允許的，因為 Rust 不知道 `Box<T>` 中的值將會有多大；回憶第十五章能夠正常使用 `Box<T>` 是因為我們將未知大小的值儲存進 `Box<T>` 從而得到已知大小的值。
 
-第十七章曾見過，列表 17-15 中有使用了 `self: Box<Self>` 語法的方法，它抓取了儲存在 `Box<T>` 中的 `Self` 值的所有權。這正是我們希望做的，然而不幸的是 Rust 調用閉包的那部分實現並沒有使用 `self: Box<Self>`。所以這裡 Rust 也不知道它可以使用 `self: Box<Self>` 來抓取閉包的所有權並將閉包移動出 `Box<T>`。
+第十七章曾見過，代碼例 17-15 中有使用了 `self: Box<Self>` 語法的方法，它抓取了儲存在 `Box<T>` 中的 `Self` 值的所有權。這正是我們希望做的，然而不幸的是 Rust 調用閉包的那部分實現並沒有使用 `self: Box<Self>`。所以這裡 Rust 也不知道它可以使用 `self: Box<Self>` 來抓取閉包的所有權並將閉包移動出 `Box<T>`。
 
-將來列表 20-20 中的代碼應該能夠正常工作。Rust 仍在努力改進提升編譯器。有很多像你一樣的人正在修復這個以及其他問題！當你結束了本書的閱讀，我們希望看到你也成為他們中的一員。
+將來代碼例 20-20 中的代碼應該能夠正常工作。Rust 仍在努力改進提升編譯器。有很多像你一樣的人正在修復這個以及其他問題！當你結束了本書的閱讀，我們希望看到你也成為他們中的一員。
 
-不過目前讓我們繞過這個問題。所幸有一個技巧可以顯式的告訴 Rust 我們處於可以抓取使用 `self: Box<Self>` 的 `Box<T>` 中值的所有權的狀態，而一旦抓取了閉包的所有權就可以調用它了。這涉及到定義一個新 trait，它帶有一個在簽名中使用 `self: Box<Self>` 的方法 `call_box`，為任何實現了 `FnOnce()` 的類型定義這個 trait，修改類型別名來使用這個新 trait，並修改 `Worker` 使用 `call_box` 方法。這些修改如列表 20-21 所示：
+不過目前讓我們繞過這個問題。所幸有一個技巧可以顯式的告訴 Rust 我們處於可以抓取使用 `self: Box<Self>` 的 `Box<T>` 中值的所有權的狀態，而一旦抓取了閉包的所有權就可以調用它了。這涉及到定義一個新 trait，它帶有一個在簽名中使用 `self: Box<Self>` 的方法 `call_box`，為任何實現了 `FnOnce()` 的類型定義這個 trait，修改類型別名來使用這個新 trait，並修改 `Worker` 使用 `call_box` 方法。這些修改如代碼例 20-21 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -334,7 +334,7 @@ impl Worker {
 }
 ```
 
-<span class="caption">列表 20-21：新增一個 trait `FnBox` 來繞過當前 `Box<FnOnce()>` 的限制</span>
+<span class="caption">代碼例 20-21：新增一個 trait `FnBox` 來繞過當前 `Box<FnOnce()>` 的限制</span>
 
 首先，新建了一個叫做 `FnBox` 的 trait。這個 trait 有一個方法 `call_box`，它類似於其他 `Fn*` trait 中的 `call` 方法，除了它抓取 `self: Box<Self>` 以便抓取 `self` 的所有權並將值從 `Box<T>` 中移動出來。
 

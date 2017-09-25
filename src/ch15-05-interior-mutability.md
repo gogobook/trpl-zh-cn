@@ -27,7 +27,7 @@ Rust 編譯器執行的靜態分析天生是保守的。代碼的一些屬性則
 
 對於引用，可以使用`&`和`&mut`語法來分別創建不可變和可變的引用。不過對於`RefCell<T>`，我們使用`borrow`和`borrow_mut`方法，它是`RefCell<T>`擁有的安全 API 的一部分。`borrow`返回`Ref`類型的智能指針，而`borrow_mut`返回`RefMut`類型的智能指針。這兩個類型實現了`Deref`所以可以被當作常規引用處理。`Ref`和`RefMut`動態的借用所有權，而他們的`Drop`實現也動態的釋放借用。
 
-列表 15-14 展示了如何使用`RefCell<T>`來使函數不可變的和可變的借用它的參數。注意`data`變數使用`let data`而不是`let mut data`來聲明為不可變的，而`a_fn_that_mutably_borrows`則允許可變的借用數據並修改它！
+代碼例 15-14 展示了如何使用`RefCell<T>`來使函數不可變的和可變的借用它的參數。注意`data`變數使用`let data`而不是`let mut data`來聲明為不可變的，而`a_fn_that_mutably_borrows`則允許可變的借用數據並修改它！
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -120,7 +120,7 @@ note: Run with `RUST_BACKTRACE=1` for a backtrace.
 
 ### 結合`Rc<T>`和`RefCell<T>`來擁有多個可變數據所有者
 
-那麼為什麼要權衡考慮選擇引入`RefCell<T>`呢？好吧，還記得我們說過`Rc<T>`只能擁有一個`T`的不可變引用嗎？考慮到`RefCell<T>`是不可變的，但是擁有內部可變性，可以將`Rc<T>`與`RefCell<T>`結合來創造一個既有引用計數又可變的類型。列表 15-15 展示了一個這麼做的例子，再次回到列表 15-5 中的 cons list。在這個例子中，不同於在 cons list 中儲存`i32`值，我們儲存一個`Rc<RefCell<i32>>`值。希望儲存這個類型是因為其可以擁有不屬於列表一部分的這個值的所有者（`Rc<T>`提供的多個所有者功能），而且還可以改變內部的`i32`值（`RefCell<T>`提供的內部可變性功能）：
+那麼為什麼要權衡考慮選擇引入`RefCell<T>`呢？好吧，還記得我們說過`Rc<T>`只能擁有一個`T`的不可變引用嗎？考慮到`RefCell<T>`是不可變的，但是擁有內部可變性，可以將`Rc<T>`與`RefCell<T>`結合來創造一個既有引用計數又可變的類型。代碼例 15-15 展示了一個這麼做的例子，再次回到代碼例 15-5 中的 cons list。在這個例子中，不同於在 cons list 中儲存`i32`值，我們儲存一個`Rc<RefCell<i32>>`值。希望儲存這個類型是因為其可以擁有不屬於代碼例一部分的這個值的所有者（`Rc<T>`提供的多個所有者功能），而且還可以改變內部的`i32`值（`RefCell<T>`提供的內部可變性功能）：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -155,7 +155,7 @@ fn main() {
 <span class="caption">Listing 15-15: Using `Rc<RefCell<i32>>` to create a
 `List` that we can mutate</span>
 
-我們創建了一個值，它是`Rc<RefCell<i32>>`的實例。將其儲存在變數`value`中因為我們希望之後能直接訪問它。接著在`a`中創建了一個擁有存放了`value`值的`Cons`成員的`List`，而且`value`需要被克隆因為我們希望除了`a`之外還擁有`value`的所有權。接著將`a`封裝進`Rc<T>`中這樣就可以創建都引用`a`的有著不同開頭的列表`b`和`c`，類似列表 15-12 中所做的那樣。
+我們創建了一個值，它是`Rc<RefCell<i32>>`的實例。將其儲存在變數`value`中因為我們希望之後能直接訪問它。接著在`a`中創建了一個擁有存放了`value`值的`Cons`成員的`List`，而且`value`需要被克隆因為我們希望除了`a`之外還擁有`value`的所有權。接著將`a`封裝進`Rc<T>`中這樣就可以創建都引用`a`的有著不同開頭的代碼例`b`和`c`，類似代碼例 15-12 中所做的那樣。
 
 一旦創建了`shared_list`、`b`和`c`，接下來就可以通過解引用`Rc<T>`和對`RefCell`調用`borrow_mut`來將 10 與 5 相加了。
 

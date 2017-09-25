@@ -4,7 +4,7 @@
 > <br>
 > commit 0a4ed5875aeba78a81ae03ac73aeb84d2e2aca86
 
-我們通過將 `network` 和 `network::server` 的代碼分別移動到 *src/network/mod.rs* 和 *src/network/server.rs* 文件中解決了列表 7-4 中出現的錯誤信息。現在，`cargo build` 能夠構建我們的項目，不過仍然有一些警告信息，表示 `client::connect`、`network::connect` 和`network::server::connect` 函數沒有被使用：
+我們通過將 `network` 和 `network::server` 的代碼分別移動到 *src/network/mod.rs* 和 *src/network/server.rs* 文件中解決了代碼例 7-4 中出現的錯誤信息。現在，`cargo build` 能夠構建我們的項目，不過仍然有一些警告信息，表示 `client::connect`、`network::connect` 和`network::server::connect` 函數沒有被使用：
 
 ```text
 warning: function is never used: `connect`, #[warn(dead_code)] on by default
@@ -169,7 +169,7 @@ warning: function is never used: `connect`, #[warn(dead_code)] on by default
 
 ### 私有性示例
 
-讓我們看看更多例子作為練習。創建一個新的庫項目並在新項目的 *src/lib.rs* 輸入列表 7-5 中的代碼：
+讓我們看看更多例子作為練習。創建一個新的庫項目並在新項目的 *src/lib.rs* 輸入代碼例 7-5 中的代碼：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -194,7 +194,7 @@ fn try_me() {
 }
 ```
 
-<span class="caption">列表 7-5：私有和公有函數的例子，其中部分是不正確的</span>
+<span class="caption">代碼例 7-5：私有和公有函數的例子，其中部分是不正確的</span>
 
 在嘗試編譯這些代碼之前，猜測一下 `try_me` 函數的哪一行會出錯。接著編譯項目來看看是否猜對了，然後繼續閱讀後面關於錯誤的討論！
 

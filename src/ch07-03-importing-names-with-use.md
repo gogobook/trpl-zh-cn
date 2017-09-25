@@ -4,7 +4,7 @@
 > <br>
 > commit d06a6a181fd61704cbf7feb55bc61d518c6469f9
 
-我們已經講到了如何使用模組名稱作為調用的一部分，來調用模組中的函數，如列表 7-6 中所示的 `nested_modules` 函數調用。
+我們已經講到了如何使用模組名稱作為調用的一部分，來調用模組中的函數，如代碼例 7-6 中所示的 `nested_modules` 函數調用。
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -22,7 +22,7 @@ fn main() {
 }
 ```
 
-<span class="caption">列表 7-6：通過完全指定模組中的路徑來調用函數</span>
+<span class="caption">代碼例 7-6：通過完全指定模組中的路徑來調用函數</span>
 
 如你所見，指定函數的完全限定名稱可能會非常冗長。所幸 Rust 有一個關鍵字使得這些調用顯得更簡潔。
 
