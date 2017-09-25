@@ -32,7 +32,7 @@ impl List {
 <span class="caption">Listing 15-16: A cons list definition that holds a
 `RefCell` so that we can modify what a `Cons` variant is referring to</span>
 
-接下來，在列表 15-17 中，我們將在變量`a`中創建一個`List`值，其內部是一個`5, Nil`的列表。接著在變量`b`創建一個值 10 和指向`a`中列表的`List`值。最後修改`a`指向`b`而不是`Nil`，這會創建一個循環：
+接下來，在列表 15-17 中，我們將在變數`a`中創建一個`List`值，其內部是一個`5, Nil`的列表。接著在變數`b`創建一個值 10 和指向`a`中列表的`List`值。最後修改`a`指向`b`而不是`Nil`，這會創建一個循環：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -85,7 +85,7 @@ fn main() {
 <span class="caption">Listing 15-17: Creating a reference cycle of two `List`
 values pointing to each other</span>
 
-使用`tail`方法來獲取`a`中`RefCell`的引用，並將其放入變量`link`中。接著對`RefCell`使用`borrow_mut`方法將其中的值從存放`Nil`值的`Rc`改為`b`中的`Rc`。這創建了一個看起來像圖 15-18 所示的引用循環：
+使用`tail`方法來獲取`a`中`RefCell`的引用，並將其放入變數`link`中。接著對`RefCell`使用`borrow_mut`方法將其中的值從存放`Nil`值的`Rc`改為`b`中的`Rc`。這創建了一個看起來像圖 15-18 所示的引用循環：
 
 <img alt="Reference cycle of lists" src="img/trpl15-04.svg" class="center" style="width: 50%;" />
 
@@ -119,7 +119,7 @@ struct Node {
 }
 ```
 
-我們希望能夠`Node`擁有其子節點，同時也希望變量可以擁有每個節點以便可以直接訪問他們。這就是為什麼`Vec`中的項是`Rc<Node>`值。我們也希望能夠修改其他節點的子節點，這就是為什麼`children`中`Vec`被放進了`RefCell`的原因。在列表 15-19 中創建了一個叫做`leaf`的帶有值 3 並沒有子節點的`Node`實例，和另一個帶有值 5 和以`leaf`作為子節點的實例`branch`：
+我們希望能夠`Node`擁有其子節點，同時也希望變數可以擁有每個節點以便可以直接訪問他們。這就是為什麼`Vec`中的項是`Rc<Node>`值。我們也希望能夠修改其他節點的子節點，這就是為什麼`children`中`Vec`被放進了`RefCell`的原因。在列表 15-19 中創建了一個叫做`leaf`的帶有值 3 並沒有子節點的`Node`實例，和另一個帶有值 5 和以`leaf`作為子節點的實例`branch`：
 
 
 <span class="filename">Filename: src/main.rs</span>

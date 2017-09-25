@@ -61,7 +61,7 @@ $ ./main
 Hello, world!
 ```
 
-在 Windows 上，運行 `.\main.exe`，而不是`./main`。不管使用何種系統，應該在終端看到 `Hello, world!` 字樣。如果你做到了，恭喜你！你已經正式編寫了一個 Rust 程序。現在你成為了一名 Rust 程序員！歡迎！
+在 Windows 上，運行 `.\main.exe`，而不是`./main`。不管使用何種系統，應該在終端看到 `Hello, world!` 字樣。如果你做到了，恭喜你！你已經正式編寫了一個 Rust 程序。現在你成為了一名 Rust 程式設計師！歡迎！
 
 ### 分析 Rust 程序
 

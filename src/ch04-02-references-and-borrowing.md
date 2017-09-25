@@ -24,7 +24,7 @@ fn calculate_length(s: &String) -> usize {
 }
 ```
 
-首先，注意變量聲明和函數返回值中的所有元組代碼都消失了。其次，注意我們傳遞 `&s1` 給 `calculate_length`，同時在函數定義中，我們獲取 `&String` 而不是 `String`。
+首先，注意變數聲明和函數返回值中的所有元組代碼都消失了。其次，注意我們傳遞 `&s1` 給 `calculate_length`，同時在函數定義中，我們獲取 `&String` 而不是 `String`。
 
 這些 & 符號就是 **引用**，他們允許你使用值但不獲取它的所有權。圖 4-8 展示了一個圖解。
 
@@ -54,11 +54,11 @@ fn calculate_length(s: &String) -> usize { // s is a reference to a String
   // it refers to, nothing happens.
 ```
 
-變量 `s` 有效的作用域與函數參數的作用域一樣，不過當引用離開作用域後並不丟棄它指向的數據因為我們沒有所有權。函數使用引用而不是實際值作為參數意味著無需返回值來交還所有權，因為就不曾擁有所有權。
+變數 `s` 有效的作用域與函數參數的作用域一樣，不過當引用離開作用域後並不丟棄它指向的數據因為我們沒有所有權。函數使用引用而不是實際值作為參數意味著無需返回值來交還所有權，因為就不曾擁有所有權。
 
 我們將獲取引用作為函數參數稱為 **借用**（*borrowing*）。正如現實生活中，如果一個人擁有某樣東西，你可以從他那裡借來。當你使用完畢，必須還回去。
 
-如果我們嘗試修改借用的變量呢？嘗試列表 4-9 中的代碼。劇透：這行不通！
+如果我們嘗試修改借用的變數呢？嘗試列表 4-9 中的代碼。劇透：這行不通！
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -86,7 +86,7 @@ error: cannot borrow immutable borrowed content `*some_string` as mutable
   |     ^^^^^^^^^^^
 ```
 
-正如變量默認是不可變的，引用也一樣。不允許修改引用的值。
+正如變數默認是不可變的，引用也一樣。不允許修改引用的值。
 
 ### 可變引用
 
@@ -108,7 +108,7 @@ fn change(some_string: &mut String) {
 
 首先，必須將 `s` 改為 `mut`。然後必須創建一個可變引用 `&mut s` 和接受一個可變引用 `some_string: &mut String`。
 
-不過可變引用有一個很大的限制：在特定作用域中的特定數據有且只有一個可變引用。這些代碼會失敗：
+不過可變引用有一個很大的限制：在特定作用域中的特定數據只能有一個可變引用，(譯註:且原本變數也不能使用)，否則失敗：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -133,7 +133,7 @@ error[E0499]: cannot borrow `s` as mutable more than once at a time
   | - first borrow ends here
 ```
 
-這個限制允許可變性，不過是以一種受限制的方式。新 Rustacean 們經常與此作鬥爭，因為大部分語言任何時候變量都是可變的。這個限制的好處是 Rust 可以在編譯時就避免數據競爭。
+這個限制允許可變性，不過是以一種受限制的方式。新 Rustacean 們經常與此作鬥爭，因為大部分語言任何時候變數都是可變的。這個限制的好處是 Rust 可以在編譯時就避免數據競爭。
 
 **數據競爭**（*data race*）是一種特定類型的競爭狀態，它可由這三個行為造成：
 
@@ -265,3 +265,33 @@ fn no_dangle() -> String {
 2. 引用必須總是有效的。
 
 接下來，我們來看看一種不同類型的引用：slice。
+
+譯註:
+
+```rust
+fn manin() {
+  let mut s1 = String::from("hello");
+  let s2 = &mut s1;
+  s2.push_str(", world!");
+  println!("This is s2:{}", s2);
+  println!("This is s1:{}", s1);
+}
+```
+錯誤: [E0502]:cannot borrow `s1` as immutable because it is also borrowed as mutable
+
+```rust
+fn manin() {
+  let mut s1 = String::from("hello");
+  {
+    let s2 = &mut s1;
+    s2.push_str(", world!");
+    println!("This is s2:{}", s2);
+  }
+  println!("This is s1:{}", s1);
+}
+```
+正確:
+```
+This is s2:hello, world!
+This is s1:hello, world!
+```

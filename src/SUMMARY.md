@@ -9,7 +9,7 @@
 - [猜猜看教程](ch02-00-guessing-game-tutorial.md)
 
 - [通用編程概念](ch03-00-common-programming-concepts.md)
-    - [變量和可變性](ch03-01-variables-and-mutability.md)
+    - [變數和可變性](ch03-01-variables-and-mutability.md)
     - [數據類型](ch03-02-data-types.md)
     - [函數如何工作](ch03-03-how-functions-work.md)
     - [註釋](ch03-04-comments.md)
@@ -62,7 +62,7 @@
     - [讀取文件](ch12-02-reading-a-file.md)
     - [增強錯誤處理和模塊化](ch12-03-improving-error-handling-and-modularity.md)
     - [測試庫的功能](ch12-04-testing-the-librarys-functionality.md)
-    - [處理環境變量](ch12-05-working-with-environment-variables.md)
+    - [處理環境變數](ch12-05-working-with-environment-variables.md)
     - [輸出到`stderr`而不是`stdout`](ch12-06-writing-to-stderr-instead-of-stdout.md)
 
 ## Rust 編程思想

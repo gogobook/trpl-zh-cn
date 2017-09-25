@@ -271,7 +271,7 @@ error[E0507]: cannot move out of borrowed content
   |         cannot move out of borrowed content
 ```
 
-錯誤的核心是 `cannot move out of type [T], a non-copy array`，對於非泛型版本的 `largest` 函數，我們只嘗試了尋找最大的 `i32` 和 `char`。正如第四章討論過的，像 `i32` 和 `char` 這樣的類型是已知大小的並可以儲存在棧上，所以他們實現了 `Copy` trait。當我們將 `largest` 函數改成使用泛型後，現在 `list` 參數的類型就有可能是沒有實現 `Copy` trait 的，這意味著我們可能不能將 `list[0]` 的值移動到 `largest` 變量中。
+錯誤的核心是 `cannot move out of type [T], a non-copy array`，對於非泛型版本的 `largest` 函數，我們只嘗試了尋找最大的 `i32` 和 `char`。正如第四章討論過的，像 `i32` 和 `char` 這樣的類型是已知大小的並可以儲存在棧上，所以他們實現了 `Copy` trait。當我們將 `largest` 函數改成使用泛型後，現在 `list` 參數的類型就有可能是沒有實現 `Copy` trait 的，這意味著我們可能不能將 `list[0]` 的值移動到 `largest` 變數中。
 
 如果只想對實現了 `Copy` 的類型調用這些代碼，可以在 `T` 的 trait bounds 中增加 `Copy`！列表 10-16 中展示了一個可以編譯的泛型版本的 `largest` 函數的完整代碼，只要傳遞給 `largest` 的 slice 值的類型實現了 `PartialOrd` 和 `Copy` 這兩個 trait，例如 `i32` 和 `char`：
 

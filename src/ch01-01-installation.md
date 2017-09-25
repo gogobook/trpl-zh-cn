@@ -24,7 +24,7 @@ Rust is installed now. Great!
 
 當然，如果你對於 `curl | sh` 這樣的模式心有疑慮，請隨意下載、檢查和運行這個腳本。
 
-此安裝腳本自動將 Rust 加入系統 PATH 環境變量中，再次登陸時生效。如果你希望立刻（不重新登陸）就開始使用 Rust，在 shell 中運行如下命令：
+此安裝腳本自動將 Rust 加入系統 PATH 環境變數中，再次登陸時生效。如果你希望立刻（不重新登陸）就開始使用 Rust，在 shell 中運行如下命令：
 
 ```text
 $ source $HOME/.cargo/env
@@ -81,7 +81,7 @@ rustc x.y.z (abcabcabc yyyy-mm-dd)
 
 恭喜入坑！（此處應該有掌聲！）
 
-如果在 Windows 中使用出現問題，檢查 Rust（rustc，cargo 等）是否在 `%PATH%` 環境變量所包含的路徑中。
+如果在 Windows 中使用出現問題，檢查 Rust（rustc，cargo 等）是否在 `%PATH%` 環境變數所包含的路徑中。
 
 如果還是不能解決，有許多地方可以求助。最簡單的是 [irc.mozilla.org 上的 #rust IRC 頻道][irc]<!-- ignore --> ，可以使用 [Mibbit][mibbit] 來訪問它。然後就能和其他 Rustacean（Rust 用戶的稱號，有自嘲意味）聊天並尋求幫助。其它給力的資源包括[用戶論壇][users]和 [Stack Overflow][stackoverflow]。
 

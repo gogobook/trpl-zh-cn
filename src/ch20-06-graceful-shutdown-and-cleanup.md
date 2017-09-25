@@ -261,7 +261,7 @@ fn main() {
 
 只處理兩次請求並不是生產環境的 web server 所期望的行為，不過這可以讓我們看清 graceful shutdown 和清理起作用了，因為不用再通過 <span class="keystroke">ctrl-C</span> 停止 server 了。
 
-這裡還增加了一個 `counter` 變量在每次收到 TCP 流時遞增。如果計數到達 2，會停止處理請求並退出 `for` 循環。`ThreadPool` 會在 `main` 的結尾離開作用域，而且還會看到 `drop` 實現的運行。
+這裡還增加了一個 `counter` 變數在每次收到 TCP 流時遞增。如果計數到達 2，會停止處理請求並退出 `for` 循環。`ThreadPool` 會在 `main` 的結尾離開作用域，而且還會看到 `drop` 實現的運行。
 
 使用 `cargo run` 啟動 server，並發起三個請求。第三個請求應該會失敗，而終端的輸出應該看起來像這樣：
 

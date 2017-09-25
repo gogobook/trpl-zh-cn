@@ -4,7 +4,7 @@
 > <br>
 > commit 8d24b2a5e61b4eea109d26e38d2144408ae44e53
 
-突然有一天，糟糕的事情發生了，而你對此束手無策。對於這種情況，Rust 有 `panic!`巨集。當執行這個巨集時，程序會打印出一個錯誤信息，展開並清理棧數據，然後接著退出。出現這種情況的場景通常是檢測到一些類型的 bug 而且程序員並不清楚該如何處理它。
+突然有一天，糟糕的事情發生了，而你對此束手無策。對於這種情況，Rust 有 `panic!`巨集。當執行這個巨集時，程序會打印出一個錯誤信息，展開並清理棧數據，然後接著退出。出現這種情況的場景通常是檢測到一些類型的 bug 而且程式設計師並不清楚該如何處理它。
 
 > ### Panic 中的棧展開與終止
 > 
@@ -74,7 +74,7 @@ error: Process didn't exit successfully: `target/debug/panic` (exit code: 101)
 
 這指向了一個不是我們編寫的文件，*libcollections/vec.rs*。這是標準庫中 `Vec<T>` 的實現。這是當對 vector `v` 使用 `[]` 時 *libcollections/vec.rs* 中會執行的代碼，也是真正出現 `panic!` 的地方。
 
-接下來的幾行提醒我們可以設置 `RUST_BACKTRACE` 環境變量來得到一個 backtrace 來調查究竟是什麼導致了錯誤。讓我們來試試看。列表 9-1 顯示了其輸出：
+接下來的幾行提醒我們可以設置 `RUST_BACKTRACE` 環境變數來得到一個 backtrace 來調查究竟是什麼導致了錯誤。讓我們來試試看。列表 9-1 顯示了其輸出：
 
 ```text
 $ RUST_BACKTRACE=1 cargo run
@@ -116,7 +116,7 @@ stack backtrace:
   17:                0x0 - <unknown>
 ```
 
-<span class="caption">列表 9-1：當設置 `RUST_BACKTRACE` 環境變量時 `panic!` 調用所生成的 backtrace 信息</span>
+<span class="caption">列表 9-1：當設置 `RUST_BACKTRACE` 環境變數時 `panic!` 調用所生成的 backtrace 信息</span>
 
 這裡有大量的輸出！backtrace 第 11 行指向了我們程序中引起錯誤的行：*src/main.rs* 的第四行。backtrace 是一個執行到目前位置所有被調用的函數的列表。Rust 的 backtrace 跟其他語言中的一樣：閱讀 backtrace 的關鍵是從頭開始讀直到發現你編寫的文件。這就是問題的發源地。這一行往上是你的代碼調用的代碼；往下則是調用你的代碼的代碼。這些行可能包含核心 Rust 代碼，標準庫代碼或用到的 crate 代碼。
 
