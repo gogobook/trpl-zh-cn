@@ -50,7 +50,7 @@ fn main() {
 
     thread::spawn(move || {
         let val = String::from("hi");
-        tx.send(val).unwrap();
+        tx.send(val).unwrap(); // unwrap忽略錯誤
     });
 }
 ```
@@ -94,7 +94,7 @@ and printing it out</span>
 Got: hi
 ```
 
-### 通道與所有權如何交互
+### 通道與所有權如何互動
 
 現在讓我們做一個試驗來看看通道與所有權如何在一起工作：我們將嘗試在新建線程中的通道中發送完`val`之後再使用它。嘗試編譯代碼例 16-9 中的代碼：
 
