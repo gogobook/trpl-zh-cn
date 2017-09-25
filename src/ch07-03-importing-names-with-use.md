@@ -167,7 +167,7 @@ error[E0433]: failed to resolve. Use of undeclared type or module `client`
   |         ^^^^^^^^^^^^^^^ Use of undeclared type or module `client`
 ```
 
-編譯失敗了，不過為什麼呢？並不需要像 *src/main.rs* 那樣將 `communicator::` 置於函數前，因為這裡肯定是在 `communicator` 庫 crate 之內的。之所以失敗的原因是路徑是相對於當前模塊的，在這裡就是 `tests`。唯一的例外就是 `use` 語句，它默認是相對於 crate 根模塊的。我們的 `tests` 模塊需要 `client` 模塊位於其作用域中！
+編譯失敗了，不過為什麼呢？並不需要像 *src/main.rs* 那樣將 `communicator::` 置於函數前，因為這裡肯定是在 `communicator` 庫 crate 之內的。之所以失敗的原因是路徑是相對於當前模塊的，在這裡就是 `tests`。唯一的例外就是 `use` 語句，它預設是相對於 crate 根模塊的。我們的 `tests` 模塊需要 `client` 模塊位於其作用域中！
 
 那麼如何在模塊層次結構中回退一級模塊，以便在 `tests` 模塊中能夠調用 `client::connect`函數呢？在 `tests` 模塊中，要麼可以在開頭使用雙冒號來讓 Rust 知道我們想要從根模塊開始並列出整個路徑：
 

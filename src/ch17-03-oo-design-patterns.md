@@ -271,7 +271,7 @@ impl Post {
 
 這裡調用 `Option` 的 `as_ref`方法是因為需要 `Option` 中值的引用。接著調用 `unwrap` 方法，這裡我們知道永遠也不會 panic 因為 `Post` 的所有方法都確保在他們返回時 `state` 會有一個 `Some` 值。這就是一個第十二章討論過的我們知道 `None` 是不可能的而編譯器卻不能理解的情況。
 
-`State` trait 的 `content` 方法是博文返回什麼內容的邏輯所在之處。我們將增加一個 `content` 方法的默認實現來返回一個空字符串 slice。這樣就無需為 `Draft` 和 `PendingReview` 結構體實現 `content` 了。`Published` 結構體會覆蓋 `content` 方法並會返回 `post.content` 的值，如列表 17-18 所示：
+`State` trait 的 `content` 方法是博文返回什麼內容的邏輯所在之處。我們將增加一個 `content` 方法的預設實現來返回一個空字符串 slice。這樣就無需為 `Draft` 和 `PendingReview` 結構體實現 `content` 了。`Published` 結構體會覆蓋 `content` 方法並會返回 `post.content` 的值，如列表 17-18 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -315,7 +315,7 @@ impl State for Published {
 
 狀態模式的一個缺點是因為狀態實現了狀態之間的轉換，一些狀態會相互聯繫。如果在 `PendingReview` 和 `Published` 之間增加另一個狀態，比如 `Scheduled`，則不得不修改 `PendingReview` 中的代碼來轉移到 `Scheduled`。如果 `PendingReview` 無需因為新增的狀態而改變就更好了，不過這意味著切換到另一個設計模式。
 
-這個 Rust 中的實現的缺點在於存在一些重複的邏輯。如果能夠為 `State` trait 中返回 `self` 的 `request_review` 和 `approve` 方法增加默認實現就好了，不過這會違反物件安全性，因為 trait 不知道 `self` 具體是什麼。我們希望能夠將 `State` 作為一個 trait 物件，所以需要這個方法是物件安全的。
+這個 Rust 中的實現的缺點在於存在一些重複的邏輯。如果能夠為 `State` trait 中返回 `self` 的 `request_review` 和 `approve` 方法增加預設實現就好了，不過這會違反物件安全性，因為 trait 不知道 `self` 具體是什麼。我們希望能夠將 `State` 作為一個 trait 物件，所以需要這個方法是物件安全的。
 
 另一個最好能去除的重複是 `Post` 中 `request_review` 和 `approve` 這兩個類似的實現。他們都委託調用了 `state` 字段中 `Option` 值的同一方法，並在結果中為 `state` 字段設置了新值。如果 `Post` 中的很多方法都遵循這個模式，我們可能會考慮定義一個巨集來消除重複（查看附錄 E 以瞭解巨集）。
 

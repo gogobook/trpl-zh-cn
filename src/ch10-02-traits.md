@@ -117,11 +117,11 @@ impl Summarizable for WeatherForecast {
 
 trait 實現的一個需要注意的限制是：只能在 trait 或對應類型位於我們 crate 本地的時候為其實現 trait。換句話說，不允許對外部類型實現外部 trait。例如，不能在 `Vec` 上實現 `Display` trait，因為 `Display` 和 `Vec` 都定義於標準庫中。允許在像 `Tweet` 這樣作為我們 `aggregator`crate 部分功能的自定義類型上實現標準庫中的 trait `Display`。也允許在 `aggregator`crate 中為 `Vec` 實現 `Summarizable`，因為 `Summarizable` 定義與此。這個限制是我們稱為 **孤兒規則**（*orphan rule*）的一部分，如果你感興趣的可以在類型理論中找到它。簡單來說，它被稱為 orphan rule 是因為其父類型不存在。沒有這條規則的話，兩個 crate 可以分別對相同類型是實現相同的 trait，因而這兩個實現會相互衝突：Rust 將無從得知應該使用哪一個。因為 Rust 強制執行 orphan rule，其他人編寫的代碼不會破壞你代碼，反之亦是如此。
 
-### 默認實現
+### 預設實現
 
-有時為 trait 中的某些或全部方法提供默認的行為，而不是在每個類型的每個實現中都定義自己的行為是很有用的。這樣當為某個特定類型實現 trait 時，可以選擇保留或重載每個方法的默認行為。
+有時為 trait 中的某些或全部方法提供預設的行為，而不是在每個類型的每個實現中都定義自己的行為是很有用的。這樣當為某個特定類型實現 trait 時，可以選擇保留或重載每個方法的預設行為。
 
-列表 10-15 中展示了如何為 `Summarize` trait 的 `summary` 方法指定一個默認的字符串值，而不是像列表 10-12 中那樣只是定義方法簽名：
+列表 10-15 中展示了如何為 `Summarize` trait 的 `summary` 方法指定一個預設的字符串值，而不是像列表 10-12 中那樣只是定義方法簽名：
 
 <span class="filename">文件名: lib.rs</span>
 
@@ -133,15 +133,15 @@ pub trait Summarizable {
 }
 ```
 
-<span class="caption">列表 10-15：`Summarizable` trait 的定義，帶有一個 `summary` 方法的默認實現</span>
+<span class="caption">列表 10-15：`Summarizable` trait 的定義，帶有一個 `summary` 方法的預設實現</span>
 
-如果想要對 `NewsArticle` 實例使用這個默認實現，而不是像列表 10-13 中那樣定義一個自己的實現，則可以指定一個空的 `impl` 塊：
+如果想要對 `NewsArticle` 實例使用這個預設實現，而不是像列表 10-13 中那樣定義一個自己的實現，則可以指定一個空的 `impl` 塊：
 
 ```rust
 impl Summarizable for NewsArticle {}
 ```
 
-即便選擇不再直接為 `NewsArticle` 定義 `summary` 方法了，因為 `summary` 方法有一個默認實現而且 `NewsArticle` 被指定為實現了 `Summarizable` trait，我們仍然可以對 `NewsArticle` 的實例調用 `summary` 方法：
+即便選擇不再直接為 `NewsArticle` 定義 `summary` 方法了，因為 `summary` 方法有一個預設實現而且 `NewsArticle` 被指定為實現了 `Summarizable` trait，我們仍然可以對 `NewsArticle` 的實例調用 `summary` 方法：
 
 ```rust
 let article = NewsArticle {
@@ -157,9 +157,9 @@ println!("New article available! {}", article.summary());
 
 這段代碼會打印 `New article available! (Read more...)`。
 
-將 `Summarizable` trait 改變為擁有默認 `summary` 實現並不要求對列表 10-13 中 `Tweet` 和列表 10-14 中 `WeatherForecast` 的 `Summarizable` 實現做任何改變：重載一個默認實現的語法與實現沒有默認實現的 trait 方法時完全一樣的。
+將 `Summarizable` trait 改變為擁有預設 `summary` 實現並不要求對列表 10-13 中 `Tweet` 和列表 10-14 中 `WeatherForecast` 的 `Summarizable` 實現做任何改變：重載一個預設實現的語法與實現沒有預設實現的 trait 方法時完全一樣的。
 
-默認實現允許調用相同 trait 中的其他方法，哪怕這些方法沒有默認實現。通過這種方法，trait 可以實現很多有用的功能而只需實現一小部分特定內容。我們可以選擇讓`Summarizable` trait 也擁有一個要求實現 的`author_summary` 方法，接著 `summary` 方法則提供默認實現並調用 `author_summary` 方法：
+預設實現允許調用相同 trait 中的其他方法，哪怕這些方法沒有預設實現。通過這種方法，trait 可以實現很多有用的功能而只需實現一小部分特定內容。我們可以選擇讓`Summarizable` trait 也擁有一個要求實現 的`author_summary` 方法，接著 `summary` 方法則提供預設實現並調用 `author_summary` 方法：
 
 ```rust
 pub trait Summarizable {
@@ -181,7 +181,7 @@ impl Summarizable for Tweet {
 }
 ```
 
-一旦定義了 `author_summary`，我們就可以對 `Tweet` 結構體的實例調用 `summary` 了，而 `summary` 的默認實現會調用我們提供的 `author_summary` 定義。
+一旦定義了 `author_summary`，我們就可以對 `Tweet` 結構體的實例調用 `summary` 了，而 `summary` 的預設實現會調用我們提供的 `author_summary` 定義。
 
 ```rust
 let tweet = Tweet {
@@ -196,7 +196,7 @@ println!("1 new tweet: {}", tweet.summary());
 
 這會打印出 `1 new tweet: (Read more from @horse_ebooks...)`。
 
-注意在重載過的實現中調用默認實現是不可能的。
+注意在重載過的實現中調用預設實現是不可能的。
 
 ### trait bounds
 
@@ -244,7 +244,7 @@ error[E0369]: binary operation `>` cannot be applied to type `T`
 note: an implementation of `std::cmp::PartialOrd` might be missing for `T`
 ```
 
-在 `largest` 函數體中我們想要使用大於運算符比較兩個 `T` 類型的值。這個運算符被定義為標準庫中 trait `std::cmp::PartialOrd` 的一個默認方法。所以為了能夠使用大於運算符，需要在 `T` 的 trait bounds 中指定 `PartialOrd`，這樣 `largest` 函數可以用於任何可以比較大小的類型的 slice。因為 `PartialOrd` 位於 prelude 中所以並不需要手動將其引入作用域。
+在 `largest` 函數體中我們想要使用大於運算符比較兩個 `T` 類型的值。這個運算符被定義為標準庫中 trait `std::cmp::PartialOrd` 的一個預設方法。所以為了能夠使用大於運算符，需要在 `T` 的 trait bounds 中指定 `PartialOrd`，這樣 `largest` 函數可以用於任何可以比較大小的類型的 slice。因為 `PartialOrd` 位於 prelude 中所以並不需要手動將其引入作用域。
 
 ```rust
 fn largest<T: PartialOrd>(list: &[T]) -> T {

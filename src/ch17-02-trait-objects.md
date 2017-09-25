@@ -259,9 +259,9 @@ in the details"? Thanks! /Carol -->
 
 `Self` 關鍵字是我們要實現 trait 或方法的類型的別名。`Sized` 是一個類似第十六章中介紹的 `Send` 和 `Sync` 那樣的標記 trait。`Sized` 會自動為在編譯時有已知大小的類型實現，比如 `i32` 和引用。包括 slice （`[T]`）和 trait 物件這樣的沒有已知大小的類型則沒有。
 
-`Sized` 是一個所有泛型參數類型默認的隱含 trait bound。Rust 中大部分實用的操作都要求類型是 `Sized` 的，所以將 `Sized` 作為默認 trait bound 要求，就可以不必在每一次使用泛型時編寫 `T: Sized` 了。然而，如果想要使用在 slice 上使用 trait，則需要去掉 `Sized` trait bound，可以通過指定 `T: ?Sized` 作為 trait bound 來做到這一點。
+`Sized` 是一個所有泛型參數類型預設的隱含 trait bound。Rust 中大部分實用的操作都要求類型是 `Sized` 的，所以將 `Sized` 作為預設 trait bound 要求，就可以不必在每一次使用泛型時編寫 `T: Sized` 了。然而，如果想要使用在 slice 上使用 trait，則需要去掉 `Sized` trait bound，可以通過指定 `T: ?Sized` 作為 trait bound 來做到這一點。
 
-trait 有一個默認的 bound `Self: ?Sized`，這意味著他們可以在是或者不是 `Sized` 的類型上實現。如果創建了一個去掉了 `Self: ?Sized` bound 的 trait `Foo`，它可能看起來像這樣：
+trait 有一個預設的 bound `Self: ?Sized`，這意味著他們可以在是或者不是 `Sized` 的類型上實現。如果創建了一個去掉了 `Self: ?Sized` bound 的 trait `Foo`，它可能看起來像這樣：
 
 ```rust
 trait Foo: Sized {

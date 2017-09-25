@@ -74,7 +74,7 @@ fn iterator_demonstration() {
 
 ### `Iterator` trait 中消費迭代器的方法
 
-`Iterator` trait 有一系列不同的由標準庫提供默認實現的方法；你可以在 `Iterator` trait 的標準庫 API 文檔中找到所有這些方法。一些方法在其定義中調用了 `next` 方法，這也就是為什麼在實現 `Iterator` trait 時要求實現 `next` 方法的原因。
+`Iterator` trait 有一系列不同的由標準庫提供預設實現的方法；你可以在 `Iterator` trait 的標準庫 API 文檔中找到所有這些方法。一些方法在其定義中調用了 `next` 方法，這也就是為什麼在實現 `Iterator` trait 時要求實現 `next` 方法的原因。
 
 這些調用 `next` 方法的方法被稱為 **消費適配器**（*consuming adaptors*），因為調用他們會消耗迭代器。一個消費適配器的例子是 `sum` 方法。這個方法抓取迭代器的所有權並反覆調用 `next` 來遍歷迭代器，因而會消費迭代器。當其遍歷每一個項時，它將每一個項加總到一個總和並在迭代完成時返回總和。列表 13-16 有一個展示 `sum` 方法使用的測試：
 
@@ -189,7 +189,7 @@ fn filters_by_size() {
 
 ### 實現 `Iterator` trait 來創建自定義迭代器
 
-我們已經展示了可以通過在 vector 上調用 `iter`、`into_iter` 或 `iter_mut` 來創建一個迭代器。也可以用標準庫中其他的集合類型創建迭代器，比如哈希 map。另外，可以實現 `Iterator` trait 來創建任何我們希望的迭代器。正如之前提到的，定義中唯一要求提供的方法就是 `next` 方法。一旦定義了它，就可以使用所有其他由 `Iterator` trait 提供的擁有默認實現的方法來創建自定義迭代器了！
+我們已經展示了可以通過在 vector 上調用 `iter`、`into_iter` 或 `iter_mut` 來創建一個迭代器。也可以用標準庫中其他的集合類型創建迭代器，比如哈希 map。另外，可以實現 `Iterator` trait 來創建任何我們希望的迭代器。正如之前提到的，定義中唯一要求提供的方法就是 `next` 方法。一旦定義了它，就可以使用所有其他由 `Iterator` trait 提供的擁有預設實現的方法來創建自定義迭代器了！
 
 我們將要創建的迭代器只會從 1 數到 5。首先，我們會創建一個結構體來存放一些值，接著實現 `Iterator` trait 將這個結構體放入迭代器中並在此實現中使用其值。
 
@@ -286,7 +286,7 @@ fn calling_next_directly() {
 
 #### 使用自定義迭代器中其他 `Iterator` trait 方法
 
-通過定義 `next` 方法實現 `Iterator` trait，我們現在就可以使用任何標準庫定義的擁有默認實現的 `Iterator` trait 方法了，因為他們都使用了 `next` 方法的功能。
+通過定義 `next` 方法實現 `Iterator` trait，我們現在就可以使用任何標準庫定義的擁有預設實現的 `Iterator` trait 方法了，因為他們都使用了 `next` 方法的功能。
 
 例如，出於某種原因我們希望抓取 `Counter` 實例產生的值，將這些值與另一個 `Counter` 實例在省略了第一個值之後產生的值配對，將每一對值相乘，只保留那些可以被三整除的結果，然後將所有保留的結果相加，這可以如列表 13-23 中的測試這樣做：
 
@@ -334,4 +334,4 @@ fn using_other_iterator_trait_methods() {
 
 注意 `zip` 只產生4對值；理論上第五對值 `(5, None)` 從未被產生，因為 `zip` 在任一輸入迭代器返回 `None` 時也返回 `None`。
 
-所有這些方法調用都是可能的，因為我們通過指定 `next` 如何工作來實現 `Iterator` trait 而標準庫則提供其他調用 `next` 的默認方法實現。
+所有這些方法調用都是可能的，因為我們通過指定 `next` 如何工作來實現 `Iterator` trait 而標準庫則提供其他調用 `next` 的預設方法實現。

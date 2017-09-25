@@ -4,9 +4,9 @@
 > <br>
 > commit c6a9e77a1b1ed367e0a6d5dcd222589ad392a8ac
 
-我們將通過使用 Cargo 創建一個新項目來開始我們的模塊之旅，不過不再創建一個二進制 crate，而是創建一個庫 crate：一個其他人可以作為依賴導入的項目。第二章猜猜看遊戲中作為依賴使用的 `rand` 就是這樣的 crate。
+我們將通過使用 Cargo 創建一個新項目來開始我們的模塊之旅，不過不再創建一個二進制 crate，而是創建一個庫(譯註:或稱為"套件") crate：一個其他人可以作為依賴導入的項目。第二章猜猜看遊戲中作為依賴使用的 `rand` 就是這樣的 crate。
 
-我們將創建一個提供一些通用網絡功能的項目的骨架結構；我們將專注於模塊和函數的組織，而不擔心函數體中的具體代碼。這個項目叫做 `communicator`。Cargo 默認會創建一個庫 crate 除非指定其他項目類型，所以如果不像一直以來那樣加入 `--bin` 參數則項目將會是一個庫：
+我們將創建一個提供一些通用網絡功能的項目的骨架結構；我們將專注於模塊和函數的組織，而不擔心函數體中的具體代碼。這個項目叫做 `communicator`。Cargo 預設會創建一個庫 crate 除非指定其他項目類型，所以如果不像一直以來那樣加入 `--bin` 參數則項目將會是一個庫：
 
 ```text
 $ cargo new communicator
@@ -178,7 +178,7 @@ fn connect() {
 
 注意這個文件中並不需要一個 `mod` 聲明；因為已經在 *src/lib.rs* 中已經使用 `mod` 聲明了 `client` 模塊。這個文件僅僅提供 `client` 模塊的 **內容**。如果在這裡加上一個 `mod client`，那麼就等於給 `client` 模塊增加了一個叫做 `client` 的子模塊了！
 
-Rust 默認只知道 *src/lib.rs* 中的內容。如果想要對項目加入更多文件，我們需要在 *src/lib.rs* 中告訴 Rust 去尋找其他文件；這就是為什麼 `mod client` 需要被定義在 *src/lib.rs* 而不能在 *src/client.rs* 的原因。
+Rust 預設只知道 *src/lib.rs* 中的內容。如果想要對項目加入更多文件，我們需要在 *src/lib.rs* 中告訴 Rust 去尋找其他文件；這就是為什麼 `mod client` 需要被定義在 *src/lib.rs* 而不能在 *src/client.rs* 的原因。
 
 現在，一切應該能成功編譯，雖然會有一些警告。記住使用 `cargo build` 而不是 `cargo run` 因為這是一個庫 crate 而不是二進制 crate：
 

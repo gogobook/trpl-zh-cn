@@ -10,7 +10,7 @@
 
 * 不安全 Rust：用於當需要捨棄 Rust 的某些保證並告訴編譯器你將會負責維持這些保證
 * 高級生命週期：用於負責情形的額外的生命週期語法
-* 高級 trait：與 trait 相關的關聯類型，默認類型參數，完全限定語法（fully qualified syntax），超（父）trait（supertraits）和 newtype 模式
+* 高級 trait：與 trait 相關的關聯類型，預設類型參數，完全限定語法（fully qualified syntax），超（父）trait（supertraits）和 newtype 模式
 * 高級類型：關於 newtype 模式的更多內容，類型別名，「never」 類型和動態大小類型
 * 高級函數和閉包：函數指針和返回閉包
 

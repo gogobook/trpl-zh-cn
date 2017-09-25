@@ -53,7 +53,7 @@ fn main() {
 
 <span class="caption">列表 12-4：讀取第二個參數所指定的文件內容</span>
 
-首先，我們增加了更多的 `use` 語句來引入標準庫中的相關部分：需要 `std::fs::File` 來處理文件，而 `std::io::prelude::*` 則包含許多對於 I/O 包括文件 I/O 有幫助的 trait。類似於 Rust 有一個通用的 prelude 來自動引入特定內容，`std::io` 也有其自己的 prelude 來引入處理 I/O 時所需的通用內容。不同於默認的 prelude，必須顯式 `use` 位於 `std::io` 中的 prelude。
+首先，我們增加了更多的 `use` 語句來引入標準庫中的相關部分：需要 `std::fs::File` 來處理文件，而 `std::io::prelude::*` 則包含許多對於 I/O 包括文件 I/O 有幫助的 trait。類似於 Rust 有一個通用的 prelude 來自動引入特定內容，`std::io` 也有其自己的 prelude 來引入處理 I/O 時所需的通用內容。不同於預設的 prelude，必須顯式 `use` 位於 `std::io` 中的 prelude。
 
 在 `main` 中，我們增加了三點內容：第一，通過傳遞變數 `filename` 的值調用 `File::open` 函數來抓取文件的可變句柄。創建了叫做 `contents` 的變數並將其設置為一個可變的，空的`String`。它將會存放之後讀取的文件的內容。第三，對文件句柄調用 `read_to_string` 並傳遞 `contents` 的可變引用作為參數。
 

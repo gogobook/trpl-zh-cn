@@ -130,7 +130,7 @@ fn main() {
 error[E0277]: the trait bound `Rectangle: std::fmt::Display` is not satisfied
 ```
 
-`println!` 巨集能處理很多類型的格式，不過，`{}`，默認告訴 `println!` 使用被稱為 `Display` 的格式：直接提供給終端用戶查看的輸出。目前為止見過的基本類型都默認實現了 `Display`，因為它就是向用戶展示 `1` 或其他任何基本類型的唯一方式。不過對於結構體，`println!` 應該用來輸出的格式是不明確的，因為這有更多顯示的可能性：是否需要逗號？需要打印出結構體的 `{}` 嗎？所有字段都應該顯示嗎？因為這種不確定性，Rust 不嘗試猜測我們的意圖所以結構體並沒有提供一個 `Display` 實現。
+`println!` 巨集能處理很多類型的格式，不過，`{}`，預設告訴 `println!` 使用被稱為 `Display` 的格式：直接提供給終端用戶查看的輸出。目前為止見過的基本類型都預設實現了 `Display`，因為它就是向用戶展示 `1` 或其他任何基本類型的唯一方式。不過對於結構體，`println!` 應該用來輸出的格式是不明確的，因為這有更多顯示的可能性：是否需要逗號？需要打印出結構體的 `{}` 嗎？所有字段都應該顯示嗎？因為這種不確定性，Rust 不嘗試猜測我們的意圖所以結構體並沒有提供一個 `Display` 實現。
 
 但是如果我們繼續閱讀錯誤，將會發現這個有幫助的信息：
 
@@ -154,7 +154,7 @@ note: `Rectangle` cannot be formatted using `:?`; if it is defined in your
 crate, add `#[derive(Debug)]` or manually implement it
 ```
 
-Rust **確實** 包含了打印出調試信息的功能，不過我們必須為結構體顯式選擇這個功能。為此，在結構體定義之前加上 `#[derive(Debug)]` 註解，如列表 5-12 所示：
+Rust **確實** 包含了打印出調試信息的功能，不過我們必須為結構體顯式選擇這個功能。為此，在結構體定義之前加上 `#[derive(Debug)]` 註解(annotation)，如列表 5-12 所示：
 
 <span class="filename">文件名: src/main.rs</span>
 

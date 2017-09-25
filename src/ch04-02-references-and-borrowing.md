@@ -86,7 +86,7 @@ error: cannot borrow immutable borrowed content `*some_string` as mutable
   |     ^^^^^^^^^^^
 ```
 
-正如變數默認是不可變的，引用也一樣。不允許修改引用的值。
+正如變數預設是不可變的，引用也一樣。不允許修改引用的值。
 
 ### 可變引用
 

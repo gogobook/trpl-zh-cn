@@ -128,9 +128,9 @@ fn traverse(graph: &AGraph<Node=usize, Edge=(usize, usize)>) {}
 
 雖然 trait 物件意味著無需在編譯時就知道 `graph` 參數的具體類型，但是我們確實需要在 `traverse` 函數中通過具體的關聯類型來限制 `AGraph` trait 的使用。如果不提供這樣的限制，Rust 將不能計算出用哪個 `impl` 來匹配這個 trait 物件，因為關聯類型可以作為方法簽名的一部分，Rust 需要在虛函數表(vtable)中查找它們。
 
-### 運算符重載和默認類型參數
+### 運算符重載和預設類型參數
 
-`<PlaceholderType=ConcreteType>` 語法也可以以另一種方式使用：用來指定泛型的默認類型。這種情況的一個非常好的例子是用於運算符重載。
+`<PlaceholderType=ConcreteType>` 語法也可以以另一種方式使用：用來指定泛型的預設類型。這種情況的一個非常好的例子是用於運算符重載。
 
 Rust 並不允許創建自定義運算符或重載任意運算符，不過 `std::ops` 中所列出的運算符和相應的 trait 可以通過實現運算符相關 trait 來重載。例如，列表 19-25 中展示了如何在 `Point` 結構體上實現 `Add` trait 來重載 `+` 運算符，這樣就可以將兩個 `Point` 實例相加了：
 
@@ -176,7 +176,7 @@ trait Add<RHS=Self> {
 }
 ```
 
-這看來應該很熟悉；這是一個帶有一個方法和一個關聯類型的 trait。比較陌生的部分是尖括號中的 `RHS=Self`：這個語法叫做**默認類型參數**（*default type parameters*）。`RHS` 是一個泛型參數（「right hand side」 的縮寫），它用於 `add` 方法中的 `rhs` 參數。如果實現 `Add` trait 時不指定 `RHS` 的具體類型，`RHS` 的類型將是默認的 `Self` 類型（在其上實現 `Add` 的類型）。
+這看來應該很熟悉；這是一個帶有一個方法和一個關聯類型的 trait。比較陌生的部分是尖括號中的 `RHS=Self`：這個語法叫做**預設類型參數**（*default type parameters*）。`RHS` 是一個泛型參數（「right hand side」 的縮寫），它用於 `add` 方法中的 `rhs` 參數。如果實現 `Add` trait 時不指定 `RHS` 的具體類型，`RHS` 的類型將是預設的 `Self` 類型（在其上實現 `Add` 的類型）。
 
 讓我們看看另一個實現了 `Add` trait 的例子。想像一下我們擁有兩個存放不同的單元值的結構體，`Millimeters` 和 `Meters`。可以如列表 19-26 所示那樣用不同的方式為 `Millimeters` 實現 `Add` trait：
 
@@ -205,16 +205,16 @@ impl Add<Meters> for Millimeters {
 
 <span class="caption">列表 19-26：在 `Millimeters` 上實現 `Add`，以能夠將`Millimeters` 與 `Millimeters` 相加和將 `Millimeters` 與 `Meters` 相加</span>
 
-如果將 `Millimeters` 與其他 `Millimeters` 相加，則無需為 `Add` 參數化 `RHS` 類型，因為默認的 `Self` 正是我們希望的。如果希望實現 `Millimeters` 與 `Meters` 相加，那麼需要聲明為 `impl Add<Meters>` 來設定 `RHS` 類型參數的值。
+如果將 `Millimeters` 與其他 `Millimeters` 相加，則無需為 `Add` 參數化 `RHS` 類型，因為預設的 `Self` 正是我們希望的。如果希望實現 `Millimeters` 與 `Meters` 相加，那麼需要聲明為 `impl Add<Meters>` 來設定 `RHS` 類型參數的值。
 
-默認參數類型主要用於如下兩個方面：
+預設參數類型主要用於如下兩個方面：
 
 1. 擴展類型而不破壞現有代碼。
 2. 允許以一種大部分用戶都不需要的方法進行自定義。
 
-`Add` trait 就是第二個目的一個例子：大部分時候你會將兩個相似的類型相加。在 `Add` trait 定義中使用默認類型參數使得實現 trait 變得更容易，因為大部分時候無需指定這額外的參數。換句話說，這樣就去掉了一些實現的樣板代碼。
+`Add` trait 就是第二個目的一個例子：大部分時候你會將兩個相似的類型相加。在 `Add` trait 定義中使用預設類型參數使得實現 trait 變得更容易，因為大部分時候無需指定這額外的參數。換句話說，這樣就去掉了一些實現的樣板代碼。
 
-第一個目的是相似的，但過程是反過來的：因為現有 trait 實現並沒有指定類型參數，如果需要為現有 trait 增加類型參數，為其提供一個默認值將允許我們在不破壞現有實現代碼的基礎上擴展 trait 的功能。
+第一個目的是相似的，但過程是反過來的：因為現有 trait 實現並沒有指定類型參數，如果需要為現有 trait 增加類型參數，為其提供一個預設值將允許我們在不破壞現有實現代碼的基礎上擴展 trait 的功能。
 
 ### 完全限定語法與消歧義
 
@@ -309,7 +309,7 @@ Baz's impl of Bar
 
 只在存在歧義時才需要 `Type as` 部分，只有需要 `Type as` 時才需要 `<>` 部分。所以如果在作用域中只有定義於 `Baz` 和 `Baz` 上實現的 `Foo` trait 的 `f` 方法的話，則可以使用 `Foo::f(&b)` 調用 `Foo` 中的 `f` 方法，因為無需與 `Bar` trait 相區別。
 
-也可以使用 `Baz::f(&b)` 調用直接定義於 `Baz` 上的 `f` 方法，不過因為這個定義是在調用 `b.f()` 時默認使用的，並不要求調用此方法時使用完全限定的名稱。
+也可以使用 `Baz::f(&b)` 調用直接定義於 `Baz` 上的 `f` 方法，不過因為這個定義是在調用 `b.f()` 時預設使用的，並不要求調用此方法時使用完全限定的名稱。
 
 ### 父 trait 用於在另一個 trait 中使用某 trait 的功能
 
