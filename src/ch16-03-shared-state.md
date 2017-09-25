@@ -93,7 +93,7 @@ fn main() {
 <span class="caption">Listing 16-13: The start of a program having 10 threads
 each increment a counter guarded by a `Mutex<T>`</span>
 
-這裡創建了一個 `counter` 變量來存放內含 `i32` 的 `Mutex<T>`，類似列表 16-12 那樣。接下來使用 range 創建了 10 個線程。使用了 `thread::spawn` 並對所有線程使用了相同的閉包：他們每一個都將調用 `lock` 方法來獲取 `Mutex<T>` 上的鎖，接著將互斥器中的值加一。當一個線程結束執行，`num` 會離開閉包作用域並釋放鎖，這樣另一個線程就可以獲取它了。
+這裡創建了一個 `counter` 變數來存放內含 `i32` 的 `Mutex<T>`，類似列表 16-12 那樣。接下來使用 range 創建了 10 個線程。使用了 `thread::spawn` 並對所有線程使用了相同的閉包：他們每一個都將調用 `lock` 方法來獲取 `Mutex<T>` 上的鎖，接著將互斥器中的值加一。當一個線程結束執行，`num` 會離開閉包作用域並釋放鎖，這樣另一個線程就可以獲取它了。
 
 在主線程中，我們像列表 16-2 那樣收集了所有的 join 句柄，調用它們的 `join` 方法來確保所有線程都會結束。之後，主線程會獲取鎖並打印出程序的結果。
 
@@ -169,7 +169,7 @@ let handle2 = thread::spawn(move || {
 handles.push(handle2);
 ```
 
-這裡創建了兩個線程，並將第二個線程所用的變量改名為 `handle2` 和 `num2`。我們簡化了例子，看是否能理解錯誤信息。此次編譯給出如下信息：
+這裡創建了兩個線程，並將第二個線程所用的變數改名為 `handle2` 和 `num2`。我們簡化了例子，看是否能理解錯誤信息。此次編譯給出如下信息：
 
 ```text
 error[E0382]: capture of moved value: `counter`
@@ -199,7 +199,7 @@ error[E0382]: use of moved value: `counter`
 error: aborting due to 2 previous errors
 ```
 
-啊哈！第一個錯誤信息中說，`counter` 被移動進了 `handle` 所代表線程的閉包中。因此我們無法在第二個線程中對其調用 `lock`，並將結果儲存在 `num2` 中時捕獲`counter`！所以 Rust 告訴我們不能將 `counter` 的所有權移動到多個線程中。這在之前很難看出，因為我們在循環中創建了多個線程，而 Rust 無法在每次迭代中指明不同的線程（沒有臨時變量 `num2`）。
+啊哈！第一個錯誤信息中說，`counter` 被移動進了 `handle` 所代表線程的閉包中。因此我們無法在第二個線程中對其調用 `lock`，並將結果儲存在 `num2` 中時捕獲`counter`！所以 Rust 告訴我們不能將 `counter` 的所有權移動到多個線程中。這在之前很難看出，因為我們在循環中創建了多個線程，而 Rust 無法在每次迭代中指明不同的線程（沒有臨時變數 `num2`）。
 
 #### 多線程和多所有權
 

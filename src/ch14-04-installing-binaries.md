@@ -6,7 +6,7 @@
 
 `cargo install` 命令用於在本地安裝和使用二進制 crate。它並不打算替換系統中的包；它意在作為一個方便 Rust 開發者們安裝其他人已經在 crates.io 上共享的工具的手段。只有擁有二進制目標文件的包能夠被安裝。二進制目標文件是在 crate 有 *src/main.rs* 或者其他指定為二進制文件時所創建的可執行程序，這不同於自身不能執行但適合包含在其他程序中的庫目標。通常 crate 的 *README* 文件中有該 crate 是庫、二進制目標還是兩者都是的信息。
 
-所有來自 `cargo install` 的二進制文件都安裝到 Rust 安裝根目錄的 *bin* 文件夾中。如果你使用 *rustup.rs* 安裝的 Rust 且沒有自定義任何配置，這將是 `$HOME/.cargo/bin`。將這個目錄添加到 `$PATH` 環境變量中就能夠運行通過 `cargo install` 安裝的程序了。
+所有來自 `cargo install` 的二進制文件都安裝到 Rust 安裝根目錄的 *bin* 文件夾中。如果你使用 *rustup.rs* 安裝的 Rust 且沒有自定義任何配置，這將是 `$HOME/.cargo/bin`。將這個目錄添加到 `$PATH` 環境變數中就能夠運行通過 `cargo install` 安裝的程序了。
 
 例如，第十二章提到的叫做 `ripgrep` 的用於搜索文件的 `grep` 的 Rust 實現。如果想要安裝 `ripgrep`，可以運行如下：
 

@@ -27,7 +27,7 @@ Rust 編譯器執行的靜態分析天生是保守的。代碼的一些屬性則
 
 對於引用，可以使用`&`和`&mut`語法來分別創建不可變和可變的引用。不過對於`RefCell<T>`，我們使用`borrow`和`borrow_mut`方法，它是`RefCell<T>`擁有的安全 API 的一部分。`borrow`返回`Ref`類型的智能指針，而`borrow_mut`返回`RefMut`類型的智能指針。這兩個類型實現了`Deref`所以可以被當作常規引用處理。`Ref`和`RefMut`動態的借用所有權，而他們的`Drop`實現也動態的釋放借用。
 
-列表 15-14 展示了如何使用`RefCell<T>`來使函數不可變的和可變的借用它的參數。注意`data`變量使用`let data`而不是`let mut data`來聲明為不可變的，而`a_fn_that_mutably_borrows`則允許可變的借用數據並修改它！
+列表 15-14 展示了如何使用`RefCell<T>`來使函數不可變的和可變的借用它的參數。注意`data`變數使用`let data`而不是`let mut data`來聲明為不可變的，而`a_fn_that_mutably_borrows`則允許可變的借用數據並修改它！
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -64,7 +64,7 @@ a is 5
 a is 6
 ```
 
-在`main`函數中，我們新聲明了一個包含值 5 的`RefCell<T>`，並儲存在變量`data`中，聲明時並沒有使用`mut`關鍵字。接著使用`data`的一個不可變引用來調用`demo`函數：對於`main`函數而言`data`是不可變的！
+在`main`函數中，我們新聲明了一個包含值 5 的`RefCell<T>`，並儲存在變數`data`中，聲明時並沒有使用`mut`關鍵字。接著使用`data`的一個不可變引用來調用`demo`函數：對於`main`函數而言`data`是不可變的！
 
 在`demo`函數中，通過調用`borrow`方法來獲取到`RefCell<T>`中值的不可變引用，並使用這個不可變引用調用了`a_fn_that_immutably_borrows`函數。更為有趣的是，可以通過`borrow_mut`方法來獲取`RefCell<T>`中值的**可變**引用，而`a_fn_that_mutably_borrows`函數就允許修改這個值。可以看到下一次調用`a_fn_that_immutably_borrows`時打印出的值是 6 而不是 5。
 
@@ -155,7 +155,7 @@ fn main() {
 <span class="caption">Listing 15-15: Using `Rc<RefCell<i32>>` to create a
 `List` that we can mutate</span>
 
-我們創建了一個值，它是`Rc<RefCell<i32>>`的實例。將其儲存在變量`value`中因為我們希望之後能直接訪問它。接著在`a`中創建了一個擁有存放了`value`值的`Cons`成員的`List`，而且`value`需要被克隆因為我們希望除了`a`之外還擁有`value`的所有權。接著將`a`封裝進`Rc<T>`中這樣就可以創建都引用`a`的有著不同開頭的列表`b`和`c`，類似列表 15-12 中所做的那樣。
+我們創建了一個值，它是`Rc<RefCell<i32>>`的實例。將其儲存在變數`value`中因為我們希望之後能直接訪問它。接著在`a`中創建了一個擁有存放了`value`值的`Cons`成員的`List`，而且`value`需要被克隆因為我們希望除了`a`之外還擁有`value`的所有權。接著將`a`封裝進`Rc<T>`中這樣就可以創建都引用`a`的有著不同開頭的列表`b`和`c`，類似列表 15-12 中所做的那樣。
 
 一旦創建了`shared_list`、`b`和`c`，接下來就可以通過解引用`Rc<T>`和對`RefCell`調用`borrow_mut`來將 10 與 5 相加了。
 
