@@ -10,7 +10,7 @@
 
 指定在值離開作用域時應該執行的代碼的方式是實現`Drop` trait。`Drop` trait 要求我們實現一個叫做`drop`的方法，它抓取一個`self`的可變引用。
 
-代碼例 15-8 展示了並沒有實際功能的結構體`CustomSmartPointer`，不過我們會在創建實例之後打印出`CustomSmartPointer created.`，而在實例離開作用域時打印出`Dropping CustomSmartPointer!`，這樣就能看出每一段代碼是何時被執行的。實際的項目中，我們應該在`drop`中清理任何智能指針運行所需要的資源，而不是這個例子中的`println!`語句：
+示例 15-8 展示了並沒有實際功能的結構體`CustomSmartPointer`，不過我們會在創建實例之後打印出`CustomSmartPointer created.`，而在實例離開作用域時打印出`Dropping CustomSmartPointer!`，這樣就能看出每一段代碼是何時被執行的。實際的項目中，我們應該在`drop`中清理任何智能指針運行所需要的資源，而不是這個例子中的`println!`語句：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -48,7 +48,7 @@ Dropping CustomSmartPointer!
 
 被打印到屏幕上，它展示了 Rust 在實例離開作用域時自動調用了`drop`。
 
-可以使用`std::mem::drop`函數來在值離開作用域之前丟棄它。這通常是不必要的；整個`Drop` trait 的要點在於它自動的幫我們處理清理工作。在第十六章講到並發時我們會看到一個需要在離開作用域之前丟棄值的例子。現在知道這是可能的即可，`std::mem::drop`位於 prelude 中所以可以如代碼例 15-9 所示直接調用`drop`：
+可以使用`std::mem::drop`函數來在值離開作用域之前丟棄它。這通常是不必要的；整個`Drop` trait 的要點在於它自動的幫我們處理清理工作。在第十六章講到並發時我們會看到一個需要在離開作用域之前丟棄值的例子。現在知道這是可能的即可，`std::mem::drop`位於 prelude 中所以可以如示例 15-9 所示直接調用`drop`：
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -72,7 +72,7 @@ Dropping CustomSmartPointer!
 Wait for it...
 ```
 
-注意不允許直接調用我們定義的`drop`方法：如果將代碼例 15-9 中的`drop(c)`替換為`c.drop()`，會得到一個編譯錯誤表明`explicit destructor calls not allowed`。不允許直接調用`Drop::drop`的原因是 Rust 在值離開作用域時會自動插入`Drop::drop`，這樣就會丟棄值兩次。丟棄一個值兩次可能會造成錯誤或破壞內存，所以 Rust 就不允許這麼做。相應的可以調用`std::mem::drop`，它的定義是：
+注意不允許直接調用我們定義的`drop`方法：如果將示例 15-9 中的`drop(c)`替換為`c.drop()`，會得到一個編譯錯誤表明`explicit destructor calls not allowed`。不允許直接調用`Drop::drop`的原因是 Rust 在值離開作用域時會自動插入`Drop::drop`，這樣就會丟棄值兩次。丟棄一個值兩次可能會造成錯誤或破壞內存，所以 Rust 就不允許這麼做。相應的可以調用`std::mem::drop`，它的定義是：
 
 ```rust
 pub mod std {

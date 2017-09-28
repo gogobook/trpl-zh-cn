@@ -28,7 +28,7 @@ Problem parsing arguments: not enough arguments
 
 ### 將錯誤打印到標準錯誤
 
-讓我們如代碼例 12-24 所示的代碼改變錯誤信息是如何被打印的。得益於本章早些時候的重構，所有打印錯誤信息的代碼都位於 `main` 一個函數中。標準庫提供了 `eprintln!` 巨集來打印到標準錯誤流，所以將兩個調用 `println!` 打印錯誤信息的維持替換為 `eprintln!`：
+讓我們如示例 12-24 所示的代碼改變錯誤信息是如何被打印的。得益於本章早些時候的重構，所有打印錯誤信息的代碼都位於 `main` 一個函數中。標準庫提供了 `eprintln!` 巨集來打印到標準錯誤流，所以將兩個調用 `println!` 打印錯誤信息的維持替換為 `eprintln!`：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -49,7 +49,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 12-24：使用 `eprintln!` 將錯誤信息寫入標準錯誤而不是標準輸出</span>
+<span class="caption">示例 12-24：使用 `eprintln!` 將錯誤信息寫入標準錯誤而不是標準輸出</span>
 
 將 `println!` 改為 `eprintln!` 之後，讓我們再次嘗試用同樣的方式運行程序，不使用任何參數並通過 `>` 重定向標準輸出：
 

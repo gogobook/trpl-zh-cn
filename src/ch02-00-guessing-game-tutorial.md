@@ -59,7 +59,7 @@ Hello, world!
 
 ## 處理一次猜測
 
-程序的第一部分請求和處理用戶輸入，並檢查輸入是否符合預期的格式。首先，允許用戶輸入猜測。在 *src/main.rs* 中輸入代碼例 2-1 中的代碼。
+程序的第一部分請求和處理用戶輸入，並檢查輸入是否符合預期的格式。首先，允許用戶輸入猜測。在 *src/main.rs* 中輸入示例 2-1 中的代碼。
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -80,7 +80,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 2-1：抓取用戶猜測並打印的代碼</span>
+<span class="caption">示例 2-1：抓取用戶猜測並打印的代碼</span>
 
 這些代碼包含很多信息，我們一點一點地過一遍。為了抓取用戶輸入並打印結果作為輸出，我們需要將 `io`（輸入/輸出）庫引入當前作用域。`io` 庫來自於標準庫（也被稱為`std`）：
 
@@ -89,7 +89,7 @@ use std::io;
 ```
 
 Rust 預設只在每個程序的 [*prelude*][prelude]<!-- ignore --> 中引入少量類型。如果需要的類型不在 prelude 中，你必須使用一個 `use` 語句顯式的將其引入作用域。`std::io` 庫提供很多 `io` 相關的功能，比如接受用戶輸入。
-
+(譯註: prelude 可想成preload, 也就預先載入若干功能，這些功能必然是非常常用的)
 [prelude]: https://doc.rust-lang.org/std/prelude/index.html
 
 如第一章所提及，`main` 函數是程序的入口點：
@@ -265,7 +265,7 @@ rand = "0.3.14"
 
 [semver]: http://semver.org
 
-現在，不修改任何代碼，構建項目，如代碼例 2-2 所示：
+現在，不修改任何代碼，構建項目，如示例 2-2 所示：
 
 ```text
 $ cargo build
@@ -277,7 +277,7 @@ $ cargo build
    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
 ```
 
-<span class="caption">代碼例 2-2: 增加 rand crate 作為依賴之後運行 `cargo build` 的輸出</span>
+<span class="caption">示例 2-2: 增加 rand crate 作為依賴之後運行 `cargo build` 的輸出</span>
 
 可能會出現不同的版本號（多虧了語義化版本，它們與代碼是兼容的！），同時顯示順序也可能會有所不同。
 
@@ -336,7 +336,7 @@ rand = "0.4.0"
 
 ### 生成一個隨機數
 
-讓我們開始 **使用** `rand`。下一步是更新 *src/main.rs*，如代碼例 2-3 所示：
+讓我們開始 **使用** `rand`。下一步是更新 *src/main.rs*，如示例 2-3 所示：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -364,7 +364,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 2-3：為了生成隨機數而做的修改</span>
+<span class="caption">示例 2-3：為了生成隨機數而做的修改</span>
 
 這裡在頂部增加一行 `extern crate rand;` 通知 Rust 我們要使用外部依賴。這也會調用相應的 `use rand`，所以現在可以使用 `rand::` 前綴來調用 `rand` crate 中的任何內容。
 
@@ -400,7 +400,7 @@ You guessed: 5
 
 ## 比較猜測與秘密數字
 
-現在有了用戶輸入和一個隨機數，我們可以比較他們。這個步驟如代碼例 2-4 所示：
+現在有了用戶輸入和一個隨機數，我們可以比較他們。這個步驟如示例 2-4 所示：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -428,7 +428,7 @@ fn main() {
 
     println!("You guessed: {}", guess);
 
-    match guess.cmp(&secret_number) {  // 是的，這裡看起來很奇怪，但rust 大神們為所有的東西加上了cmp方法
+    match guess.cmp(&secret_number) {  // 是的，這裡看起來很奇怪，但rust 大神們為所有的東西加上了cmp方法，並且是`prelude`。
         Ordering::Less    => println!("Too small!"),
         Ordering::Greater => println!("Too big!"),
         Ordering::Equal   => println!("You win!"),
@@ -436,7 +436,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 2-4：處理比較兩個數字可能的返回值</span>
+<span class="caption">示例 2-4：處理比較兩個數字可能的返回值</span>
 
 新代碼的第一行是另一個 `use`，從標準庫引入了一個叫做 `std::cmp::Ordering` 的類型。`Ordering` 是一個像 `Result` 一樣的枚舉，不過它的成員是 `Less`、`Greater` 和 `Equal`。這是比較兩個值時可能出現的三種結果。
 
@@ -458,7 +458,7 @@ match guess.cmp(&secret_number) {
 
 讓我們看看使用 `match` 表達式的例子。假設用戶猜了 50，這時隨機生成的秘密數字是 38。比較 50 與 38 時，因為 50 比 38 要大，`cmp` 方法會返回 `Ordering::Greater`。`Ordering::Greater` 是 `match` 表達式得到的值。它檢查第一個分支的模式，`Ordering::Less` 與 `Ordering::Greater`並不匹配，所以它忽略了這個分支的動作並來到下一個分支。下一個分支的模式是 `Ordering::Greater`，**正確** 匹配！這個分支關聯的代碼被執行，在屏幕打印出 `Too big!`。`match` 表達式就此終止，因為該場景下沒有檢查最後一個分支的必要。
 
-然而，代碼例 2-4 的代碼並不能編譯，可以嘗試一下：
+然而，示例 2-4 的代碼並不能編譯，可以嘗試一下：
 
 ```text
 $ cargo build
@@ -714,7 +714,7 @@ You guessed: 61
 You win!
 ```
 
-太棒了！再有最後一個小的修改，就能完成猜猜看遊戲了：還記得程序依然會打印出秘密數字。在測試時還好，但正式發佈時會毀了遊戲。刪掉打印秘密數字的 `println!`。代碼例 2-5 為最終代碼：
+太棒了！再有最後一個小的修改，就能完成猜猜看遊戲了：還記得程序依然會打印出秘密數字。在測試時還好，但正式發佈時會毀了遊戲。刪掉打印秘密數字的 `println!`。示例 2-5 為最終代碼：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -757,7 +757,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 2-5：猜猜看遊戲的完整代碼</span>
+<span class="caption">示例 2-5：猜猜看遊戲的完整代碼</span>
 
 ## 總結
 

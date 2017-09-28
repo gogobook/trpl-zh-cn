@@ -19,7 +19,7 @@ enum Result<T, E> {
 
 `T` 和 `E` 是泛型類型參數；第十章會詳細介紹泛型。現在你需要知道的就是 `T` 代表成功時返回的 `Ok` 成員中的數據的類型，而 `E` 代表失敗時返回的 `Err` 成員中的錯誤的類型。因為 `Result` 有這些泛型類型參數，我們可以將 `Result` 類型和標準庫中為其定義的函數用於很多不同的場景，這些情況中需要返回的成功值和失敗值可能會各不相同。
 
-讓我們調用一個返回 `Result` 的函數，因為它可能會失敗：如代碼例 9-2 所示打開一個文件：
+讓我們調用一個返回 `Result` 的函數，因為它可能會失敗：如示例 9-2 所示打開一個文件：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -31,7 +31,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 9-2：打開文件</span>
+<span class="caption">示例 9-2：打開文件</span>
 
 如何知道 `File::open` 返回一個 `Result` 呢？我們可以查看標準庫 API 文檔，或者可以直接問編譯器！如果給 `f` 某個我們知道 **不是** 函數返回值類型的類型註解，接著嘗試編譯代碼，編譯器會告訴我們類型不匹配。然後錯誤信息會告訴我們 `f` 的類型 **應該** 是什麼，為此我們將 `let f` 語句改為：
 
@@ -59,7 +59,7 @@ error[E0308]: mismatched types
 
 當 `File::open` 成功的情況下，變數 `f` 的值將會是一個包含文件句柄的 `Ok` 實例。在失敗的情況下，`f` 會是一個包含更多關於出現了何種錯誤信息的 `Err` 實例。
 
-我們需要在代碼例 9-2 的代碼中增加根據 `File::open` 返回值進行不同處理的邏輯。代碼例 9-3 展示了一個使用基本工具處理 `Result` 的例子：第六章學習過的 `match` 表達式。
+我們需要在示例 9-2 的代碼中增加根據 `File::open` 返回值進行不同處理的邏輯。示例 9-3 展示了一個使用基本工具處理 `Result` 的例子：第六章學習過的 `match` 表達式。
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -78,7 +78,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 9-3：使用 `match` 表達式處理可能的 `Result` 成員</span>
+<span class="caption">示例 9-3：使用 `match` 表達式處理可能的 `Result` 成員</span>
 
 注意與 `Option` 枚舉一樣，`Result` 枚舉和其成員也被導入到了 prelude 中，所以就不需要在 `match` 分支中的 `Ok` 和 `Err` 之前指定 `Result::`。
 
@@ -93,7 +93,7 @@ Os { code: 2, message: "No such file or directory" } }', src/main.rs:8
 
 ### 匹配不同的錯誤
 
-代碼例 9-3 中的代碼不管 `File::open` 是因為什麼原因失敗都會 `panic!`。我們真正希望的是對不同的錯誤原因採取不同的行為：如果 `File::open `因為文件不存在而失敗，我們希望創建這個文件並返回新文件的句柄。如果 `File::open` 因為任何其他原因失敗，例如沒有打開文件的權限，我們仍然希望像代碼例 9-3 那樣 `panic!`。讓我們看看代碼例 9-4，其中 `match` 增加了另一個分支：
+示例 9-3 中的代碼不管 `File::open` 是因為什麼原因失敗都會 `panic!`。我們真正希望的是對不同的錯誤原因採取不同的行為：如果 `File::open `因為文件不存在而失敗，我們希望創建這個文件並返回新文件的句柄。如果 `File::open` 因為任何其他原因失敗，例如沒有打開文件的權限，我們仍然希望像示例 9-3 那樣 `panic!`。讓我們看看示例 9-4，其中 `match` 增加了另一個分支：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -127,7 +127,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 9-4：使用不同的方式處理不同類型的錯誤</span>
+<span class="caption">示例 9-4：使用不同的方式處理不同類型的錯誤</span>
 
 `File::open` 返回的 `Err` 成員中的值類型 `io::Error`，它是一個標準庫中提供的結構體。這個結構體有一個返回 `io::ErrorKind` 值的 `kind` 方法可供調用。`io::ErrorKind` 是一個標準庫提供的枚舉，它的成員對應 `io` 操作可能導致的不同錯誤類型。我們感興趣的成員是 `ErrorKind::NotFound`，它代表嘗試打開的文件並不存在。
 
@@ -137,7 +137,7 @@ fn main() {
 
 ### 失敗時 panic 的捷徑：`unwrap` 和 `expect`
 
-`match` 能夠勝任它的工作，不過它可能有點冗長並且不總是能很好的表明意圖。`Result<T, E>` 類型定義了很多輔助方法來處理各種情況。其中之一叫做 `unwrap`，它的實現就類似於代碼例 9-3 中的 `match` 語句。如果 `Result` 值是成員 `Ok`，`unwrap` 會返回 `Ok` 中的值。如果 `Result` 是成員 `Err`，`unwrap` 會為我們調用 `panic!`。
+`match` 能夠勝任它的工作，不過它可能有點冗長並且不總是能很好的表明意圖。`Result<T, E>` 類型定義了很多輔助方法來處理各種情況。其中之一叫做 `unwrap`，它的實現就類似於示例 9-3 中的 `match` 語句。如果 `Result` 值是成員 `Ok`，`unwrap` 會返回 `Ok` 中的值。如果 `Result` 是成員 `Err`，`unwrap` 會為我們調用 `panic!`。
 
 ```rust,should_panic
 use std::fs::File;
@@ -177,7 +177,7 @@ thread 'main' panicked at 'Failed to open hello.txt: Error { repr: Os { code:
 
 當編寫一個其實現會調用一些可能會失敗的操作的函數時，除了在這個函數中處理錯誤外，還可以選擇讓調用者知道這個錯誤並決定該如何處理。這被稱為 **傳播**（*propagating*）錯誤，這樣能更好的控制代碼調用，因為比起你代碼所擁有的上下文，調用者可能擁有更多信息或邏輯來決定應該如何處理錯誤。
 
-例如，代碼例 9-5 展示了一個從文件中讀取用戶名的函數。如果文件不存在或不能讀取，這個函數會將這些錯誤返回給調用它的代碼：
+例如，示例 9-5 展示了一個從文件中讀取用戶名的函數。如果文件不存在或不能讀取，這個函數會將這些錯誤返回給調用它的代碼：
 
 ```rust
 use std::io;
@@ -201,11 +201,11 @@ fn read_username_from_file() -> Result<String, io::Error> {
 }
 ```
 
-<span class="caption">代碼例 9-5：一個函數使用 `match` 將錯誤返回給代碼調用者</span>
+<span class="caption">示例 9-5：一個函數使用 `match` 將錯誤返回給代碼調用者</span>
 
 首先讓我們看看函數的返回值：`Result<String, io::Error>`。這意味著函數返回一個 `Result<T, E>` 類型的值，其中泛型參數 `T` 的具體類型是 `String`，而 `E` 的具體類型是 `io::Error`。如果這個函數沒有出任何錯誤成功返回，函數的調用者會收到一個包含 `String` 的 `Ok` 值————函數從文件中讀取到的用戶名。如果函數遇到任何錯誤，函數的調用者會收到一個 `Err` 值，它儲存了一個包含更多這個問題相關信息的 `io::Error` 實例。這裡選擇 `io::Error` 作為函數的返回值是因為它正好是函數體中那兩個可能會失敗的操作的錯誤返回值：`File::open` 函數和 `read_to_string` 方法。
 
-函數體以 `File::open` 函數開頭。接著使用 `match` 處理返回值 `Result`，類似於代碼例 9-3 中的 `match`，唯一的區別是不再當 `Err` 時調用 `panic!`，而是提早返回並將 `File::open` 返回的錯誤值作為函數的錯誤返回值傳遞給調用者。如果 `File::open` 成功了，我們將文件句柄儲存在變數 `f` 中並繼續。
+函數體以 `File::open` 函數開頭。接著使用 `match` 處理返回值 `Result`，類似於示例 9-3 中的 `match`，唯一的區別是不再當 `Err` 時調用 `panic!`，而是提早返回並將 `File::open` 返回的錯誤值作為函數的錯誤返回值傳遞給調用者。如果 `File::open` 成功了，我們將文件句柄儲存在變數 `f` 中並繼續。
 
 接著我們在變數 `s` 中創建了一個新 `String` 並調用文件句柄 `f` 的 `read_to_string` 方法來將文件的內容讀取到 `s` 中。`read_to_string` 方法也返回一個 `Result` 因為它也可能會失敗：哪怕是 `File::open` 已經成功了。所以我們需要另一個 `match` 來處理這個 `Result`：如果 `read_to_string` 成功了，那麼這個函數就成功了，並返回文件中的用戶名，它現在位於被封裝進 `Ok` 的 `s` 中。如果`read_to_string` 失敗了，則像之前處理 `File::open` 的返回值的 `match` 那樣返回錯誤值。並不需要顯式的調用 `return`，因為這是函數的最後一個表達式。
 
@@ -215,7 +215,7 @@ fn read_username_from_file() -> Result<String, io::Error> {
 
 ### 傳播錯誤的捷徑：`?`
 
-代碼例 9-6 展示了一個 `read_username_from_file` 的實現，它實現了與代碼例 9-5 中的代碼相同的功能，不過這個實現是使用了問號運算符的：
+示例 9-6 展示了一個 `read_username_from_file` 的實現，它實現了與示例 9-5 中的代碼相同的功能，不過這個實現是使用了問號運算符的：
 
 ```rust
 use std::io;
@@ -230,11 +230,11 @@ fn read_username_from_file() -> Result<String, io::Error> {
 }
 ```
 
-<span class="caption">代碼例 9-6：一個使用 `?` 向調用者返回錯誤的函數</span>
+<span class="caption">示例 9-6：一個使用 `?` 向調用者返回錯誤的函數</span>
 
-`Result` 值之後的 `?` 被定義為與代碼例 9-5 中定義的處理 `Result` 值的 `match` 表達式有著完全相同的工作方式。如果 `Result` 的值是 `Ok`，這個表達式將會返回 `Ok` 中的值而程序將繼續執行。如果值是 `Err`，`Err` 中的值將作為整個函數的返回值，就好像使用了 `return` 關鍵字一樣，這樣錯誤值就被傳播給了調用者。
+`Result` 值之後的 `?` 被定義為與示例 9-5 中定義的處理 `Result` 值的 `match` 表達式有著完全相同的工作方式。如果 `Result` 的值是 `Ok`，這個表達式將會返回 `Ok` 中的值而程序將繼續執行。如果值是 `Err`，`Err` 中的值將作為整個函數的返回值，就好像使用了 `return` 關鍵字一樣，這樣錯誤值就被傳播給了調用者。
 
-在代碼例 9-6 的上下文中，`File::open` 調用結尾的 `?` 將會把 `Ok` 中的值返回給變數 `f`。如果出現了錯誤，`?` 會提早返回整個函數並將任何 `Err` 值傳播給調用者。同理也適用於 `read_to_string` 調用結尾的 `?`。
+在示例 9-6 的上下文中，`File::open` 調用結尾的 `?` 將會把 `Ok` 中的值返回給變數 `f`。如果出現了錯誤，`?` 會提早返回整個函數並將任何 `Err` 值傳播給調用者。同理也適用於 `read_to_string` 調用結尾的 `?`。
 
 `?` 消除了大量樣板代碼並使得函數的實現更簡單。我們甚至可以在 `?` 之後直接使用鏈式方法調用來進一步縮短代碼：
 
@@ -252,11 +252,11 @@ fn read_username_from_file() -> Result<String, io::Error> {
 }
 ```
 
-在 `s` 中創建新的 `String` 被放到了函數開頭；這沒有什麼變化。我們對 `File::open("hello.txt")?` 的結果直接鏈式調用了 `read_to_string`，而不再創建變數 `f`。仍然需要 `read_to_string` 調用結尾的 `?`，而且當 `File::open` 和 `read_to_string` 都成功沒有失敗時返回包含用戶名 `s` 的 `Ok` 值。其功能再一次與代碼例 9-5 和代碼例 9-5 保持一致，不過這是一個與眾不同且更符合工程學的寫法。
+在 `s` 中創建新的 `String` 被放到了函數開頭；這沒有什麼變化。我們對 `File::open("hello.txt")?` 的結果直接鏈式調用了 `read_to_string`，而不再創建變數 `f`。仍然需要 `read_to_string` 調用結尾的 `?`，而且當 `File::open` 和 `read_to_string` 都成功沒有失敗時返回包含用戶名 `s` 的 `Ok` 值。其功能再一次與示例 9-5 和示例 9-5 保持一致，不過這是一個與眾不同且更符合工程學的寫法。
 
 ### `?` 只能被用於返回 `Result` 的函數
 
-`?` 只能被用於返回值類型為 `Result` 的函數，因為他被定義為與代碼例 9-5 中的 `match` 表達式有著完全相同的工作方式。`match` 的 `return Err(e)` 部分要求返回值類型是 `Result`，所以函數的返回值必須是 `Result` 才能與這個 `return` 相兼容。
+`?` 只能被用於返回值類型為 `Result` 的函數，因為他被定義為與示例 9-5 中的 `match` 表達式有著完全相同的工作方式。`match` 的 `return Err(e)` 部分要求返回值類型是 `Result`，所以函數的返回值必須是 `Result` 才能與這個 `return` 相兼容。
 
 讓我們看看在 `main` 函數中使用 `?` 會發生什麼，如果你還記得的話它的返回值類型是`()`：
 

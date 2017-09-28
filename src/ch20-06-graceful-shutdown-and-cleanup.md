@@ -4,11 +4,11 @@
 > <br>
 > commit 2e269ff82193fd65df8a87c06561d74b51ac02f7
 
-代碼例 20-21 中的代碼如期通過使用線程池異步的響應請求。這裡有一些警告說存在一些字段並沒有直接被使用，這提醒了我們並沒有清理任何內容。當使用 <span class="keystroke">ctrl-C</span> 終止主線程，所有其他線程也會立刻停止，即便他們正在處理一個請求。
+示例 20-21 中的代碼如期通過使用線程池異步的響應請求。這裡有一些警告說存在一些字段並沒有直接被使用，這提醒了我們並沒有清理任何內容。當使用 <span class="keystroke">ctrl-C</span> 終止主線程，所有其他線程也會立刻停止，即便他們正在處理一個請求。
 
 現在我們要為 `ThreadPool` 實現 `Drop` trait 對線程池中的每一個線程調用 `join`，這樣這些線程將會執行完他們的請求。接著會為 `ThreadPool` 實現一個方法來告訴線程他們應該停止接收新請求並結束。為了實踐這些代碼，修改 server 在 graceful Shutdown 之前只接受兩個請求。
 
-現在開始為線程池實現 `Drop`。當線程池被丟棄時，應該 join 所有線程以確保他們完成其操作。代碼例 20-22 展示了 `Drop` 實現的第一次嘗試；這些代碼還不能夠編譯：
+現在開始為線程池實現 `Drop`。當線程池被丟棄時，應該 join 所有線程以確保他們完成其操作。示例 20-22 展示了 `Drop` 實現的第一次嘗試；這些代碼還不能夠編譯：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -24,7 +24,7 @@ impl Drop for ThreadPool {
 }
 ```
 
-<span class="caption">代碼例 20-22：當線程池離開作用域時 join 每個線程</span>
+<span class="caption">示例 20-22：當線程池離開作用域時 join 每個線程</span>
 
 這裡遍歷線程池中的每個 `workers`，這裡使用了 `&mut` 因為 `self` 本身是一個可變引用而且也需要能夠修改 `worker`。當特定 worker 關閉時會打印出說明信息，接著在對應 worker 上調用 `join`。如果 `join` 失敗了，通過 `unwrap` 將錯誤變為 panic 從而無法進行 graceful Shutdown。
 
@@ -38,7 +38,7 @@ error[E0507]: cannot move out of borrowed content
    |             ^^^^^^ cannot move out of borrowed content
 ```
 
-因為我們只有每個 `worker` 的可變借用，並不能調用 `join`：`join` 抓取其參數的所有權。為瞭解決這個問題，需要一個方法將 `thread` 移動出擁有其所有權的 `Worker` 實例以便 `join` 可以消費這個線程。代碼例 17-15 中我們曾見過這麼做的方法：如果 `Worker` 存放的是 `Option<thread::JoinHandle<()>`，就可以在 `Option` 上調用 `take` 方法將值從 `Some` 成員中移動出來而對 `None` 成員不做處理。換句話說，正在運行的 `Worker` 的 `thread` 將是 `Some` 成員值，而當需要清理 worker 時，將 `Some` 替換為 `None`，這樣 worker 就沒有可以運行的線程了。
+因為我們只有每個 `worker` 的可變借用，並不能調用 `join`：`join` 抓取其參數的所有權。為瞭解決這個問題，需要一個方法將 `thread` 移動出擁有其所有權的 `Worker` 實例以便 `join` 可以消費這個線程。示例 17-15 中我們曾見過這麼做的方法：如果 `Worker` 存放的是 `Option<thread::JoinHandle<()>`，就可以在 `Option` 上調用 `take` 方法將值從 `Some` 成員中移動出來而對 `None` 成員不做處理。換句話說，正在運行的 `Worker` 的 `thread` 將是 `Some` 成員值，而當需要清理 worker 時，將 `Some` 替換為 `None`，這樣 worker 就沒有可以運行的線程了。
 
 所以我們知道了需要更新 `Worker` 的定義為如下：
 
@@ -126,7 +126,7 @@ enum Message {
 
 `Message` 枚舉要麼是存放了線程需要運行的 `Job` 的 `NewJob` 成員，要麼是會導致線程退出循環並終止的 `Terminate` 成員。
 
-同時需要修改通道來使用 `Message` 類型值而不是 `Job`，如代碼例 20-23 所示：
+同時需要修改通道來使用 `Message` 類型值而不是 `Job`，如示例 20-23 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -191,11 +191,11 @@ impl Worker {
 }
 ```
 
-<span class="caption">代碼例 20-23：收發 `Message` 值並在 `Worker` 收到 `Message::Terminate` 時退出循環</span>
+<span class="caption">示例 20-23：收發 `Message` 值並在 `Worker` 收到 `Message::Terminate` 時退出循環</span>
 
 需要將 `ThreadPool` 定義、創建通道的 `ThreadPool::new` 和 `Worker::new` 簽名中的 `Job` 改為 `Message`。`ThreadPool` 的 `execute` 方法需要發送封裝進 `Message::NewJob` 成員的任務，當抓取到 `NewJob` 時會處理任務而收到 `Terminate` 成員時則會退出循環。
 
-通過這些修改，代碼再次能夠編譯並按照期望的行為運行。不過還是會得到一個警告，因為並沒有在任何消息中使用 `Terminate` 成員。如代碼例 20-14 所示那樣修改 `Drop` 實現：
+通過這些修改，代碼再次能夠編譯並按照期望的行為運行。不過還是會得到一個警告，因為並沒有在任何消息中使用 `Terminate` 成員。如示例 20-14 所示那樣修改 `Drop` 實現：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -221,7 +221,7 @@ impl Drop for ThreadPool {
 }
 ```
 
-<span class="caption">代碼例 20-24：在對每個 worker 線程調用 `join` 之前向 worker 發送 `Message::Terminate`</span>
+<span class="caption">示例 20-24：在對每個 worker 線程調用 `join` 之前向 worker 發送 `Message::Terminate`</span>
 
 現在遍歷了 worker 兩次，一次向每個 worker 發送一個 `Terminate` 消息，一個調用每個 worker 線程上的  `join`。如果嘗試在同一循環中發送消息並立即 join 線程，則無法保證當前迭代的 worker 是從通道收到終止消息的 worker。
 
@@ -229,7 +229,7 @@ impl Drop for ThreadPool {
 
 為了避免此情況，首先從通道中取出所有的 `Terminate` 消息，接著 join 所有的線程。因為每個 worker 一旦收到終止消息即會停止從通道接收消息，我們就可以確保如果發送同 worker 數相同的終止消息，在 join 之前每個線程都會收到一個終止消息。
 
-為了實踐這些代碼，如代碼例 20-25 所示修改 `main` 在 graceful Shutdown server 之前只接受兩個請求：
+為了實踐這些代碼，如示例 20-25 所示修改 `main` 在 graceful Shutdown server 之前只接受兩個請求：
 
 <span class="filename">文件名: src/bin/main.rs</span>
 
@@ -257,7 +257,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 20-25：在處理兩個請求之後通過退出循環來停止 server</span>
+<span class="caption">示例 20-25：在處理兩個請求之後通過退出循環來停止 server</span>
 
 只處理兩次請求並不是生產環境的 web server 所期望的行為，不過這可以讓我們看清 graceful shutdown 和清理起作用了，因為不用再通過 <span class="keystroke">ctrl-C</span> 停止 server 了。
 

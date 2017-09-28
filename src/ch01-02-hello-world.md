@@ -190,7 +190,7 @@ authors = ["Your Name <you@example.com>"]
 
 接下來的三行設置了三個 Cargo 所需的配置，他們告訴 Cargo 需要編譯這個項目：名稱、版本和作者。Cargo 從環境中抓取你的名稱和 email 信息。如果不正確，請修改並保存此文件。
 
-最後一行，`[dependencies]`，是項目依賴的 *crates* 代碼例（我們這樣稱呼 Rust 代碼包）段落的開始，這樣 Cargo 就知道下載和編譯它們了。這個項目並不需要任何其他的 crate，不過在下一章猜猜看教程會用得上。
+最後一行，`[dependencies]`，是項目依賴的 *crates* 示例（我們這樣稱呼 Rust 代碼包）段落的開始，這樣 Cargo 就知道下載和編譯它們了。這個項目並不需要任何其他的 crate，不過在下一章猜猜看教程會用得上。
 
 現在看看 *src/main.rs*：
 

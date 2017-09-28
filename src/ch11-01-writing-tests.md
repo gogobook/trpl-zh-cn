@@ -35,13 +35,13 @@ mod tests {
 }
 ```
 
-<span class="caption">代碼例 11-1：由 `cargo new` 自動生成的測試模組和函數</span>
+<span class="caption">示例 11-1：由 `cargo new` 自動生成的測試模組和函數</span>
 
 現在讓我們暫時忽略 `tests` 模組和 `#[cfg(test)]` 註解並只關注函數來瞭解其如何工作。注意 `fn` 行之前的 `#[test]`：這個屬性表明這是一個測試函數，這樣測試執行者就知道將其作為測試處理。也可以在 `tests` 模組中擁有非測試的函數來幫助我們建立通用場景或進行常見操作，所以需要使用 `#[test]` 屬性標明哪些函數是測試。
 
 這個函數目前沒有任何內容，這意味著沒有代碼會使測試失敗；一個空的測試是可以通過的！讓我們運行一下看看它是否通過了。
 
-`cargo test` 命令會運行項目中所有的測試，如代碼例 11-2 所示：
+`cargo test` 命令會運行項目中所有的測試，如示例 11-2 所示：
 
 ```text
 $ cargo test
@@ -61,7 +61,7 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 ```
 
-<span class="caption">代碼例 11-2：運行自動生成測試的輸出</span>
+<span class="caption">示例 11-2：運行自動生成測試的輸出</span>
 
 Cargo 編譯並運行了測試。在 `Compiling`、`Finished` 和 `Running` 這幾行之後，可以看到 `running 1 test` 這一行。下一行顯示了生成的測試函數的名稱，它是 `it_works`，以及測試的運行結果，`ok`。接著可以看到全體測試運行結果的總結：`test result: ok.` 意味著所有測試都通過了。`1 passed; 0 failed` 表示通過或失敗的測試數量。
 
@@ -91,7 +91,7 @@ test tests::exploration ... ok
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured
 ```
 
-讓我們增加另一個測試，不過這一次是一個會失敗的測試！當測試函數中出現 panic 時測試就失敗了。每一個測試都在一個新線程中運行，當主線程發現測試線程異常了，就將對應測試標記為失敗。第九章講到了最簡單的造成 panic 的方法：調用 `panic!` 巨集！寫入新函數後 `src/lib.rs` 現在看起來如代碼例 11-3 所示：
+讓我們增加另一個測試，不過這一次是一個會失敗的測試！當測試函數中出現 panic 時測試就失敗了。每一個測試都在一個新線程中運行，當主線程發現測試線程異常了，就將對應測試標記為失敗。第九章講到了最簡單的造成 panic 的方法：調用 `panic!` 巨集！寫入新函數後 `src/lib.rs` 現在看起來如示例 11-3 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -109,10 +109,10 @@ mod tests {
 }
 ```
 
-<span class="caption">代碼例 11-3：增加第二個測試：他會失敗因為調用了 `panic!` 巨集</span>
+<span class="caption">示例 11-3：增加第二個測試：他會失敗因為調用了 `panic!` 巨集</span>
 
 
-再次 `cargo test` 運行測試。輸出應該看起來像代碼例 11-4，它表明 `exploration` 測試通過了而 `another` 失敗了：
+再次 `cargo test` 運行測試。輸出應該看起來像示例 11-4，它表明 `exploration` 測試通過了而 `another` 失敗了：
 
 ```text
 running 2 tests
@@ -133,7 +133,7 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured
 error: test failed
 ```
 
-<span class="caption">代碼例 11-4：一個測試通過和一個測試失敗的測試結果</span>
+<span class="caption">示例 11-4：一個測試通過和一個測試失敗的測試結果</span>
 
 `test tests::another` 這一行是 `FAILED` 而不是 `ok` 了。在單獨測試結果和總結之間多了兩個新的部分：第一個部分顯示了測試失敗的詳細原因。在這個例子中，`another` 因為 `panicked at 'Make this test fail'` 而失敗，這位於 *src/lib.rs* 的第 9 行。下一部分僅僅列出了所有失敗的測試，這在很有多測試和很多失敗測試的詳細輸出時很有幫助。可以使用失敗測試的名稱來只運行這個測試，這樣比較方便調試；下一部分會講到更多運行測試的方法。
 
@@ -145,7 +145,7 @@ error: test failed
 
 `assert!` 巨集由標準庫提供，在希望確保測試中一些條件為 `true` 時非常有用。需要向 `assert!` 巨集提供一個計算為布爾值的參數。如果值是 `true`，`assert!` 什麼也不做同時測試會通過。如果值為 `false`，`assert!` 調用 `panic!` 巨集，這會導致測試失敗。這是一個幫助我們檢查代碼是否以期望的方式運行的巨集。
 
-回憶一下第五章中，代碼例 5-9 中有一個 `Rectangle` 結構體和一個 `can_hold` 方法，在代碼例 11-5 中再次使用他們。將他們放進 *src/lib.rs* 而不是 *src/main.rs* 並使用 `assert!` 巨集編寫一些測試。
+回憶一下第五章中，示例 5-9 中有一個 `Rectangle` 結構體和一個 `can_hold` 方法，在示例 11-5 中再次使用他們。將他們放進 *src/lib.rs* 而不是 *src/main.rs* 並使用 `assert!` 巨集編寫一些測試。
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -163,9 +163,9 @@ impl Rectangle {
 }
 ```
 
-<span class="caption">代碼例 11-5：第五章中 `Rectangle` 結構體和其 `can_hold` 方法</span>
+<span class="caption">示例 11-5：第五章中 `Rectangle` 結構體和其 `can_hold` 方法</span>
 
-`can_hold` 方法返回一個布爾值，這意味著它完美符合 `assert!` 巨集的使用場景。在代碼例 11-6 中，讓我們編寫一個 `can_hold` 方法的測試來作為練習，這裡創建一個長為 8 寬為 7 的 `Rectangle` 實例，並假設它可以放得下另一個長為 5 寬為 1 的 `Rectangle` 實例：
+`can_hold` 方法返回一個布爾值，這意味著它完美符合 `assert!` 巨集的使用場景。在示例 11-6 中，讓我們編寫一個 `can_hold` 方法的測試來作為練習，這裡創建一個長為 8 寬為 7 的 `Rectangle` 實例，並假設它可以放得下另一個長為 5 寬為 1 的 `Rectangle` 實例：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -184,7 +184,7 @@ mod tests {
 }
 ```
 
-<span class="caption">代碼例 11-6：一個 `can_hold` 的測試，檢查一個較大的矩形確實能放得下一個較小的矩形</span>
+<span class="caption">示例 11-6：一個 `can_hold` 的測試，檢查一個較大的矩形確實能放得下一個較小的矩形</span>
 
 注意在 `tests` 模組中新增加了一行：`use super::*;`。`tests` 是一個普通的模組，它遵循第七章介紹的通常的可見性規則。因為這是一個內部模組，需要將外部模組中被測試的代碼引入到內部模組的作用域中。這裡選擇使用全局導入使得外部模組定義的所有內容在 `tests` 模組中都是可用的。
 
@@ -276,7 +276,7 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured
 
 測試功能的一個常用方法是將需要測試代碼的值與期望值做比較，並檢查是否相等。可以通過向 `assert!` 巨集傳遞一個使用 `==` 運算符的表達式來做到。不過這個操作實在是太常見了，以至於標註庫提供了一對巨集來方便處理這些操作：`assert_eq!` 和 `assert_ne!`。這兩個巨集分別比較兩個值是相等還是不相等。當斷言失敗時他們也會打印出這兩個值具體是什麼，以便於觀察測試 **為什麼** 失敗，而 `assert!` 只會打印出它從 `==` 表達式中得到了 `false` 值，而不是導致 `false` 的兩個值。
 
-代碼例 11-7 中，讓我們編寫一個對其參數加二並返回結果的函數 `add_two`。接著使用 `assert_eq!` 巨集測試這個函數：
+示例 11-7 中，讓我們編寫一個對其參數加二並返回結果的函數 `add_two`。接著使用 `assert_eq!` 巨集測試這個函數：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -296,7 +296,7 @@ mod tests {
 }
 ```
 
-<span class="caption">代碼例 11-7：使用 `assert_eq!` 巨集測試 `add_two`</span>
+<span class="caption">示例 11-7：使用 `assert_eq!` 巨集測試 `add_two`</span>
 
 測試通過了！
 
@@ -423,11 +423,11 @@ note: Run with `RUST_BACKTRACE=1` for a backtrace.
 
 ### 使用 `should_panic` 檢查 panic
 
-除了檢查代碼是否返回期望的正確的值之外，檢查代碼是否按照期望處理錯誤情況也是很重要的。例如，考慮第九章代碼例 9-8 創建的 `Guess` 類型。其他使用 `Guess` 的代碼依賴於 `Guess` 實例只會包含 1 到 100 的值的保證。可以編寫一個測試來確保創建一個超出範圍的值的 `Guess` 實例會 panic。
+除了檢查代碼是否返回期望的正確的值之外，檢查代碼是否按照期望處理錯誤情況也是很重要的。例如，考慮第九章示例 9-8 創建的 `Guess` 類型。其他使用 `Guess` 的代碼依賴於 `Guess` 實例只會包含 1 到 100 的值的保證。可以編寫一個測試來確保創建一個超出範圍的值的 `Guess` 實例會 panic。
 
 可以通過對函數增加另一個屬性 `should_panic` 來實現這些。這個屬性在函數中的代碼 panic 時會通過，而在其中的代碼沒有 panic 時失敗。
 
-代碼例 11-8 展示了如何編寫一個測試來檢查 `Guess::new` 按照我們的期望出現的錯誤情況：
+示例 11-8 展示了如何編寫一個測試來檢查 `Guess::new` 按照我們的期望出現的錯誤情況：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -460,7 +460,7 @@ mod tests {
 }
 ```
 
-<span class="caption">代碼例 11-8：測試會造成 `panic!` 的條件</span>
+<span class="caption">示例 11-8：測試會造成 `panic!` 的條件</span>
 
 `#[should_panic]` 屬性位於 `#[test]` 之後和對應的測試函數之前。讓我們看看測試通過時它時什麼樣子：
 
@@ -491,7 +491,7 @@ impl Guess {
 }
 ```
 
-如果運行代碼例 11-8 的測試，它會失敗：
+如果運行示例 11-8 的測試，它會失敗：
 
 ```text
 running 1 test
@@ -507,7 +507,7 @@ test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured
 
 這回並沒有得到非常有用的信息，不過一旦我們觀察測試函數，會發現它標註了 `#[should_panic]`。這個錯誤意味著代碼中函數 `Guess::new(200)` 並沒有產生 panic。
 
-然而 `should_panic` 測試可能是非常含糊不清的，因為他們只是告訴我們代碼並沒有產生 panic。`should_panic` 甚至在測試因為其他不同的原因而不是我們期望發生的情況而 panic 時也會通過。為了使 `should_panic` 測試更精確，可以給 `should_panic` 屬性增加一個可選的 `expected` 參數。測試工具會確保錯誤信息中包含其提供的文本。例如，考慮代碼例 11-9 中修改過的 `Guess`，這裡 `new` 函數根據其值是過大還或者過小而提供不同的 panic 信息：
+然而 `should_panic` 測試可能是非常含糊不清的，因為他們只是告訴我們代碼並沒有產生 panic。`should_panic` 甚至在測試因為其他不同的原因而不是我們期望發生的情況而 panic 時也會通過。為了使 `should_panic` 測試更精確，可以給 `should_panic` 屬性增加一個可選的 `expected` 參數。測試工具會確保錯誤信息中包含其提供的文本。例如，考慮示例 11-9 中修改過的 `Guess`，這裡 `new` 函數根據其值是過大還或者過小而提供不同的 panic 信息：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -544,7 +544,7 @@ mod tests {
 }
 ```
 
-<span class="caption">代碼例 11-9：一個會帶有特定錯誤信息的 `panic!` 條件的測試</span>
+<span class="caption">示例 11-9：一個會帶有特定錯誤信息的 `panic!` 條件的測試</span>
 
 這個測試會通過，因為 `should_panic` 屬性中 `expected` 參數提供的值是 `Guess::new` 函數 panic 信息的子字符串。我們可以指定期望的整個 panic 信息，在這個例子中是 `Guess value must be less than or equal to 100, got 200.`。這依賴於 panic 有多獨特或動態，和你希望測試有多準確。在這個例子中，錯誤信息的子字符串足以確保函數在 `else if value > 100` 的情況下運行。
 

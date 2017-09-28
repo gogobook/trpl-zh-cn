@@ -10,7 +10,7 @@
 
 ### 在當前 server 實現中模擬慢請求
 
-讓我們看看一個花費很長時間處理的請求對當前的 server 實現有何影響。代碼例 20-10 展示了對另一個請求的響應代碼，`/sleep`，它會使 server 在響應之前休眠五秒。這將模擬一個慢請求以便體現出 server 在串行的處理請求。
+讓我們看看一個花費很長時間處理的請求對當前的 server 實現有何影響。示例 20-10 展示了對另一個請求的響應代碼，`/sleep`，它會使 server 在響應之前休眠五秒。這將模擬一個慢請求以便體現出 server 在串行的處理請求。
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -43,7 +43,7 @@ fn handle_connection(mut stream: TcpStream) {
 }
 ```
 
-<span class="caption">代碼例 20-10：通過識別 `/sleep` 並休眠五秒來模擬慢請求</span>
+<span class="caption">示例 20-10：通過識別 `/sleep` 並休眠五秒來模擬慢請求</span>
 
 這段代碼有些凌亂，不過對於模擬的目的來說已經足夠！這裡創建了第二個請求 `sleep`，我們會識別其數據。在 `if` 塊之後增加了一個 `else if` 來檢查 `/sleep` 請求，當發現這個請求時，在渲染歡迎頁面之前會先休眠五秒。
 

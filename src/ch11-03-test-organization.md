@@ -33,7 +33,7 @@ mod tests {
 
 #### 測試私有函數
 
-測試社區中一直存在關於是否應該對私有函數進行單元測試的論戰，而其他語言中難以甚至不可能測試私有函數。不過無論你堅持哪種測試意識形態，Rust 的私有性規則確實允許你測試私有函數，由於私有性規則。考慮代碼例 11-12 中帶有私有函數 `internal_adder` 的代碼：
+測試社區中一直存在關於是否應該對私有函數進行單元測試的論戰，而其他語言中難以甚至不可能測試私有函數。不過無論你堅持哪種測試意識形態，Rust 的私有性規則確實允許你測試私有函數，由於私有性規則。考慮示例 11-12 中帶有私有函數 `internal_adder` 的代碼：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -57,7 +57,7 @@ mod tests {
 }
 ```
 
-<span class="caption">代碼例 11-12：測試私有函數</span>
+<span class="caption">示例 11-12：測試私有函數</span>
 
 注意 `internal_adder` 函數並沒有標記為 `pub`，不過因為測試也不過是 Rust 代碼同時 `tests` 也僅僅是另一個模組，我們完全可以在測試中導入和調用 `internal_adder`。如果你並不認為私有函數應該被測試，Rust 也不會強迫你這麼做。
 
@@ -69,7 +69,7 @@ mod tests {
 
 為了編寫集成測試，需要在項目根目錄創建一個 *tests* 目錄，與 *src* 同級。Cargo 知道如何去尋找這個目錄中的集成測試文件。接著可以隨意在這個目錄中創建任意多的測試文件，Cargo 會將每一個文件當作單獨的 crate 來編譯。
 
-讓我們試一試吧！保留代碼例 11-12 中 *src/lib.rs* 的代碼。創建一個 *tests* 目錄，新建一個文件 *tests/integration_test.rs*，並輸入代碼例 11-13 中的代碼。
+讓我們試一試吧！保留示例 11-12 中 *src/lib.rs* 的代碼。創建一個 *tests* 目錄，新建一個文件 *tests/integration_test.rs*，並輸入示例 11-13 中的代碼。
 
 <span class="filename">文件名: tests/integration_test.rs</span>
 
@@ -82,7 +82,7 @@ fn it_adds_two() {
 }
 ```
 
-<span class="caption">代碼例 11-13：一個 `adder` crate 中函數的集成測試</span>
+<span class="caption">示例 11-13：一個 `adder` crate 中函數的集成測試</span>
 
 我們在頂部增加了 `extern crate adder`，這在單元測試中是不需要的。這是因為每一個 `tests` 目錄中的測試文件都是完全獨立的 crate，所以需要在每一個文件中導入庫。集成測試就像其他庫使用者那樣通過導入 crate 並只使用公有 API。
 
@@ -113,7 +113,7 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured
 ```
 
-現在有了三個部分的輸出：單元測試、集成測試和文檔測試。第一部分單元測試與我們之前見過的一樣：每一個單元測試一行（代碼例 11-12 中有一個叫做 `internal` 的測試），接著是一個單元測試的總結行。
+現在有了三個部分的輸出：單元測試、集成測試和文檔測試。第一部分單元測試與我們之前見過的一樣：每一個單元測試一行（示例 11-12 中有一個叫做 `internal` 的測試），接著是一個單元測試的總結行。
 
 集成測試部分以行 `Running target/debug/deps/integration-test-ce99bcc2479f4607`（輸出最後的哈希值可能不同）開頭。接著是每一個集成測試中的測試函數一行，以及一個就在 `Doc-tests adder` 部分開始之前的集成測試的總結行。
 

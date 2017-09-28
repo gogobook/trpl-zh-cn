@@ -22,7 +22,7 @@
 
 另一個通常與面向物件編程相關的方面是**封裝**（*encapsulation*）的思想：物件的實現細節不能被使用物件的代碼抓取到。唯一與物件互動的方式是通過物件提供的公有 API；使用物件的代碼無法深入到物件內部並直接改變數據或者行為。封裝使得改變和重構物件的內部時無需改變使用物件的代碼。
 
-就像我們在第七章討論的那樣，可以使用`pub`關鍵字來決定模組、類型函數和方法是公有的，而預設情況下一切都是私有的。比如，我們可以定義一個包含一個`i32`類型的 vector 的結構體`AveragedCollection `。結構體也可以有一個字段，該字段保存了 vector 中所有值的平均值。這樣，希望知道結構體中的 vector 的平均值的人可以隨時抓取它，而無需自己計算。`AveragedCollection`會為我們緩存平均值結果。代碼例 17-1 有`AveragedCollection`結構體的定義：
+就像我們在第七章討論的那樣，可以使用`pub`關鍵字來決定模組、類型函數和方法是公有的，而預設情況下一切都是私有的。比如，我們可以定義一個包含一個`i32`類型的 vector 的結構體`AveragedCollection `。結構體也可以有一個字段，該字段保存了 vector 中所有值的平均值。這樣，希望知道結構體中的 vector 的平均值的人可以隨時抓取它，而無需自己計算。`AveragedCollection`會為我們緩存平均值結果。示例 17-1 有`AveragedCollection`結構體的定義：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -33,9 +33,9 @@ pub struct AveragedCollection {
 }
 ```
 
-<span class="caption">代碼例 17-1: `AveragedCollection`結構體維護了一個整型代碼例和集合中所有元素的平均值。</span>
+<span class="caption">示例 17-1: `AveragedCollection`結構體維護了一個整型示例和集合中所有元素的平均值。</span>
 
-注意，結構體自身被標記為`pub`，這樣其他代碼可以使用這個結構體，但是在結構體內部的字段仍然是私有的。這是非常重要的，因為我們希望保證變數被增加到代碼例或者被從代碼例刪除時，也會同時更新平均值。可以通過在結構體上實現`add`、`remove`和`average`方法來做到這一點，如代碼例 17-2 所示：
+注意，結構體自身被標記為`pub`，這樣其他代碼可以使用這個結構體，但是在結構體內部的字段仍然是私有的。這是非常重要的，因為我們希望保證變數被增加到示例或者被從示例刪除時，也會同時更新平均值。可以通過在結構體上實現`add`、`remove`和`average`方法來做到這一點，如示例 17-2 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -72,7 +72,7 @@ impl AveragedCollection {
 }
 ```
 
-<span class="caption">代碼例 17-2: 在`AveragedCollection`結構體上實現了`add`、`remove`和`average`公有方法</span>
+<span class="caption">示例 17-2: 在`AveragedCollection`結構體上實現了`add`、`remove`和`average`公有方法</span>
 
 公有方法`add`、`remove`和`average`是修改`AveragedCollection`實例的唯一方式。當使用`add`方法把一個元素加入到`list`或者使用`remove`方法來刪除它時，這些方法的實現同時會調用私有的`update_average`方法來更新`average`字段。因為`list`和`average`是私有的，沒有其他方式來使得外部的代碼直接向`list`增加或者刪除元素，直接操作`list`可能會引發`average`字段不同步。`average`方法返回`average`字段的值，這使得外部的代碼只能讀取`average`而不能修改它。
 
@@ -86,7 +86,7 @@ impl AveragedCollection {
 
 如果一個語言必須有繼承才能被稱為面向物件語言的話，那麼 Rust 就不是面向物件的。無法定義一個結構體繼承自另外一個結構體，從而獲得父結構體的成員和方法。然而，如果你過去常常在你的編程工具箱使用繼承，根據你希望使用繼承的原因，Rust 也提供了其他的解決方案。
 
-使用繼承有兩個主要的原因。第一個是為了重用代碼：一旦為一個類型實現了特定行為，繼承可以對一個不同的類型重用這個實現。相反 Rust 代碼可以使用預設 trait 方法實現來進行共享，在代碼例 10-14 中我們見過在`Summarizable` trait 上增加的`summary`方法的預設實現。任何實現了`Summarizable` trait 的類型都可以使用`summary`方法而無須進一步實現。這類似於父類有一個方法的實現，而通過繼承子類也擁有這個方法的實現。當實現`Summarizable` trait 時也可以選擇覆蓋`summary`的預設實現，這類似於子類覆蓋從父類繼承的方法實現。
+使用繼承有兩個主要的原因。第一個是為了重用代碼：一旦為一個類型實現了特定行為，繼承可以對一個不同的類型重用這個實現。相反 Rust 代碼可以使用預設 trait 方法實現來進行共享，在示例 10-14 中我們見過在`Summarizable` trait 上增加的`summary`方法的預設實現。任何實現了`Summarizable` trait 的類型都可以使用`summary`方法而無須進一步實現。這類似於父類有一個方法的實現，而通過繼承子類也擁有這個方法的實現。當實現`Summarizable` trait 時也可以選擇覆蓋`summary`的預設實現，這類似於子類覆蓋從父類繼承的方法實現。
 
 第二個使用繼承的原因與類型系統有關：用來表現子類型可以在父類型被使用的地方使用。這也被稱為**多態**（*polymorphism*），意味著如果多種物件有一個相同的形態大小，它們可以替代使用。
 

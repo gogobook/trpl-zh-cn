@@ -23,7 +23,7 @@ match x {
 
 命名變數是可匹配任何值的`irrefutable`(不可反駁)模式.
 
-與所有變數一樣, 模式中聲明的變數會屏蔽`match`表達式外層的同名變數, 因為一個`match`表達式會開啟一個新的作用域. 在代碼例18-10中, 我們聲明了一個值為`Some(5)`的變數`x`和一個值為`10`的變數`y`. 然後是一個值`x`上的`match`表達式. 看一看匹配分支的模式和結尾的`println!`, 你可以在繼續閱讀或運行代碼前猜一猜什麼會被打印出來:
+與所有變數一樣, 模式中聲明的變數會屏蔽`match`表達式外層的同名變數, 因為一個`match`表達式會開啟一個新的作用域. 在示例18-10中, 我們聲明了一個值為`Some(5)`的變數`x`和一個值為`10`的變數`y`. 然後是一個值`x`上的`match`表達式. 看一看匹配分支的模式和結尾的`println!`, 你可以在繼續閱讀或運行代碼前猜一猜什麼會被打印出來:
 
 <span class="filename">Filename: src/main.rs</span>
 
@@ -42,7 +42,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例18-10: 引入了一個陰影變數`y`的`match`語句</span>
+<span class="caption">示例18-10: 引入了一個陰影變數`y`的`match`語句</span>
 
 <!-- NEXT PARAGRAPH WRAPPED WEIRD INTENTIONALLY SEE #199 -->
 

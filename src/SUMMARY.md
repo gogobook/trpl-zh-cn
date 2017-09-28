@@ -15,7 +15,7 @@
     - [註釋](ch03-04-comments.md)
     - [控制流](ch03-05-control-flow.md)
 
-- [認識所有權](ch04-00-understanding-ownership.md)
+- [了解所有權](ch04-00-understanding-ownership.md)
     - [什麼是所有權](ch04-01-what-is-ownership.md)
     - [引用 & 借用](ch04-02-references-and-borrowing.md)
     - [Slices](ch04-03-slices.md)

@@ -1,4 +1,4 @@
-# 認識所有權
+# 了解所有權
 
 > [ch04-00-understanding-ownership.md](https://github.com/rust-lang/book/blob/master/second-edition/src/ch04-00-understanding-ownership.md)
 > <br>

@@ -47,7 +47,7 @@ mod network {
 
 `mod` 關鍵字的後面是模組的名字，`network`，接著是位於大括號中的代碼塊。代碼塊中的一切都位於 `network` 命名空間中。在這個例子中，只有一個函數，`connect`。如果想要在 `network` 模組外面的代碼中調用這個函數，需要指定模組名並使用命名空間語法 `::`，像這樣：`network::connect()`，而不是只是 `connect()`。
 
-也可以在 *src/lib.rs* 文件中同時存在多個模組。例如，再擁有一個 `client` 模組，它也有一個叫做 `connect` 的函數，如代碼例 7-1 中所示那樣增加這個模組：
+也可以在 *src/lib.rs* 文件中同時存在多個模組。例如，再擁有一個 `client` 模組，它也有一個叫做 `connect` 的函數，如示例 7-1 中所示那樣增加這個模組：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -63,11 +63,11 @@ mod client {
 }
 ```
 
-<span class="caption">代碼例 7-1：`network` 模組和 `client` 一同定義於 *src/lib.rs*</span>
+<span class="caption">示例 7-1：`network` 模組和 `client` 一同定義於 *src/lib.rs*</span>
 
 現在我們有了 `network::connect` 函數和 `client::connect` 函數。他們可能有著完全不同的功能，同時他們也不會彼此衝突，因為他們位於不同的模組。
 
-在這個例子中，因為我們構建的是一個庫，作為庫入口點的文件是 *src/lib.rs*。然而，對於創建模組來說，*src/lib.rs* 並沒有什麼特殊意義。也可以在二進制 crate 的 *src/main.rs* 中創建模組，正如在庫 crate 的 *src/lib.rs* 創建模組一樣。事實上，也可以將模組放入其他模組中。這有助於隨著模組的增長，將相關的功能組織在一起並又保持各自獨立。如何選擇組織代碼依賴於如何考慮代碼不同部分之間的關係。例如，對於庫的用戶來說，`client` 模組和它的函數 `connect` 可能放在 `network` 命名空間裡顯得更有道理，如代碼例 7-2 所示：
+在這個例子中，因為我們構建的是一個庫，作為庫入口點的文件是 *src/lib.rs*。然而，對於創建模組來說，*src/lib.rs* 並沒有什麼特殊意義。也可以在二進制 crate 的 *src/main.rs* 中創建模組，正如在庫 crate 的 *src/lib.rs* 創建模組一樣。事實上，也可以將模組放入其他模組中。這有助於隨著模組的增長，將相關的功能組織在一起並又保持各自獨立。如何選擇組織代碼依賴於如何考慮代碼不同部分之間的關係。例如，對於庫的用戶來說，`client` 模組和它的函數 `connect` 可能放在 `network` 命名空間裡顯得更有道理，如示例 7-2 所示：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -83,11 +83,11 @@ mod network {
 }
 ```
 
-<span class="caption">代碼例 7-2：將 `client` 模組移動到 `network` 模組中</span>
+<span class="caption">示例 7-2：將 `client` 模組移動到 `network` 模組中</span>
 
-在 *src/lib.rs* 文件中，將現有的 `mod network` 和 `mod client` 的定義替換為代碼例 7-2 中的定義，這裡將 `client` 模組作為 `network` 的一個內部模組。現在我們有了 `network::connect` 和 `network::client::connect` 函數：同樣的，這兩個 `connect` 函數也不相衝突，因為他們在不同的命名空間中。
+在 *src/lib.rs* 文件中，將現有的 `mod network` 和 `mod client` 的定義替換為示例 7-2 中的定義，這裡將 `client` 模組作為 `network` 的一個內部模組。現在我們有了 `network::connect` 和 `network::client::connect` 函數：同樣的，這兩個 `connect` 函數也不相衝突，因為他們在不同的命名空間中。
 
-這樣，模組之間形成了一個層次結構。*src/lib.rs* 的內容位於最頂層，而其子模組位於較低的層次。如下是代碼例 7-1 中的例子以層次的方式考慮的結構：
+這樣，模組之間形成了一個層次結構。*src/lib.rs* 的內容位於最頂層，而其子模組位於較低的層次。如下是示例 7-1 中的例子以層次的方式考慮的結構：
 
 ```text
 communicator
@@ -95,7 +95,7 @@ communicator
  └── client
 ```
 
-而這是代碼例 7-2 中例子的的層次結構：
+而這是示例 7-2 中例子的的層次結構：
 
 ```text
 communicator
@@ -103,11 +103,11 @@ communicator
      └── client
 ```
 
-可以看到代碼例 7-2 中，`client` 是 `network` 的子模組，而不是它的同級模組。更為複雜的項目可以有很多的模組，所以他們需要符合邏輯地組合在一起以便記錄他們。在項目中 「符合邏輯」 的意義全憑你的理解和庫的用戶對你項目領域的認識。利用我們這裡講到的技術來創建同級模組和嵌套的模組，總有一個會是你會喜歡的結構。
+可以看到示例 7-2 中，`client` 是 `network` 的子模組，而不是它的同級模組。更為複雜的項目可以有很多的模組，所以他們需要符合邏輯地組合在一起以便記錄他們。在項目中 「符合邏輯」 的意義全憑你的理解和庫的用戶對你項目領域的認識。利用我們這裡講到的技術來創建同級模組和嵌套的模組，總有一個會是你會喜歡的結構。
 
 ### 將模組移動到其他文件
 
-位於層級結構中的模組，非常類似計算機領域的另一個我們非常熟悉的結構：文件系統！我們可以利用 Rust 的模組系統連同多個文件一起分解 Rust 項目，這樣就不會是所有的內容都落到 *src/lib.rs* 或 *src/main.rs* 中了。為了舉例，我們將從代碼例 7-3 中的代碼開始：
+位於層級結構中的模組，非常類似計算機領域的另一個我們非常熟悉的結構：文件系統！我們可以利用 Rust 的模組系統連同多個文件一起分解 Rust 項目，這樣就不會是所有的內容都落到 *src/lib.rs* 或 *src/main.rs* 中了。為了舉例，我們將從示例 7-3 中的代碼開始：
 
 <span class="filename">文件名: src/lib.rs</span>
 
@@ -128,7 +128,7 @@ mod network {
 }
 ```
 
-<span class="caption">代碼例 7-3：三個模組，`client`、`network` 和 `network::server`，他們都定義於 *src/lib.rs*</span>
+<span class="caption">示例 7-3：三個模組，`client`、`network` 和 `network::server`，他們都定義於 *src/lib.rs*</span>
 
 *src/lib.rs* 文件有如下層次結構：
 
@@ -253,7 +253,7 @@ fn connect() {
 }
 ```
 
-當嘗試運行 `cargo build` 時，會出現如代碼例 7-4 中所示的錯誤：
+當嘗試運行 `cargo build` 時，會出現如示例 7-4 中所示的錯誤：
 
 ```text
 $ cargo build
@@ -276,11 +276,11 @@ note: ... or maybe `use` the module `server` instead of possibly redeclaring it
   |     ^^^^^^
 ```
 
-<span class="caption">代碼例 7-4：嘗試將 `server` 子模組提取到 *src/server.rs* 時出現的錯誤</span>
+<span class="caption">示例 7-4：嘗試將 `server` 子模組提取到 *src/server.rs* 時出現的錯誤</span>
 
 這個錯誤說明 「不能在這個位置新聲明一個模組」 並指出 *src/network.rs* 中的 `mod server;` 這一行。看來 *src/network.rs* 與 *src/lib.rs* 在某些方面是不同的；繼續閱讀以理解這是為什麼。
 
-代碼例 7-4 中間的 note 事實上是非常有幫助的，因為它指出了一些我們還未講到的操作：
+示例 7-4 中間的 note 事實上是非常有幫助的，因為它指出了一些我們還未講到的操作：
 
 ```text
 note: maybe move this module `network` to its own directory via
@@ -301,7 +301,7 @@ $ mv src/network.rs src/network/mod.rs
 $ mv src/server.rs src/network
 ```
 
-現在如果運行 `cargo build` 的話將順利編譯（雖然仍有警告）。現在模組的佈局看起來仍然與代碼例 7-3 中所有代碼都在 *src/lib.rs* 中時完全一樣：
+現在如果運行 `cargo build` 的話將順利編譯（雖然仍有警告）。現在模組的佈局看起來仍然與示例 7-3 中所有代碼都在 *src/lib.rs* 中時完全一樣：
 
 ```text
 communicator

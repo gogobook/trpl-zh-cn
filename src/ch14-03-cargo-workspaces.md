@@ -65,7 +65,7 @@ pub fn add_one(x: i32) -> i32 {
 }
 ```
 
-打开 `adder` 的 *src/main.rs* 并增加一行 `extern crate` 将新的 `add-one` 库引入作用域，并修改 `main` 函数来调用 `add_one` 函数，如代碼例 14-12 所示：
+打开 `adder` 的 *src/main.rs* 并增加一行 `extern crate` 将新的 `add-one` 库引入作用域，并修改 `main` 函数来调用 `add_one` 函数，如示例 14-12 所示：
 
 ```rust
 extern crate add_one;
@@ -76,7 +76,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 14-12：使用来自 `adder` crate 的库 crate `add-one`</span>
+<span class="caption">示例 14-12：使用来自 `adder` crate 的库 crate `add-one`</span>
 
 在 *adder* 目录下运行 `cargo build` 来构建 `adder` crate！
 
@@ -142,7 +142,7 @@ error[E0463]: can't find crate for `rand`
   | ^^^^^^^^^^^^^^^^^^^ can't find crate
 ```
 
-为了修复这个错误，修改顶级 `adder` crate 的 *Cargo.toml* 来表明 `rand` 也是这个 crate 的依赖。构建 `adder` crate 会将 `rand` 加入到 *Cargo.lock* 中 `adder` 的依赖代碼例中，但是这并不会下载 `rand` 的额外拷贝。Cargo 确保了工作空间中任何使用 `rand` 的 crate 都采用相同的版本。在整个工作空间中使用相同版本的 `rand` 节省了空间，因为这样就无需多个拷贝并确保了工作空间中的 crate 将是相互兼容的。
+为了修复这个错误，修改顶级 `adder` crate 的 *Cargo.toml* 来表明 `rand` 也是这个 crate 的依赖。构建 `adder` crate 会将 `rand` 加入到 *Cargo.lock* 中 `adder` 的依赖示例中，但是这并不会下载 `rand` 的额外拷贝。Cargo 确保了工作空间中任何使用 `rand` 的 crate 都采用相同的版本。在整个工作空间中使用相同版本的 `rand` 节省了空间，因为这样就无需多个拷贝并确保了工作空间中的 crate 将是相互兼容的。
 
 #### 为工作空间增加测试
 

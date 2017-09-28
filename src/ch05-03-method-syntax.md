@@ -8,7 +8,7 @@
 
 ### 定義方法
 
-讓我們將抓取一個 `Rectangle` 實例作為參數的 `area` 函數改寫成一個定義於 `Rectangle` 結構體上的 `area` 方法，如代碼例 5-13 所示：
+讓我們將抓取一個 `Rectangle` 實例作為參數的 `area` 函數改寫成一個定義於 `Rectangle` 結構體上的 `area` 方法，如示例 5-13 所示：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -35,7 +35,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 5-13：在 `Rectangle` 結構體上定義 `area` 方法</span>
+<span class="caption">示例 5-13：在 `Rectangle` 結構體上定義 `area` 方法</span>
 
 為了使函數定義於 `Rectangle` 的上下文中，我們開始了一個 `impl` 塊（`impl` 是 *implementation* 的縮寫）。接著將函數移動到 `impl` 大括號中，並將簽名中的第一個（在這裡也是唯一一個）參數和函數體中其他地方的對應參數改成 `self`。然後在`main` 中將我們調用 `area` 方法並傳遞 `rect1` 作為參數的地方，改成使用 **方法語法**（*method syntax*）在 `Rectangle` 實例上調用 `area` 方法。方法語法抓取一個實例並加上一個點號後跟方法名、括號以及任何參數。
 
@@ -78,7 +78,7 @@ fn main() {
 
 ### 帶有更多參數的方法
 
-讓我們更多的實踐一下方法，通過為 `Rectangle` 結構體實現第二個方法。這回，我們讓一個 `Rectangle` 的實例抓取另一個 `Rectangle` 實例並返回 `self` 能否完全包含第二個長方形，如果能返回 `true` 若不能則返回 `false`。一旦定義了 `can_hold` 方法，就可以運行代碼例 5-14 中的代碼了：
+讓我們更多的實踐一下方法，通過為 `Rectangle` 結構體實現第二個方法。這回，我們讓一個 `Rectangle` 的實例抓取另一個 `Rectangle` 實例並返回 `self` 能否完全包含第二個長方形，如果能返回 `true` 若不能則返回 `false`。一旦定義了 `can_hold` 方法，就可以運行示例 5-14 中的代碼了：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -93,7 +93,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 5-14：展示還未實現的 `can_hold` 方法的應用</span>
+<span class="caption">示例 5-14：展示還未實現的 `can_hold` 方法的應用</span>
 
 我們希望看到如下輸出，因為 `rect2` 的長寬都小於 `rect1`，而 `rect3` 比 `rect1` 要寬：
 
@@ -102,7 +102,7 @@ Can rect1 hold rect2? true
 Can rect1 hold rect3? false
 ```
 
-因為我們想定義一個方法，所以它應該位於 `impl Rectangle` 塊中。方法名是 `can_hold`，並且它會抓取另一個 `Rectangle` 的不可變借用作為參數。通過觀察調用位置的代碼可以看出參數是什麼類型的：`rect1.can_hold(&rect2)` 傳入了 `&rect2`，它是一個 `Rectangle` 的實例 `rect2` 的不可變借用。這是可以理解的，因為我們只需要讀取 `rect2`（而不是寫入，這意味著我們需要一個可變借用）而且希望 `main` 保持 `rect2` 的所有權這樣就可以在調用這個方法後繼續使用它。`can_hold` 的返回值是一個布爾值，其實現會分別檢查 `self` 的長寬是否都大於另一個 `Rectangle`。讓我們在代碼例 5-13 的 `impl` 塊中增加這個新方法，如代碼例 5-15 所示：
+因為我們想定義一個方法，所以它應該位於 `impl Rectangle` 塊中。方法名是 `can_hold`，並且它會抓取另一個 `Rectangle` 的不可變借用作為參數。通過觀察調用位置的代碼可以看出參數是什麼類型的：`rect1.can_hold(&rect2)` 傳入了 `&rect2`，它是一個 `Rectangle` 的實例 `rect2` 的不可變借用。這是可以理解的，因為我們只需要讀取 `rect2`（而不是寫入，這意味著我們需要一個可變借用）而且希望 `main` 保持 `rect2` 的所有權這樣就可以在調用這個方法後繼續使用它。`can_hold` 的返回值是一個布爾值，其實現會分別檢查 `self` 的長寬是否都大於另一個 `Rectangle`。讓我們在示例 5-13 的 `impl` 塊中增加這個新方法，如示例 5-15 所示：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -124,9 +124,9 @@ impl Rectangle {
 }
 ```
 
-<span class="caption">代碼例 5-15：在 `Rectangle` 上實現 `can_hold` 方法，它抓取另一個 `Rectangle` 實例作為參數</span>
+<span class="caption">示例 5-15：在 `Rectangle` 上實現 `can_hold` 方法，它抓取另一個 `Rectangle` 實例作為參數</span>
 
-如果結合代碼例 5-14 的 `main` 函數來運行，就會看到想要得到的輸出。方法可以在 `self` 後增加多個參數，而且這些參數就像函數中的參數一樣工作。
+如果結合示例 5-14 的 `main` 函數來運行，就會看到想要得到的輸出。方法可以在 `self` 後增加多個參數，而且這些參數就像函數中的參數一樣工作。
 
 ### 關聯函數
 
@@ -154,7 +154,7 @@ impl Rectangle {
 
 ### 多個 `impl` 塊
 
-每個結構體都允許擁有多個 `impl` 塊。例如，代碼例 5-15 等同於代碼例 5-16 的代碼，這裡每個方法有其自己的 `impl` 塊：
+每個結構體都允許擁有多個 `impl` 塊。例如，示例 5-15 等同於示例 5-16 的代碼，這裡每個方法有其自己的 `impl` 塊：
 
 ```rust
 # #[derive(Debug)]
@@ -176,7 +176,7 @@ impl Rectangle {
 }
 ```
 
-<span class="caption">代碼例 5-16：使用多個 `impl` 塊重寫代碼例 5-15</span>
+<span class="caption">示例 5-16：使用多個 `impl` 塊重寫示例 5-15</span>
 
 ## 總結
 

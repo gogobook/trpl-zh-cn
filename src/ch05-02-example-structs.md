@@ -6,7 +6,7 @@
 
 為了理解何時會需要使用結構體，讓我們編寫一個計算長方形面積的程序。我們會從單獨的變數開始，接著重構程序直到使用結構體替代他們為止。
 
-使用 Cargo 來創建一個叫做 *rectangles* 的新二進制程序，它會抓取一個長方形以像素為單位的長度和寬度並計算它的面積。代碼例 5-2 中是項目的 *src/main.rs* 文件中為此實現的一個小程序：
+使用 Cargo 來創建一個叫做 *rectangles* 的新二進制程序，它會抓取一個長方形以像素為單位的長度和寬度並計算它的面積。示例 5-2 中是項目的 *src/main.rs* 文件中為此實現的一個小程序：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -26,7 +26,7 @@ fn area(length: u32, width: u32) -> u32 {
 }
 ```
 
-<span class="caption">代碼例 5-8：通過指定長方形的長寬變數來計算長方形面積</span>
+<span class="caption">示例 5-8：通過指定長方形的長寬變數來計算長方形面積</span>
 
 嘗試使用 `cargo run` 運行程序：
 
@@ -36,7 +36,7 @@ The area of the rectangle is 1500 square pixels.
 
 ### 使用元組重構
 
-雖然代碼例 5-8 可以運行，並調用 `area` 函數用長方形的每個維度來計算出面積，不過我們可以做的更好。長度和寬度是相關聯的，因為他們在一起才能定義一個長方形。
+雖然示例 5-8 可以運行，並調用 `area` 函數用長方形的每個維度來計算出面積，不過我們可以做的更好。長度和寬度是相關聯的，因為他們在一起才能定義一個長方形。
 
 這個做法的問題突顯在 `area` 的簽名上：
 
@@ -44,7 +44,7 @@ The area of the rectangle is 1500 square pixels.
 fn area(length: u32, width: u32) -> u32 {
 ```
 
-函數 `area` 本應該計算一個長方形的面積，不過函數卻有兩個參數。這兩個參數是相關聯的，不過程序自身卻哪裡也沒有表現出這一點。將長度和寬度組合在一起將更易懂也更易處理。第三章的 「將值組合進元組」 部分已經討論過了一種可行的方法：元組。代碼例 5-9 是另一個使用元組的版本：
+函數 `area` 本應該計算一個長方形的面積，不過函數卻有兩個參數。這兩個參數是相關聯的，不過程序自身卻哪裡也沒有表現出這一點。將長度和寬度組合在一起將更易懂也更易處理。第三章的 「將值組合進元組」 部分已經討論過了一種可行的方法：元組。示例 5-9 是另一個使用元組的版本：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -63,7 +63,7 @@ fn area(dimensions: (u32, u32)) -> u32 {
 }
 ```
 
-<span class="caption">代碼例 5-8：使用元組來指定長方形的長寬</span>
+<span class="caption">示例 5-8：使用元組來指定長方形的長寬</span>
 
 在某種程度上說這樣好一點了。元組幫助我們增加了一些結構性，現在在調用 `area` 的時候只用傳遞一個參數。不過在另一方面這個方法卻更不明確了：元組並沒有給出它元素的名稱，所以計算變得更費解了，因為不得不使用索引來抓取元組的每一部分：
 
@@ -71,7 +71,7 @@ fn area(dimensions: (u32, u32)) -> u32 {
 
 ### 使用結構體重構：增加更多意義
 
-現在引入結構體的時候了。我們可以將元組轉換為一個有整體名稱而且每個部分也有對應名字的數據類型，如代碼例 5-10 所示：
+現在引入結構體的時候了。我們可以將元組轉換為一個有整體名稱而且每個部分也有對應名字的數據類型，如示例 5-10 所示：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -95,7 +95,7 @@ fn area(rectangle: &Rectangle) -> u32 {
 }
 ```
 
-<span class="caption">代碼例 5-10：定義 `Rectangle` 結構體</span>
+<span class="caption">示例 5-10：定義 `Rectangle` 結構體</span>
 
 這裡我們定義了一個結構體並稱其為 `Rectangle`。在 `{}` 中定義了字段 `length` 和 `width`，都是 `u32` 類型的。接著在 `main` 中，我們創建了一個長度為 50 和寬度為 30 的 `Rectangle` 的具體實例。
 
@@ -105,7 +105,7 @@ fn area(rectangle: &Rectangle) -> u32 {
 
 ### 通過衍生 trait 增加實用功能
 
-如果能夠在調試程序時打印出 `Rectangle` 實例來查看其所有字段的值就更好了。代碼例 5-11 像往常一樣使用 `println!` 巨集：
+如果能夠在調試程序時打印出 `Rectangle` 實例來查看其所有字段的值就更好了。示例 5-11 像往常一樣使用 `println!` 巨集：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -122,7 +122,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 5-11：嘗試打印出 `Rectangle` 實例</span>
+<span class="caption">示例 5-11：嘗試打印出 `Rectangle` 實例</span>
 
 如果運行代碼，會出現帶有如下核心信息的錯誤：
 
@@ -154,7 +154,7 @@ note: `Rectangle` cannot be formatted using `:?`; if it is defined in your
 crate, add `#[derive(Debug)]` or manually implement it
 ```
 
-Rust **確實** 包含了打印出調試信息的功能，不過我們必須為結構體顯式選擇這個功能。為此，在結構體定義之前加上 `#[derive(Debug)]` 註解(annotation)，如代碼例 5-12 所示：
+Rust **確實** 包含了打印出調試信息的功能，不過我們必須為結構體顯式選擇這個功能。為此，在結構體定義之前加上 `#[derive(Debug)]` 註解(annotation)，如示例 5-12 所示：
 
 <span class="filename">文件名: src/main.rs</span>
 
@@ -172,7 +172,7 @@ fn main() {
 }
 ```
 
-<span class="caption">代碼例 5-12：增加註解來導出 `Debug` trait </span>
+<span class="caption">示例 5-12：增加註解來導出 `Debug` trait </span>
 
 此時此刻運行程序，運行這個程序，不會有任何錯誤並會出現如下輸出：
 
