@@ -133,11 +133,11 @@ let mut bar = 5; // mutable
 
 > 注意：`//` 語法開始一個持續到本行的結尾的註釋。Rust 忽略註釋中的所有內容。
 
-現在我們知道了 `let mut guess` 會引入一個叫做 `guess` 的可變變數。等號（`=`）的右邊是 `guess` 所綁定的值，它是 `String::new` 的結果，這個函數會返回一個 `String` 的新實例。[`String`][string]<!-- ignore --> 是一個標準庫提供的字符串類型，它是 UTF-8 編碼的可增長文本塊。
+現在我們知道了 `let mut guess` 會引入一個叫做 `guess` 的可變變數。等號（`=`）的右邊是 `guess` 所綁定的值，它是 `String::new()` 的結果，這個函數會返回一個 `String` 的新實例。[`String`][string]<!-- ignore --> 是一個標準庫提供的字符串類型，它是 UTF-8 編碼的可增長文本塊。(但rust 的類型不是用`class`關鍵字聲明，我們會在後面的章節述明。)
 
 [string]: https://doc.rust-lang.org/std/string/struct.String.html
 
-`::new` 那一行的 `::` 語法表明 `new` 是 `String` 類型的一個 **關聯函數**（*associated function*）。關聯函數是針對類型實現的，在這個例子中是 `String`，而不是 `String` 的某個特定實例。一些語言中把它稱為 **靜態方法**（*static method*）。
+`::new` 的 `::` (雙冒號)語法表明 `new` 是 `String` 類型的一個 **關聯函數**（*associated function*）。關聯函數是針對類型實現的，在這個例子中是 `String`，而不是 `String` 的某個特定實例。一些語言中把它稱為 **靜態方法**（*static method*）。
 
 `new` 函數創建了一個新的空 `String`，你會在很多類型上發現 `new` 函數，這是創建類型實例的慣用函數名。
 
@@ -160,7 +160,7 @@ io::stdin().read_line(&mut guess)
 
 `read_line` 的工作是，無論用戶在標準輸入中鍵入什麼內容，都將其存入一個字符串中，因此它需要字符串作為參數。這個字符串參數應該是可變的，以便 `read_line` 將用戶輸入附加上去。
 
-`&` 表示這個參數是一個 **引用**（*reference*），它允許多處代碼訪問同一處數據，而無需在內存中多次拷貝。引用是一個複雜的特性，Rust 的一個主要優勢就是安全而簡單的操縱引用。完成當前程序並不需要瞭解如此多細節：第四章會更全面的解釋引用。現在，我們只需知道它像變數一樣，預設是不可變的，需要寫成 `&mut guess` 而不是 `&guess` 來使其可變。
+`&` 表示這個參數是一個 **引用**（*reference*），它允許多處代碼訪問同一處數據，而無需在內存中多次拷貝。引用是一個複雜的特性，Rust 的一個主要優勢就是安全而簡單的操縱引用。目前我們不需要瞭解如此多細節：第四章會更全面的解釋引用。現在，我們只需知道它像變數一樣，預設是不可變的，需要寫成 `&mut guess` 而不是 `&guess` 來使其可變。
 
 我們還沒有分析完這行代碼。雖然這是單獨一行代碼，但它是一個邏輯行（雖然換行了但仍是一個語句）的第一部分。第二部分是這個方法：
 
@@ -178,7 +178,7 @@ io::stdin().read_line(&mut guess).expect("Failed to read line");
 
 ### 使用 `Result` 類型來處理潛在的錯誤
 
-之前提到了 `read_line` 將用戶輸入附加到傳遞給它的字符串中，不過它也返回一個值——在這個例子中是 [`io::Result`][ioresult]<!-- ignore -->。Rust 標準庫中有很多叫做 `Result` 的類型。一個 [`Result`][result]<!-- ignore --> 泛型以及對應子模組的特定版本，比如 `io::Result`。
+之前提到了 `read_line` 將用戶輸入附加到傳遞給它的字符串中，不過它也返回一個值——在這個例子中(的類型)是 [`io::Result`][ioresult]<!-- ignore -->。Rust 標準庫中有很多叫做 `Result` 的類型。一個 [`Result`][result]<!-- ignore --> 泛型以及對應子模組的特定版本，比如 `io::Result`。
 
 [ioresult]: https://doc.rust-lang.org/std/io/type.Result.html
 [result]: https://doc.rust-lang.org/std/result/enum.Result.html
@@ -189,7 +189,7 @@ io::stdin().read_line(&mut guess).expect("Failed to read line");
 
 對於 `Result`，它的成員是 `Ok` 或 `Err`，`Ok` 表示操作成功，內部包含成功時產生的值。`Err` 意味著操作失敗，包含失敗的前因後果。
 
-這些 `Result` 類型的作用是編碼錯誤處理信息。`Result` 類型的值，像其他類型一樣，擁有定義於其上的方法。`io::Result` 的實例擁有 [`expect` 方法][expect]<!-- ignore -->。如果 `io::Result` 實例的值是 `Err`，`expect` 會導致程序崩潰，並顯示當做參數傳遞給 `expect` 的信息。如果 `read_line` 方法返回 `Err`，則可能是來源於底層操作系統錯誤的結果。如果 `io::Result` 實例的值是 `Ok`，`expect` 會抓取 `Ok` 中的值並原樣返回。在本例中，這個值是用戶輸入到標準輸入中的字節的數量。
+這些 `Result` 類型的作用是(**反應**)編碼錯誤處理信息。`Result` 類型的值，像其他類型一樣，擁有定義於其上的方法。`io::Result` 的實例擁有 [`expect` 方法][expect]<!-- ignore -->。如果 `io::Result` 實例的值是 `Err`，`expect` 會導致程序崩潰，並顯示當做參數傳遞給 `expect` 的信息。如果 `read_line` 方法返回 `Err`，則可能是來源於底層操作系統錯誤的結果。如果 `io::Result` 實例的值是 `Ok`，`expect` 會抓取 `Ok` 中的值並原樣返回。在本例中，這個值是用戶輸入到標準輸入中的字節的數量。
 
 [expect]: https://doc.rust-lang.org/std/result/enum.Result.html#method.expect
 
@@ -344,7 +344,7 @@ rand = "0.4.0"
 extern crate rand;
 
 use std::io;
-use rand::Rng;
+use rand::{thread_rng, Rng};
 
 fn main() {
     println!("Guess the number!");
@@ -368,9 +368,40 @@ fn main() {
 
 這裡在頂部增加一行 `extern crate rand;` 通知 Rust 我們要使用外部依賴。這也會調用相應的 `use rand`，所以現在可以使用 `rand::` 前綴來調用 `rand` crate 中的任何內容。
 
-接下來增加了另一行 `use`：`use rand::Rng`。`Rng` 是一個 trait，它定義了隨機數生成器應實現的方法 ，想使用這些方法的話此 trait 必須在作用域中。第十章會詳細介紹 trait。
+接下來增加了另一行 `use`：`use rand::Rng`。`Rng` 是一個 trait，它定義了隨機數生成器應實現的方法(trait其實有點像介面)，想使用這些方法的話此 trait 必須在作用域中。第十章會詳細介紹 trait。
 
-另外，中間還新增加了兩行。`rand::thread_rng` 函數提供實際使用的隨機數生成器：它位於當前執行線程，並從操作系統抓取 seed。接下來，調用隨機數生成器的 `gen_range` 方法。這個方法由剛才引入到作用域的 `Rng` trait 定義。`gen_range` 方法抓取兩個數字作為參數，並生成一個範圍在兩者之間的隨機數。它包含下限但不包含上限，所以需要指定 `1` 和 `101` 來請求一個 1 和 100 之間的數。
+另外，中間還新增加了兩行。`rand::thread_rng` 函數提供實際使用的隨機數生成器：它位於當前執行線程，並從操作系統抓取 seed。接下來，調用隨機數生成器的 `gen_range` 方法。這個方法由剛才引入到作用域的 `Rng` trait 定義(我們在代碼上很難直接看出這種前後因果，因為代碼中其實沒有寫出`Rng`。)。`gen_range` 方法抓取兩個數字作為參數，並生成一個範圍在兩者之間的隨機數。它包含下限但不包含上限，所以需要指定 `1` 和 `101` 來請求一個 1 和 100 之間的數。
+(譯註:另一種寫法
+```rust
+extern crate rand;
+
+use std::io;
+use rand::{thread_rng, Rng};
+
+fn main() {
+    println!("Guess the number!");
+
+    let secret_number = thread_rng().gen_range(1, 101);
+
+    println!("The secret number is: {}", secret_number);
+
+    println!("Please input your guess.");
+
+    let mut guess = String::new();
+
+    io::stdin().read_line(&mut guess)
+        .expect("Failed to read line");
+
+    println!("You guessed: {}", guess);
+}
+```
+我不確定這樣寫是否會比較好了解，原來的版本是可以編譯且執行的，但很難看出`rand::Rng`與`rand::thread_rng().gen_range(1, 101);`之間的關係。附上[Trait rand::Rng](https://doc.rust-lang.org/rand/rand/trait.Rng.html) 雖然看起來很像，且執行得到的結果也是一樣的，但本質上，這是不一樣的東西。)<br>
+(譯註:使用`pub trait rand::Rng` 內定義的方法時不用寫上`Rng`，但是單獨的方法不能執行，必須有個實作該方法的類別或實例才能執行，所以原來的寫法才會寫成那個樣子。<br>
+代碼 line:324 `pub trait Rng {省略}`<br>
+代碼 line:934 `pub fn thread_rng() -> ThreadRng {省略}`<br>
+代碼 line:950 `impl Rng for ThreadRng {省略}`<br>
+[crate rand 的代碼](https://doc.rust-lang.org/rand/src/rand/lib.rs.html)
+)
 
 知道 use 哪個 trait 和該從 crate 中調用哪個方法並不代表你 **知道** 如何使用。crate 的使用說明位於其文檔中。Cargo 有一個很棒的功能是：運行 `cargo doc --open` 命令來構建所有本地依賴提供的文檔，並在瀏覽器中打開。例如，假設你對 `rand` crate 中的其他功能感興趣，`cargo doc --open` 並點擊左側導航欄中的 `rand`。
 
@@ -454,7 +485,7 @@ match guess.cmp(&secret_number) {
 
 [match]: ch06-02-match.html
 
-一個 `match` 表達式由 **分支（arms）** 構成。一個分支包含一個 **模式**（*pattern*）和表達式開頭的值與分支模式相匹配時應該執行的代碼。Rust 抓取提供給 `match` 的值並挨個檢查每個分支的模式。`match` 結構和模式是 Rust 中強大的功能，它體現了代碼可能遇到的多種情形，並幫助你沒有遺漏的處理。這些功能將分別在第六章和第十八章詳細介紹。
+一個 `match` 表達式由 **分支（arms）** 構成。一個分支包含一個 **模式**（*pattern*）和表達式開頭的值與分支模式相匹配時應該執行的代碼(TODO: 這裡好怪要再修改)。Rust 抓取提供給 `match` 的值並依序檢查每個分支的模式。`match` 結構和模式是 Rust 中強大的功能，它體現了代碼可能遇到的多種情形，並幫助你沒有遺漏的處理。這些功能將分別在第六章和第十八章詳細介紹。
 
 讓我們看看使用 `match` 表達式的例子。假設用戶猜了 50，這時隨機生成的秘密數字是 38。比較 50 與 38 時，因為 50 比 38 要大，`cmp` 方法會返回 `Ordering::Greater`。`Ordering::Greater` 是 `match` 表達式得到的值。它檢查第一個分支的模式，`Ordering::Less` 與 `Ordering::Greater`並不匹配，所以它忽略了這個分支的動作並來到下一個分支。下一個分支的模式是 `Ordering::Greater`，**正確** 匹配！這個分支關聯的代碼被執行，在屏幕打印出 `Too big!`。`match` 表達式就此終止，因為該場景下沒有檢查最後一個分支的必要。
 
@@ -532,7 +563,7 @@ let guess: u32 = guess.trim().parse()
 
 [parse]: https://doc.rust-lang.org/std/primitive.str.html#method.parse
 
-`parse` 調用很容易產生錯誤。例如，字符串中包含 `A👍%`，就無法將其轉換為一個數字。因此，`parse` 方法返回一個 `Result` 類型。像之前 「使用 `Result` 類型來處理潛在的錯誤」 討論的 `read_line` 方法那樣，再次按部就班的用 `expect` 方法處理即可。如果 `parse` 不能從字符串生成一個數字，返回一個 `Result::Err` 時，`expect` 會使遊戲崩潰並打印附帶的信息。如果 `parse` 成功地將字符串轉換為一個數字，它會返回 `Result::Ok`，然後 `expect` 會返回 `Ok` 中的數字。
+`parse` 調用很容易產生錯誤。例如，字符串中包含 `A👍%`，就無法將其轉換為一個數字。因此，`parse` 方法返回一個 `Result` 類型。像之前 「使用 `Result` 類型來處理潛在的錯誤」 討論的 `read_line` 方法那樣，再次按部就班的用 `expect` 方法處理即可。如果 `parse` 不能從字符串生成一個數字，返回一個 `Result::Err` 時，`expect` 會使遊戲崩潰並打印附帶的信息(`"Please type a number!"`)。如果 `parse` 成功地將字符串轉換為一個數字，它會返回 `Result::Ok`，然後 `expect` 會返回 `Ok` 中的數字。
 
 現在讓我們運行程序！
 

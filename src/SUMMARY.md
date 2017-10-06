@@ -94,10 +94,10 @@
     - [共享狀態](ch16-03-shared-state.md)
     - [可擴展的並發：`Sync`和`Send`](ch16-04-extensible-concurrency-sync-and-send.md)
 
-- [面向物件](ch17-00-oop.md)	
-	- [什麼是面向物件？](ch17-01-what-is-oo.md)
+- [物件導向](ch17-00-oop.md)	
+	- [什麼是物件導向？](ch17-01-what-is-oo.md)
 	- [為使用不同類型的值而設計的 trait 物件](ch17-02-trait-objects.md)
-    - [面向物件設計模式的實現](ch17-03-oo-design-patterns.md)
+    - [物件導向設計模式的實現](ch17-03-oo-design-patterns.md)
 	
 ## 高級主題
 
