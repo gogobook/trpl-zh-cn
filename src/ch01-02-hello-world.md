@@ -158,7 +158,7 @@ Windows:
 > cd %USERPROFILE%\projects
 ```
 
-並在任何操作系統下運行：
+並在任何作業系統下運行：
 
 ```text
 $ cargo new hello_cargo --bin
@@ -263,7 +263,7 @@ Hello, world!
 - 使用 `cargo build` 構建項目（或使用 `cargo run` 一步構建並運行），而不是使用`rustc`
 - 有別於將構建結果放在與源碼相同的目錄，Cargo 會將其放到 *target/debug* 目錄。
 
-Cargo 的另一個優點是，不管你使用什麼操作系統其命令都是一樣的，所以本書之後將不再為 Linux 和 Mac 以及 Windows 提供相應的命令。
+Cargo 的另一個優點是，不管你使用什麼作業系統其命令都是一樣的，所以本書之後將不再為 Linux 和 Mac 以及 Windows 提供相應的命令。
 
 ### 發佈（release）構建
 

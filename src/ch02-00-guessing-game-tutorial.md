@@ -189,7 +189,7 @@ io::stdin().read_line(&mut guess).expect("Failed to read line");
 
 對於 `Result`，它的成員是 `Ok` 或 `Err`，`Ok` 表示操作成功，內部包含成功時產生的值。`Err` 意味著操作失敗，包含失敗的前因後果。
 
-這些 `Result` 類型的作用是(**反應**)編碼錯誤處理信息。`Result` 類型的值，像其他類型一樣，擁有定義於其上的方法。`io::Result` 的實例擁有 [`expect` 方法][expect]<!-- ignore -->。如果 `io::Result` 實例的值是 `Err`，`expect` 會導致程序崩潰，並顯示當做參數傳遞給 `expect` 的信息。如果 `read_line` 方法返回 `Err`，則可能是來源於底層操作系統錯誤的結果。如果 `io::Result` 實例的值是 `Ok`，`expect` 會抓取 `Ok` 中的值並原樣返回。在本例中，這個值是用戶輸入到標準輸入中的字節的數量。
+這些 `Result` 類型的作用是(**反應**)編碼錯誤處理信息。`Result` 類型的值，像其他類型一樣，擁有定義於其上的方法。`io::Result` 的實例擁有 [`expect` 方法][expect]<!-- ignore -->。如果 `io::Result` 實例的值是 `Err`，`expect` 會導致程序崩潰，並顯示當做參數傳遞給 `expect` 的信息。如果 `read_line` 方法返回 `Err`，則可能是來源於底層作業系統錯誤的結果。如果 `io::Result` 實例的值是 `Ok`，`expect` 會抓取 `Ok` 中的值並原樣返回。在本例中，這個值是用戶輸入到標準輸入中的字節的數量。
 
 [expect]: https://doc.rust-lang.org/std/result/enum.Result.html#method.expect
 
@@ -370,7 +370,7 @@ fn main() {
 
 接下來增加了另一行 `use`：`use rand::Rng`。`Rng` 是一個 trait，它定義了隨機數生成器應實現的方法(trait其實有點像介面)，想使用這些方法的話此 trait 必須在作用域中。第十章會詳細介紹 trait。
 
-另外，中間還新增加了兩行。`rand::thread_rng` 函數提供實際使用的隨機數生成器：它位於當前執行線程，並從操作系統抓取 seed。接下來，調用隨機數生成器的 `gen_range` 方法。這個方法由剛才引入到作用域的 `Rng` trait 定義(我們在代碼上很難直接看出這種前後因果，因為代碼中其實沒有寫出`Rng`。)。`gen_range` 方法抓取兩個數字作為參數，並生成一個範圍在兩者之間的隨機數。它包含下限但不包含上限，所以需要指定 `1` 和 `101` 來請求一個 1 和 100 之間的數。
+另外，中間還新增加了兩行。`rand::thread_rng` 函數提供實際使用的隨機數生成器：它位於當前執行線程，並從作業系統抓取 seed。接下來，調用隨機數生成器的 `gen_range` 方法。這個方法由剛才引入到作用域的 `Rng` trait 定義(我們在代碼上很難直接看出這種前後因果，因為代碼中其實沒有寫出`Rng`。)。`gen_range` 方法抓取兩個數字作為參數，並生成一個範圍在兩者之間的隨機數。它包含下限但不包含上限，所以需要指定 `1` 和 `101` 來請求一個 1 和 100 之間的數。
 (譯註:另一種寫法
 ```rust
 extern crate rand;
