@@ -225,9 +225,9 @@ fn main() {
 
 創建一個有用的公有 API 結構更像是一門藝術而非科學，你可以反覆檢視他們來找出最適合用戶的 API。選擇 `pub use` 提供了組織 crate 內部結構和與終端用戶體現解耦的靈活性。觀察一些你所安裝的 crate 的代碼來看看其內部結構是否不同於公有 API。
 
-### 創建 Crates.io 賬號
+### 創建 Crates.io 帳號
 
-在你可以發佈任何 crate 之前，需要在 crates.io 上註冊賬號並抓取一個 API token。為此，訪問位於 *https://crates.io* 的官網並使用 GitHub 賬號登陸————目前 GitHub 賬號是必須的，不過將來該網站可能會支持其他創建賬號的方法。一旦登陸之後，查看位於 *https://crates.io/me* 的賬戶設置頁面並抓取 API token。接著使用該 API token 運行 `cargo login` 命令，像這樣：
+在你可以發佈任何 crate 之前，需要在 crates.io 上註冊帳號並抓取一個 API token。為此，訪問位於 *https://crates.io* 的官網並使用 GitHub 帳號登陸————目前 GitHub 帳號是必須的，不過將來該網站可能會支持其他創建帳號的方法。一旦登陸之後，查看位於 *https://crates.io/me* 的賬戶設置頁面並抓取 API token。接著使用該 API token 運行 `cargo login` 命令，像這樣：
 
 ```text
 $ cargo login abcdefghijklmnopqrstuvwxyz012345
@@ -237,7 +237,7 @@ $ cargo login abcdefghijklmnopqrstuvwxyz012345
 
 ### 發佈新 crate 之前
 
-有了賬號之後，比如說你已經有一個希望發佈的 crate。在發佈之前，你需要在 crate 的 *Cargo.toml* 文件的 `[package]` 部分增加一些本 crate 的元信息（metadata）。
+有了帳號之後，比如說你已經有一個希望發佈的 crate。在發佈之前，你需要在 crate 的 *Cargo.toml* 文件的 `[package]` 部分增加一些本 crate 的元信息（metadata）。
 
 首先 crate 需要一個唯一的名稱。雖然在本地開發 crate 時，可以使用任何你喜歡的名稱。不過 Crates.io 上的 crate 名稱遵守先到先得的分配原則。一旦某個 crate 名稱被使用，其他人就不能再發佈這個名稱的 crate 了。請在網站上搜索你希望使用的名稱來找出它是否已被使用。如果沒有，修改 *Cargo.toml* 中 `[package]` 裡的名稱為你希望用於發佈的名稱，像這樣：
 
@@ -288,7 +288,7 @@ license = "MIT/Apache-2.0"
 
 ### 發佈到 Crates.io
 
-現在我們創建了一個賬號，保存了 API token，為 crate 選擇了一個名字，並指定了所需的元數據，你已經準備好發佈了！發佈 crate 會上傳特定版本的 crate 到 crates.io 以供他人使用。
+現在我們創建了一個帳號，保存了 API token，為 crate 選擇了一個名字，並指定了所需的元數據，你已經準備好發佈了！發佈 crate 會上傳特定版本的 crate 到 crates.io 以供他人使用。
 
 發佈 crate 時請多加小心，因為發佈是 **永久性的**（*permanent*）。對應版本不可能被覆蓋，其代碼也不可能被刪除。Crates.io 的一個主要目標是作為一個代碼的永久文檔服務器，這樣所有依賴 Crates.io 中 crate 的項目都能一直正常工作。允許刪除版本將不可能滿足這個目標。然而，可以被發布的版本號卻沒有限制。
 
