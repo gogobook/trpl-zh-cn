@@ -78,7 +78,7 @@ fn main() {
 
 ### 帶有更多參數的方法
 
-讓我們更多的實踐一下方法，通過為 `Rectangle` 結構體實現第二個方法。這回，我們讓一個 `Rectangle` 的實例抓取另一個 `Rectangle` 實例並返回 `self` 能否完全包含第二個長方形，如果能返回 `true` 若不能則返回 `false`。一旦定義了 `can_hold` 方法，就可以運行示例 5-14 中的代碼了：
+讓我們更多的實踐一下方法，通過為 `Rectangle` 結構體實現第二個方法。這回，我們讓一個 `Rectangle` 的實例抓取另一個 `Rectangle` 實例並返回 `self` 能否完全包含第二個長方形，如果能則返回 `true` ，若不能則返回 `false`。一旦定義了 `can_hold` 方法，就可以運行示例 5-14 中的代碼了：
 
 <span class="filename">文件名: src/main.rs</span>
 

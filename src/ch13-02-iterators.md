@@ -148,7 +148,7 @@ assert_eq!(v2, vec![2, 3, 4]);
 
 <span class="filename">文件名: src/lib.rs</span>
 
-```rust,test_harness
+```rust
 #[derive(PartialEq, Debug)]
 struct Shoe {
     size: i32,
