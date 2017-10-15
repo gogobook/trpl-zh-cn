@@ -61,7 +61,7 @@ user1.email = String::from("anotheremail@example.com");
 
 <span class="caption">示例 5-3：改變 `User` 結構體 `email` 字段的值</span>
 
-與其他任何表達式一樣，我們可以在函數體的最後一個表達式構造一個結構體，從函數隱式的返回一個結構體的新實例。表 5-4 顯示了一個返回帶有給定的 `email` 與 `username` 的 `User` 結構體的實例的 `build_user` 函數。`active` 字段的值為 `true`，並且 `sign_in_count` 的值為 `1`。
+與其他任何表達式一樣，我們可以在函數體的最後一個表達式構造一個結構體，從函數隱式的返回一個結構體的新實例。示例 5-4 顯示了一個返回帶有給定的 `email` 與 `username` 的 `User` 結構體的實例的 `build_user` 函數。`active` 字段的值為 `true`，並且 `sign_in_count` 的值為 `1`。
 
 ```rust
 # struct User {

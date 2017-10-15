@@ -10,7 +10,7 @@
 the one with SpreadsheetCell. I will go back and add Listing 8-1 next time I
 get Chapter 8 for editing. /Carol -->
 
-有時，我們希望使用的類型的集合對於使用庫的程式設計師來說是可擴展的。例如，很多圖形用戶接口（GUI）工具有一個項目示例的概念，它通過遍歷示例並調用每一個項目的 `draw` 方法來將其繪製到屏幕上。我們將要創建一個叫做 `rust_gui` 的庫 crate，它含一個 GUI 庫的結構。這個 GUI 庫包含一些可供開發者使用的類型，比如 `Button` 或 `TextField`。使用 `rust_gui` 的程式設計師會想要創建更多可以繪製在屏幕上的類型：其中一些可能會增加一個 `Image`，而另一些可能會增加一個 `SelectBox`。本章節並不準備實現一個功能完善的 GUI 庫，不過會展示其中各個部分是如何結合在一起的。
+有時，我們希望使用的類型的集合對於使用庫的程式設計師來說是可擴展的。例如，很多圖形用戶接口（GUI）工具有一個項目示例的概念，它通過遍歷示例並調用每一個項目的 `draw` 方法來將其繪製到螢幕上。我們將要創建一個叫做 `rust_gui` 的庫 crate，它含一個 GUI 庫的結構。這個 GUI 庫包含一些可供開發者使用的類型，比如 `Button` 或 `TextField`。使用 `rust_gui` 的程式設計師會想要創建更多可以繪製在螢幕上的類型：其中一些可能會增加一個 `Image`，而另一些可能會增加一個 `SelectBox`。本章節並不準備實現一個功能完善的 GUI 庫，不過會展示其中各個部分是如何結合在一起的。
 
 編寫 `rust_gui` 庫時，我們並不知道其他程式設計師想要創建的全部類型，所以無法定義一個 `enum` 來包含所有這些類型。我們所要做的是使 `rust_gui` 能夠記錄一系列不同類型的值，並能夠對其中每一個值調用 `draw` 方法。 GUI 庫不需要知道當調用 `draw` 方法時具體會發生什麼，只需提供這些值可供調用的方法即可。
 
@@ -134,7 +134,7 @@ impl Draw for Button {
 
 <span class="caption">示例 17-7: 一個實現了`Draw` trait 的 `Button` 結構體</span>
 
-在 `Button` 上的 `width`、`height` 和 `label` 字段會和其他組件不同，比如 `TextField` 可能有 `width`、`height`、`label` 以及 `placeholder` 字段。每一個我們希望能在屏幕上繪製的類型都會使用不同的代碼來實現 `Draw` trait 的 `draw` 方法，來定義如何繪製像這裡的 `Button` 類型（並不包含任何實際的 GUI 代碼，這超出了本章的範疇）。除了實現 `Draw` trait 之外，`Button` 還可能有另一個包含按鈕點擊如何響應的方法的 `impl` 塊。這類方法並不適用於像 `TextField` 這樣的類型。
+在 `Button` 上的 `width`、`height` 和 `label` 字段會和其他組件不同，比如 `TextField` 可能有 `width`、`height`、`label` 以及 `placeholder` 字段。每一個我們希望能在螢幕上繪製的類型都會使用不同的代碼來實現 `Draw` trait 的 `draw` 方法，來定義如何繪製像這裡的 `Button` 類型（並不包含任何實際的 GUI 代碼，這超出了本章的範疇）。除了實現 `Draw` trait 之外，`Button` 還可能有另一個包含按鈕點擊如何響應的方法的 `impl` 塊。這類方法並不適用於像 `TextField` 這樣的類型。
 
 一些庫的使用者決定實現一個包含 `width`、`height`和`options` 字段的結構體 `SelectBox`。並也為其實現了 `Draw` trait，如示例 17-8 所示：
 
@@ -159,7 +159,7 @@ impl Draw for SelectBox {
 
 <span class="caption">示例 17-8: 在另一個使用 `rust_gui` 的 crate 中，在 `SelectBox` 結構體上實現 `Draw` trait</span>
 
-庫使用者現在可以在他們的 `main` 函數中創建一個 `Screen` 實例，並通過將 `SelectBox` 和 `Button` 放入 `Box<T>` 轉變為 trait 物件來將它們放入屏幕實例。接著可以調用 `Screen` 的 `run` 方法，它會調用每個組件的 `draw` 方法。示例 17-9 展示了這個實現：
+庫使用者現在可以在他們的 `main` 函數中創建一個 `Screen` 實例，並通過將 `SelectBox` 和 `Button` 放入 `Box<T>` 轉變為 trait 物件來將它們放入螢幕實例。接著可以調用 `Screen` 的 `run` 方法，它會調用每個組件的 `draw` 方法。示例 17-9 展示了這個實現：
 
 <span class="filename">文件名: src/main.rs</span>
 

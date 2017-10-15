@@ -100,7 +100,7 @@ fn main() {
 
 `fn` 語法聲明了一個新函數，`()` 表明沒有參數，`{` 作為函數體的開始。
 
-第一章也提及了 `println!` 是一個在屏幕上打印字符串的巨集：
+第一章也提及了 `println!` 是一個在螢幕上打印字符串的巨集：
 
 ```rust
 println!("Guess the number!");
@@ -344,7 +344,7 @@ rand = "0.4.0"
 extern crate rand;
 
 use std::io;
-use rand::{thread_rng, Rng};
+use rand::Rng;
 
 fn main() {
     println!("Guess the number!");
@@ -368,7 +368,7 @@ fn main() {
 
 這裡在頂部增加一行 `extern crate rand;` 通知 Rust 我們要使用外部依賴。這也會調用相應的 `use rand`，所以現在可以使用 `rand::` 前綴來調用 `rand` crate 中的任何內容。
 
-接下來增加了另一行 `use`：`use rand::Rng`。`Rng` 是一個 trait，它定義了隨機數生成器應實現的方法(trait其實有點像介面)，想使用這些方法的話此 trait 必須在作用域中。第十章會詳細介紹 trait。
+接下來增加了另一行 `use`：`use rand::Rng`。`Rng` 是一個 trait，它定義了隨機數生成器應實現的方法(譯註:trait其實有點像介面)，想使用這些方法的話此 trait 必須在作用域中。第十章會詳細介紹 trait。
 
 另外，中間還新增加了兩行。`rand::thread_rng` 函數提供實際使用的隨機數生成器：它位於當前執行線程，並從作業系統抓取 seed。接下來，調用隨機數生成器的 `gen_range` 方法。這個方法由剛才引入到作用域的 `Rng` trait 定義(我們在代碼上很難直接看出這種前後因果，因為代碼中其實沒有寫出`Rng`。)。`gen_range` 方法抓取兩個數字作為參數，並生成一個範圍在兩者之間的隨機數。它包含下限但不包含上限，所以需要指定 `1` 和 `101` 來請求一個 1 和 100 之間的數。
 (譯註:另一種寫法
@@ -487,7 +487,7 @@ match guess.cmp(&secret_number) {
 
 一個 `match` 表達式由 **分支（arms）** 構成。一個分支包含一個 **模式**（*pattern*）和表達式開頭的值與分支模式相匹配時應該執行的代碼(TODO: 這裡好怪要再修改)。Rust 抓取提供給 `match` 的值並依序檢查每個分支的模式。`match` 結構和模式是 Rust 中強大的功能，它體現了代碼可能遇到的多種情形，並幫助你沒有遺漏的處理。這些功能將分別在第六章和第十八章詳細介紹。
 
-讓我們看看使用 `match` 表達式的例子。假設用戶猜了 50，這時隨機生成的秘密數字是 38。比較 50 與 38 時，因為 50 比 38 要大，`cmp` 方法會返回 `Ordering::Greater`。`Ordering::Greater` 是 `match` 表達式得到的值。它檢查第一個分支的模式，`Ordering::Less` 與 `Ordering::Greater`並不匹配，所以它忽略了這個分支的動作並來到下一個分支。下一個分支的模式是 `Ordering::Greater`，**正確** 匹配！這個分支關聯的代碼被執行，在屏幕打印出 `Too big!`。`match` 表達式就此終止，因為該場景下沒有檢查最後一個分支的必要。
+讓我們看看使用 `match` 表達式的例子。假設用戶猜了 50，這時隨機生成的秘密數字是 38。比較 50 與 38 時，因為 50 比 38 要大，`cmp` 方法會返回 `Ordering::Greater`。`Ordering::Greater` 是 `match` 表達式得到的值。它檢查第一個分支的模式，`Ordering::Less` 與 `Ordering::Greater`並不匹配，所以它忽略了這個分支的動作並來到下一個分支。下一個分支的模式是 `Ordering::Greater`，**正確** 匹配！這個分支關聯的代碼被執行，在螢幕打印出 `Too big!`。`match` 表達式就此終止，因為該場景下沒有檢查最後一個分支的必要。
 
 然而，示例 2-4 的代碼並不能編譯，可以嘗試一下：
 
